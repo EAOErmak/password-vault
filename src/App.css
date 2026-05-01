@@ -278,6 +278,17 @@ textarea {
   margin-top: 20px;
 }
 
+.vault-search-row {
+  display: flex;
+  align-items: end;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.vault-search-field {
+  flex: 1;
+}
+
 .metric-card {
   display: grid;
   gap: 6px;
@@ -589,6 +600,11 @@ textarea {
 
   .vault-metrics {
     grid-template-columns: 1fr;
+  }
+
+  .vault-search-row {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .vault-grid {

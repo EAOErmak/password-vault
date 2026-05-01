@@ -5,8 +5,10 @@ type AccountListProps = {
   accounts: AccountSummary[];
   errorMessage: string | null;
   isLoading: boolean;
+  onClearSearch: () => void;
   onOpenCreateAccount: () => void;
   onSelectAccount: (accountId: string) => void;
+  searchQuery: string;
   selectedAccountId: string | null;
   selectedPlatformName: string | null;
 };
@@ -15,11 +17,15 @@ export function AccountList({
   accounts,
   errorMessage,
   isLoading,
+  onClearSearch,
   onOpenCreateAccount,
   onSelectAccount,
+  searchQuery,
   selectedAccountId,
   selectedPlatformName,
 }: AccountListProps) {
+  const trimmedSearchQuery = searchQuery.trim();
+  const hasSearchQuery = trimmedSearchQuery.length > 0;
   const title = selectedPlatformName
     ? `${selectedPlatformName} accounts`
     : "All accounts";
@@ -29,7 +35,11 @@ export function AccountList({
       <div className="panel-header">
         <div>
           <h2>{title}</h2>
-          <p>Only account metadata is listed here.</p>
+          <p>
+            {hasSearchQuery
+              ? `Matching "${trimmedSearchQuery}" across safe metadata only.`
+              : "Only account metadata is listed here."}
+          </p>
         </div>
         <button className="button-primary" onClick={onOpenCreateAccount} type="button">
           Create account
@@ -47,13 +57,24 @@ export function AccountList({
       {!isLoading && accounts.length === 0 ? (
         <div className="empty-state">
           <p>
-            {selectedPlatformName
-              ? `No accounts exist for ${selectedPlatformName} yet.`
-              : "No accounts exist yet."}
+            {hasSearchQuery && selectedPlatformName
+              ? `No accounts match "${trimmedSearchQuery}" in ${selectedPlatformName}.`
+              : hasSearchQuery
+                ? `No accounts match "${trimmedSearchQuery}".`
+                : selectedPlatformName
+                  ? `No accounts exist for ${selectedPlatformName} yet.`
+                  : "No accounts exist yet."}
           </p>
-          <button className="button-primary" onClick={onOpenCreateAccount} type="button">
-            Create account
-          </button>
+          <div className="actions">
+            {hasSearchQuery ? (
+              <button className="button-secondary" onClick={onClearSearch} type="button">
+                Clear search
+              </button>
+            ) : null}
+            <button className="button-primary" onClick={onOpenCreateAccount} type="button">
+              Create account
+            </button>
+          </div>
         </div>
       ) : null}
 

@@ -5,10 +5,13 @@ type VaultHeaderProps = {
   isLoading: boolean;
   isLocking: boolean;
   onLock: () => Promise<void>;
+  onClearSearch: () => void;
   onOpenCreateAccount: () => void;
   onOpenCreatePlatform: () => void;
   onRefresh: () => Promise<void>;
+  onSearchChange: (searchQuery: string) => void;
   platformCount: number;
+  searchQuery: string;
   vaultPath: string | null;
 };
 
@@ -19,12 +22,17 @@ export function VaultHeader({
   isLoading,
   isLocking,
   onLock,
+  onClearSearch,
   onOpenCreateAccount,
   onOpenCreatePlatform,
   onRefresh,
+  onSearchChange,
   platformCount,
+  searchQuery,
   vaultPath,
 }: VaultHeaderProps) {
+  const hasSearchQuery = searchQuery.trim().length > 0;
+
   return (
     <section className="vault-card vault-header-card">
       <div className="vault-header-row">
@@ -90,6 +98,30 @@ export function VaultHeader({
           <strong>{vaultPath ?? "Active path unavailable"}</strong>
         </div>
       </div>
+
+      <div className="vault-search-row">
+        <label className="field vault-search-field">
+          <span>Search accounts</span>
+          <input
+            autoComplete="off"
+            onChange={(event) => onSearchChange(event.currentTarget.value)}
+            placeholder="Search by name, platform, notes, or safe values"
+            spellCheck={false}
+            type="search"
+            value={searchQuery}
+          />
+        </label>
+
+        {hasSearchQuery ? (
+          <button className="button-secondary" onClick={onClearSearch} type="button">
+            Clear search
+          </button>
+        ) : null}
+      </div>
+
+      <p className="field-helper">
+        Search uses safe account metadata only. Secret values are excluded.
+      </p>
 
       {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
     </section>

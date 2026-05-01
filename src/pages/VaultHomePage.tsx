@@ -50,6 +50,7 @@ export function VaultHomePage({
 
   const [platforms, setPlatforms] = useState<PlatformDto[]>([]);
   const [selectedPlatformId, setSelectedPlatformId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [accounts, setAccounts] = useState<AccountSummary[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
   const [selectedAccount, setSelectedAccount] = useState<AccountDetails | null>(null);
@@ -68,6 +69,7 @@ export function VaultHomePage({
 
   useEffect(() => {
     setSelectedPlatformId(null);
+    setSearchQuery("");
     setSelectedAccountId(null);
     setSelectedAccount(null);
     setDataError(null);
@@ -78,7 +80,7 @@ export function VaultHomePage({
     setIsCreateAccountOpen(false);
     setReturnToAccountDialog(false);
     setCreateAccountPlatformId(null);
-    void loadSnapshot(null);
+    void loadSnapshot(null, "");
   }, [vaultPath]);
 
   useEffect(() => {
@@ -131,10 +133,12 @@ export function VaultHomePage({
 
   const loadSnapshot = async (
     nextPlatformId: string | null,
+    nextSearchQuery: string,
     options: LoadSnapshotOptions = {},
   ) => {
     const requestId = snapshotRequestRef.current + 1;
     snapshotRequestRef.current = requestId;
+    const normalizedSearchQuery = nextSearchQuery.trim();
 
     setSelectedPlatformId(nextPlatformId);
     setIsLoadingSnapshot(true);
@@ -142,9 +146,13 @@ export function VaultHomePage({
     setDetailsError(null);
 
     try {
+      const filter = {
+        ...(nextPlatformId ? { platform_id: nextPlatformId } : {}),
+        ...(normalizedSearchQuery ? { search: normalizedSearchQuery } : {}),
+      };
       const [nextPlatforms, nextAccounts] = await Promise.all([
         listPlatforms(),
-        listAccounts(nextPlatformId ? { platform_id: nextPlatformId } : undefined),
+        Object.keys(filter).length > 0 ? listAccounts(filter) : listAccounts(),
       ]);
 
       if (snapshotRequestRef.current !== requestId) {
@@ -196,7 +204,7 @@ export function VaultHomePage({
   };
 
   const handleRefresh = async () => {
-    await loadSnapshot(selectedPlatformId, {
+    await loadSnapshot(selectedPlatformId, searchQuery, {
       preferredAccountId: selectedAccountId,
       seedDetails: selectedAccount,
     });
@@ -204,14 +212,30 @@ export function VaultHomePage({
 
   const refreshSelectedAccountContext = async (accountId: string) => {
     const details = await requestAccountDetails(accountId, false);
-    await loadSnapshot(selectedPlatformId, {
+    await loadSnapshot(selectedPlatformId, searchQuery, {
       preferredAccountId: accountId,
       seedDetails: details,
     });
   };
 
   const handleSelectPlatform = (platformId: string | null) => {
-    void loadSnapshot(platformId);
+    void loadSnapshot(platformId, searchQuery);
+  };
+
+  const handleSearchChange = (nextSearchQuery: string) => {
+    setSearchQuery(nextSearchQuery);
+    void loadSnapshot(selectedPlatformId, nextSearchQuery, {
+      preferredAccountId: selectedAccountId,
+      seedDetails: selectedAccount,
+    });
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    void loadSnapshot(selectedPlatformId, "", {
+      preferredAccountId: selectedAccountId,
+      seedDetails: selectedAccount,
+    });
   };
 
   const handleSelectAccount = (accountId: string) => {
@@ -265,7 +289,7 @@ export function VaultHomePage({
       setReturnToAccountDialog(false);
       setCreateAccountPlatformId(platform.id);
       setIsCreatePlatformOpen(false);
-      await loadSnapshot(platform.id);
+      await loadSnapshot(platform.id, searchQuery);
 
       if (shouldReturn) {
         setIsCreateAccountOpen(true);
@@ -285,7 +309,7 @@ export function VaultHomePage({
       const account = await createAccount(request);
       setIsCreateAccountOpen(false);
       setCreateAccountPlatformId(account.platform.id);
-      await loadSnapshot(account.platform.id, {
+      await loadSnapshot(account.platform.id, searchQuery, {
         preferredAccountId: account.id,
         seedDetails: account,
       });
@@ -386,10 +410,13 @@ export function VaultHomePage({
             isLoading={isLoadingSnapshot}
             isLocking={isLocking}
             onLock={onLock}
+            onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
             onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
             onRefresh={handleRefresh}
+            onSearchChange={handleSearchChange}
             platformCount={platforms.length}
+            searchQuery={searchQuery}
             vaultPath={vaultPath}
           />
         }
@@ -398,8 +425,10 @@ export function VaultHomePage({
             accounts={accounts}
             errorMessage={dataError}
             isLoading={isLoadingSnapshot}
+            onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
             onSelectAccount={handleSelectAccount}
+            searchQuery={searchQuery}
             selectedAccountId={selectedAccountId}
             selectedPlatformName={selectedPlatformName}
           />
