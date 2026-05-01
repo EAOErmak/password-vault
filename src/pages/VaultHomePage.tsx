@@ -31,6 +31,7 @@ type VaultHomePageProps = {
   errorMessage: string | null;
   isLocking: boolean;
   onLock: () => Promise<void>;
+  sessionResetToken: number;
   vaultPath: string | null;
 };
 
@@ -43,10 +44,12 @@ export function VaultHomePage({
   errorMessage,
   isLocking,
   onLock,
+  sessionResetToken,
   vaultPath,
 }: VaultHomePageProps) {
   const snapshotRequestRef = useRef(0);
   const detailsRequestRef = useRef(0);
+  const lastSessionResetTokenRef = useRef(sessionResetToken);
 
   const [platforms, setPlatforms] = useState<PlatformDto[]>([]);
   const [selectedPlatformId, setSelectedPlatformId] = useState<string | null>(null);
@@ -94,6 +97,25 @@ export function VaultHomePage({
 
     void requestAccountDetails(selectedAccountId);
   }, [selectedAccountId]);
+
+  useEffect(() => {
+    if (sessionResetToken === lastSessionResetTokenRef.current) {
+      return;
+    }
+
+    lastSessionResetTokenRef.current = sessionResetToken;
+    snapshotRequestRef.current += 1;
+    detailsRequestRef.current += 1;
+    setSelectedAccountId(null);
+    setSelectedAccount(null);
+    setDetailsError(null);
+    setIsLoadingDetails(false);
+    setIsCreateAccountOpen(false);
+    setIsCreatePlatformOpen(false);
+    setCreateAccountError(null);
+    setCreatePlatformError(null);
+    setReturnToAccountDialog(false);
+  }, [sessionResetToken]);
 
   const requestAccountDetails = async (
     accountId: string,

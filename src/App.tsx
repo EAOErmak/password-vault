@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
+import { AUTO_LOCK_TIMEOUT_MS } from "./features/vault/constants/security";
 import {
   createVault,
   getVaultErrorMessage,
@@ -18,6 +19,9 @@ import { VaultHomePage } from "./pages/VaultHomePage";
 type AppView = "loading" | "create" | "unlock" | "home";
 
 function App() {
+  const autoLockTimerRef = useRef<number | null>(null);
+  const isLockingRef = useRef(false);
+
   const [view, setView] = useState<AppView>("loading");
   const [vaultStatus, setVaultStatus] = useState<VaultStatus | null>(null);
   const [knownVaultPath, setKnownVaultPath] = useState<string | null>(() =>
@@ -25,10 +29,59 @@ function App() {
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
+  const [sessionResetToken, setSessionResetToken] = useState(0);
 
   useEffect(() => {
     void syncVaultStatus();
   }, []);
+
+  useEffect(() => {
+    isLockingRef.current = isBusy;
+  }, [isBusy]);
+
+  useEffect(() => {
+    const clearAutoLockTimer = () => {
+      if (autoLockTimerRef.current !== null) {
+        window.clearTimeout(autoLockTimerRef.current);
+        autoLockTimerRef.current = null;
+      }
+    };
+
+    if (view !== "home" || isBusy) {
+      clearAutoLockTimer();
+      return;
+    }
+
+    const scheduleAutoLock = () => {
+      clearAutoLockTimer();
+      autoLockTimerRef.current = window.setTimeout(() => {
+        void handleAutoLock();
+      }, AUTO_LOCK_TIMEOUT_MS);
+    };
+
+    const handleActivity = () => {
+      if (isLockingRef.current) {
+        return;
+      }
+
+      scheduleAutoLock();
+    };
+
+    scheduleAutoLock();
+
+    window.addEventListener("mousemove", handleActivity);
+    window.addEventListener("keydown", handleActivity);
+    window.addEventListener("click", handleActivity);
+    window.addEventListener("scroll", handleActivity);
+
+    return () => {
+      window.removeEventListener("mousemove", handleActivity);
+      window.removeEventListener("keydown", handleActivity);
+      window.removeEventListener("click", handleActivity);
+      window.removeEventListener("scroll", handleActivity);
+      clearAutoLockTimer();
+    };
+  }, [isBusy, view]);
 
   const syncVaultStatus = async () => {
     setErrorMessage(null);
@@ -95,9 +148,18 @@ function App() {
     }
   };
 
-  const handleLockVault = async () => {
+  const lockCurrentVault = async (reason: "auto" | "manual") => {
+    if (isLockingRef.current) {
+      return;
+    }
+
+    isLockingRef.current = true;
     setIsBusy(true);
     setErrorMessage(null);
+
+    if (reason === "auto") {
+      setSessionResetToken((currentToken) => currentToken + 1);
+    }
 
     try {
       const status = await lockVault();
@@ -105,8 +167,17 @@ function App() {
     } catch (error) {
       setErrorMessage(getVaultErrorMessage(error));
     } finally {
+      isLockingRef.current = false;
       setIsBusy(false);
     }
+  };
+
+  const handleLockVault = async () => {
+    await lockCurrentVault("manual");
+  };
+
+  const handleAutoLock = async () => {
+    await lockCurrentVault("auto");
   };
 
   const showCreatePage = () => {
@@ -128,6 +199,7 @@ function App() {
         errorMessage={errorMessage}
         isLocking={isBusy}
         onLock={handleLockVault}
+        sessionResetToken={sessionResetToken}
         vaultPath={currentVaultPath}
       />
     );
