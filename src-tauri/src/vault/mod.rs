@@ -56,6 +56,7 @@ mod tests {
     use crate::app_state::AppState;
     use crate::vault::domain::{AccountValueType, SecretType};
     use crate::vault::dto::account_dto::{CreateAccountRequest, ListAccountsFilter};
+    use crate::vault::dto::history_dto::{AccountValueHistoryDto, SecretHistoryDto};
     use crate::vault::dto::secret_dto::{AddSecretRequest, UpdateSecretRequest};
     use crate::vault::dto::value_dto::{AddAccountValueRequest, UpdateAccountValueRequest};
     use crate::vault::error::VaultError;
@@ -444,6 +445,135 @@ mod tests {
 
         assert_eq!(history.0, "old-password");
         assert_eq!(history.1, "new-password");
+    }
+
+    #[test]
+    fn listing_account_value_history_returns_changes_in_descending_order() {
+        let (_temp_dir, state, _db_path) = setup_unlocked_vault();
+        let platform = create_platform(&state, "GitHub");
+        let account = create_account(&state, platform.id);
+        let value_service = ValueService;
+
+        let value = value_service
+            .add_account_value(
+                &state,
+                account.id,
+                &AddAccountValueRequest {
+                    value_type: AccountValueType::Email,
+                    label: "Work email".to_string(),
+                    value: "first@example.com".to_string(),
+                    is_primary: true,
+                },
+            )
+            .unwrap();
+
+        value_service
+            .update_account_value(
+                &state,
+                value.id,
+                &UpdateAccountValueRequest {
+                    value_type: AccountValueType::Email,
+                    label: "Work email".to_string(),
+                    value: "second@example.com".to_string(),
+                    is_primary: true,
+                },
+            )
+            .unwrap();
+        value_service
+            .update_account_value(
+                &state,
+                value.id,
+                &UpdateAccountValueRequest {
+                    value_type: AccountValueType::Email,
+                    label: "Work email".to_string(),
+                    value: "third@example.com".to_string(),
+                    is_primary: true,
+                },
+            )
+            .unwrap();
+
+        let history = value_service
+            .list_account_value_history(&state, value.id)
+            .unwrap();
+
+        assert_eq!(history.len(), 2);
+        assert_eq!(
+            history[0],
+            AccountValueHistoryDto {
+                id: history[0].id,
+                account_value_id: value.id,
+                account_id: account.id,
+                old_value: "second@example.com".to_string(),
+                new_value: "third@example.com".to_string(),
+                changed_at: history[0].changed_at,
+            }
+        );
+        assert_eq!(
+            history[1],
+            AccountValueHistoryDto {
+                id: history[1].id,
+                account_value_id: value.id,
+                account_id: account.id,
+                old_value: "first@example.com".to_string(),
+                new_value: "second@example.com".to_string(),
+                changed_at: history[1].changed_at,
+            }
+        );
+        assert!(history[0].changed_at >= history[1].changed_at);
+    }
+
+    #[test]
+    fn listing_secret_history_hides_secret_values() {
+        let (_temp_dir, state, _db_path) = setup_unlocked_vault();
+        let platform = create_platform(&state, "GitHub");
+        let account = create_account(&state, platform.id);
+        let secret_service = SecretService;
+
+        let secret = secret_service
+            .add_secret(
+                &state,
+                account.id,
+                &AddSecretRequest {
+                    secret_type: SecretType::Password,
+                    label: "Password".to_string(),
+                    secret_value: "history-secret-one".to_string(),
+                    is_primary: true,
+                },
+            )
+            .unwrap();
+
+        secret_service
+            .update_secret(
+                &state,
+                secret.id,
+                &UpdateSecretRequest {
+                    secret_type: SecretType::Password,
+                    label: "Password".to_string(),
+                    secret_value: "history-secret-two".to_string(),
+                    is_primary: true,
+                },
+            )
+            .unwrap();
+
+        let history = secret_service
+            .list_secret_history(&state, secret.id)
+            .unwrap();
+        let serialized = serde_json::to_string(&history).unwrap();
+
+        assert_eq!(history.len(), 1);
+        assert_eq!(
+            history[0],
+            SecretHistoryDto {
+                id: history[0].id,
+                secret_id: secret.id,
+                account_id: account.id,
+                changed_at: history[0].changed_at,
+                has_old_value: true,
+                has_new_value: true,
+            }
+        );
+        assert!(!serialized.contains("history-secret-one"));
+        assert!(!serialized.contains("history-secret-two"));
     }
 
     #[test]

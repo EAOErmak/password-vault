@@ -42,6 +42,15 @@ struct SecretMetadataRow {
     updated_at: String,
 }
 
+struct SecretHistoryRow {
+    id: String,
+    secret_id: String,
+    account_id: String,
+    old_secret_value: String,
+    new_secret_value: String,
+    changed_at: String,
+}
+
 impl SecretRepository {
     pub fn create(
         executor: &impl SqlExecutor,
@@ -245,6 +254,24 @@ impl SecretRepository {
         Ok(())
     }
 
+    pub fn list_history_by_secret(
+        executor: &impl SqlExecutor,
+        secret_id: Uuid,
+    ) -> Result<Vec<SecretHistory>, VaultError> {
+        let mut statement = executor.connection().prepare(
+            "SELECT id, secret_id, account_id, old_secret_value, new_secret_value, changed_at
+             FROM secret_history
+             WHERE secret_id = ?1
+             ORDER BY changed_at DESC",
+        )?;
+
+        let rows = statement
+            .query_map(params![secret_id.to_string()], Self::map_history_row)?
+            .collect::<Result<Vec<_>, _>>()?;
+
+        rows.into_iter().map(Self::build_history).collect()
+    }
+
     fn map_row(row: &Row<'_>) -> rusqlite::Result<SecretRow> {
         Ok(SecretRow {
             id: row.get(0)?,
@@ -271,6 +298,17 @@ impl SecretRepository {
         })
     }
 
+    fn map_history_row(row: &Row<'_>) -> rusqlite::Result<SecretHistoryRow> {
+        Ok(SecretHistoryRow {
+            id: row.get(0)?,
+            secret_id: row.get(1)?,
+            account_id: row.get(2)?,
+            old_secret_value: row.get(3)?,
+            new_secret_value: row.get(4)?,
+            changed_at: row.get(5)?,
+        })
+    }
+
     fn build_secret(row: SecretRow) -> Result<Secret, VaultError> {
         Ok(Secret {
             id: parse_uuid(&row.id)?,
@@ -294,6 +332,17 @@ impl SecretRepository {
             is_primary: row.is_primary != 0,
             created_at: parse_timestamp(&row.created_at)?,
             updated_at: parse_timestamp(&row.updated_at)?,
+        })
+    }
+
+    fn build_history(row: SecretHistoryRow) -> Result<SecretHistory, VaultError> {
+        Ok(SecretHistory {
+            id: parse_uuid(&row.id)?,
+            secret_id: parse_uuid(&row.secret_id)?,
+            account_id: parse_uuid(&row.account_id)?,
+            old_secret_value: row.old_secret_value,
+            new_secret_value: row.new_secret_value,
+            changed_at: parse_timestamp(&row.changed_at)?,
         })
     }
 }

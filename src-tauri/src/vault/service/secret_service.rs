@@ -1,7 +1,9 @@
 use uuid::Uuid;
+use zeroize::Zeroize;
 
 use crate::app_state::AppState;
 use crate::vault::domain::SecretHistory;
+use crate::vault::dto::history_dto::SecretHistoryDto;
 use crate::vault::dto::secret_dto::{
     AddSecretRequest, RevealedSecretDto, SecretMetadataDto, UpdateSecretRequest,
 };
@@ -125,6 +127,20 @@ impl SecretService {
         })
     }
 
+    pub fn list_secret_history(
+        &self,
+        state: &AppState,
+        secret_id: Uuid,
+    ) -> Result<Vec<SecretHistoryDto>, VaultError> {
+        state.with_connection(|connection| {
+            SecretRepository::find_active_metadata_by_id(connection, secret_id)?
+                .ok_or_else(|| VaultError::NotFound(format!("secret not found: {secret_id}")))?;
+
+            let history = SecretRepository::list_history_by_secret(connection, secret_id)?;
+            Ok(history.into_iter().map(Self::to_history_dto).collect())
+        })
+    }
+
     fn ensure_account_exists(
         connection: &rusqlite::Connection,
         account_id: Uuid,
@@ -168,6 +184,22 @@ impl SecretService {
             is_primary: secret.is_primary,
             created_at: secret.created_at,
             updated_at: secret.updated_at,
+        }
+    }
+
+    fn to_history_dto(mut history: SecretHistory) -> SecretHistoryDto {
+        let has_old_value = !history.old_secret_value.is_empty();
+        let has_new_value = !history.new_secret_value.is_empty();
+        history.old_secret_value.zeroize();
+        history.new_secret_value.zeroize();
+
+        SecretHistoryDto {
+            id: history.id,
+            secret_id: history.secret_id,
+            account_id: history.account_id,
+            changed_at: history.changed_at,
+            has_old_value,
+            has_new_value,
         }
     }
 }

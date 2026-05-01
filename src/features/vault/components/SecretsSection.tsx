@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { revealSecret } from "../api/secretApi";
+import { listSecretHistory, revealSecret } from "../api/secretApi";
 import type {
   AccountDetails,
   AddSecretRequest,
   RevealedSecretDto,
+  SecretHistoryDto,
   SecretMetadataDto,
   UpdateSecretRequest,
 } from "../types";
@@ -11,6 +12,7 @@ import { getVaultErrorMessage } from "../../../lib/vault";
 import { AddSecretDialog } from "./AddSecretDialog";
 import { EditSecretDialog } from "./EditSecretDialog";
 import { RevealSecretDialog } from "./RevealSecretDialog";
+import { SecretHistoryDialog } from "./SecretHistoryDialog";
 import { SecretRow } from "./SecretRow";
 
 type SecretsSectionProps = {
@@ -28,6 +30,7 @@ export function SecretsSection({
 }: SecretsSectionProps) {
   const copyResetTimerRef = useRef<number | null>(null);
   const revealRequestRef = useRef(0);
+  const historyRequestRef = useRef(0);
 
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -40,8 +43,13 @@ export function SecretsSection({
   const [revealError, setRevealError] = useState<string | null>(null);
   const [copiedSecretId, setCopiedSecretId] = useState<string | null>(null);
   const [isCopyingSecretId, setIsCopyingSecretId] = useState<string | null>(null);
+  const [historySecret, setHistorySecret] = useState<SecretMetadataDto | null>(null);
+  const [secretHistory, setSecretHistory] = useState<SecretHistoryDto[]>([]);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   useEffect(() => {
+    historyRequestRef.current += 1;
     setDialogError(null);
     setActionError(null);
     setIsSubmitting(false);
@@ -53,6 +61,10 @@ export function SecretsSection({
     setRevealError(null);
     setCopiedSecretId(null);
     setIsCopyingSecretId(null);
+    setHistorySecret(null);
+    setSecretHistory([]);
+    setHistoryError(null);
+    setIsLoadingHistory(false);
   }, [account.id]);
 
   useEffect(() => {
@@ -91,6 +103,43 @@ export function SecretsSection({
     setRevealedSecret(null);
     setIsRevealOpen(false);
     setIsRevealing(false);
+  };
+
+  const handleOpenHistory = async (secret: SecretMetadataDto) => {
+    const requestId = historyRequestRef.current + 1;
+    historyRequestRef.current = requestId;
+    setActionError(null);
+    setHistorySecret(secret);
+    setSecretHistory([]);
+    setHistoryError(null);
+    setIsLoadingHistory(true);
+
+    try {
+      const history = await listSecretHistory(secret.id);
+      if (historyRequestRef.current !== requestId) {
+        return;
+      }
+
+      setSecretHistory(history);
+    } catch (error) {
+      if (historyRequestRef.current !== requestId) {
+        return;
+      }
+
+      setHistoryError(getVaultErrorMessage(error));
+    } finally {
+      if (historyRequestRef.current === requestId) {
+        setIsLoadingHistory(false);
+      }
+    }
+  };
+
+  const handleCloseHistory = () => {
+    historyRequestRef.current += 1;
+    setHistorySecret(null);
+    setSecretHistory([]);
+    setHistoryError(null);
+    setIsLoadingHistory(false);
   };
 
   const handleAdd = async (request: AddSecretRequest) => {
@@ -230,11 +279,17 @@ export function SecretsSection({
           {account.secrets.map((secret) => (
             <SecretRow
               copied={copiedSecretId === secret.id}
-              isBusy={isSubmitting || isRevealing || isCopyingSecretId !== null}
+              isBusy={
+                isSubmitting ||
+                isRevealing ||
+                isCopyingSecretId !== null ||
+                isLoadingHistory
+              }
               key={secret.id}
               onCopy={handleCopy}
               onDelete={handleDelete}
               onEdit={handleOpenEdit}
+              onHistory={handleOpenHistory}
               onReveal={handleReveal}
               secret={secret}
             />
@@ -265,6 +320,15 @@ export function SecretsSection({
         isOpen={isRevealOpen}
         onClose={handleCloseReveal}
         secret={revealedSecret}
+      />
+
+      <SecretHistoryDialog
+        errorMessage={historyError}
+        history={secretHistory}
+        isLoading={isLoadingHistory}
+        isOpen={historySecret !== null}
+        onClose={handleCloseHistory}
+        secret={historySecret}
       />
     </section>
   );

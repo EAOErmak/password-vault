@@ -53,6 +53,24 @@ export type RevealedSecretDto = {
   updated_at: string;
 };
 
+export type AccountValueHistoryDto = {
+  id: string;
+  account_value_id: string;
+  account_id: string;
+  old_value: string;
+  new_value: string;
+  changed_at: string;
+};
+
+export type SecretHistoryDto = {
+  id: string;
+  secret_id: string;
+  account_id: string;
+  changed_at: string;
+  has_old_value: boolean;
+  has_new_value: boolean;
+};
+
 export type AccountSummaryDto = {
   id: string;
   name: string | null;

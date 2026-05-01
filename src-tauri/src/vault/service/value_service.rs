@@ -2,6 +2,7 @@ use uuid::Uuid;
 
 use crate::app_state::AppState;
 use crate::vault::domain::AccountValueHistory;
+use crate::vault::dto::history_dto::AccountValueHistoryDto;
 use crate::vault::dto::value_dto::{
     AccountValueDto, AddAccountValueRequest, UpdateAccountValueRequest,
 };
@@ -111,6 +112,21 @@ impl ValueService {
         })
     }
 
+    pub fn list_account_value_history(
+        &self,
+        state: &AppState,
+        value_id: Uuid,
+    ) -> Result<Vec<AccountValueHistoryDto>, VaultError> {
+        state.with_connection(|connection| {
+            ValueRepository::find_active_by_id(connection, value_id)?.ok_or_else(|| {
+                VaultError::NotFound(format!("account value not found: {value_id}"))
+            })?;
+
+            let history = ValueRepository::list_history_by_value(connection, value_id)?;
+            Ok(history.into_iter().map(Self::to_history_dto).collect())
+        })
+    }
+
     fn ensure_account_exists(
         connection: &rusqlite::Connection,
         account_id: Uuid,
@@ -156,6 +172,17 @@ impl ValueService {
             is_primary: value.is_primary,
             created_at: value.created_at,
             updated_at: value.updated_at,
+        }
+    }
+
+    fn to_history_dto(history: AccountValueHistory) -> AccountValueHistoryDto {
+        AccountValueHistoryDto {
+            id: history.id,
+            account_value_id: history.account_value_id,
+            account_id: history.account_id,
+            old_value: history.old_value,
+            new_value: history.new_value,
+            changed_at: history.changed_at,
         }
     }
 }

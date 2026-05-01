@@ -538,6 +538,38 @@ textarea {
   width: min(100%, 520px);
 }
 
+.dialog-card--wide {
+  width: min(100%, 760px);
+}
+
+.history-table-wrapper {
+  overflow-x: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+  padding: 12px 10px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid #d7e0e7;
+}
+
+.history-table th {
+  color: #55606c;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.history-table__value {
+  color: #192126;
+  word-break: break-word;
+}
+
 @media (max-width: 1180px) {
   .vault-grid {
     grid-template-columns: 240px minmax(0, 1fr);

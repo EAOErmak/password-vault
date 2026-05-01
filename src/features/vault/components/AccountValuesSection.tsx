@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { listAccountValueHistory } from "../api/valueApi";
 import type {
   AccountDetails,
   AccountValueDto,
+  AccountValueHistoryDto,
   AddAccountValueRequest,
   UpdateAccountValueRequest,
 } from "../types";
@@ -9,6 +11,7 @@ import { getVaultErrorMessage } from "../../../lib/vault";
 import { AddAccountValueDialog } from "./AddAccountValueDialog";
 import { AccountValueRow } from "./AccountValueRow";
 import { EditAccountValueDialog } from "./EditAccountValueDialog";
+import { ValueHistoryDialog } from "./ValueHistoryDialog";
 
 type AccountValuesSectionProps = {
   account: AccountDetails;
@@ -23,18 +26,28 @@ export function AccountValuesSection({
   onDeleteValue,
   onUpdateValue,
 }: AccountValuesSectionProps) {
+  const historyRequestRef = useRef(0);
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingValue, setEditingValue] = useState<AccountValueDto | null>(null);
+  const [historyValue, setHistoryValue] = useState<AccountValueDto | null>(null);
+  const [valueHistory, setValueHistory] = useState<AccountValueHistoryDto[]>([]);
+  const [historyError, setHistoryError] = useState<string | null>(null);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   useEffect(() => {
+    historyRequestRef.current += 1;
     setDialogError(null);
     setActionError(null);
     setIsSubmitting(false);
     setIsAddOpen(false);
     setEditingValue(null);
+    setHistoryValue(null);
+    setValueHistory([]);
+    setHistoryError(null);
+    setIsLoadingHistory(false);
   }, [account.id]);
 
   const handleOpenAdd = () => {
@@ -57,6 +70,43 @@ export function AccountValuesSection({
   const handleCloseEdit = () => {
     setDialogError(null);
     setEditingValue(null);
+  };
+
+  const handleOpenHistory = async (value: AccountValueDto) => {
+    const requestId = historyRequestRef.current + 1;
+    historyRequestRef.current = requestId;
+    setActionError(null);
+    setHistoryValue(value);
+    setValueHistory([]);
+    setHistoryError(null);
+    setIsLoadingHistory(true);
+
+    try {
+      const history = await listAccountValueHistory(value.id);
+      if (historyRequestRef.current !== requestId) {
+        return;
+      }
+
+      setValueHistory(history);
+    } catch (error) {
+      if (historyRequestRef.current !== requestId) {
+        return;
+      }
+
+      setHistoryError(getVaultErrorMessage(error));
+    } finally {
+      if (historyRequestRef.current === requestId) {
+        setIsLoadingHistory(false);
+      }
+    }
+  };
+
+  const handleCloseHistory = () => {
+    historyRequestRef.current += 1;
+    setHistoryValue(null);
+    setValueHistory([]);
+    setHistoryError(null);
+    setIsLoadingHistory(false);
   };
 
   const handleAdd = async (request: AddAccountValueRequest) => {
@@ -139,10 +189,11 @@ export function AccountValuesSection({
         <div className="metadata-list">
           {account.values.map((value) => (
             <AccountValueRow
-              isBusy={isSubmitting}
+              isBusy={isSubmitting || isLoadingHistory}
               key={value.id}
               onDelete={handleDelete}
               onEdit={handleOpenEdit}
+              onHistory={handleOpenHistory}
               value={value}
             />
           ))}
@@ -164,6 +215,15 @@ export function AccountValuesSection({
         onClose={handleCloseEdit}
         onSubmit={handleUpdate}
         value={editingValue}
+      />
+
+      <ValueHistoryDialog
+        errorMessage={historyError}
+        history={valueHistory}
+        isLoading={isLoadingHistory}
+        isOpen={historyValue !== null}
+        onClose={handleCloseHistory}
+        value={historyValue}
       />
     </section>
   );

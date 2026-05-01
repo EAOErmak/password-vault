@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type {
   AccountValueDto,
+  AccountValueHistoryDto,
   AddAccountValueRequest,
   UpdateAccountValueRequest,
 } from "../types";
@@ -26,6 +27,19 @@ function sanitizeAccountValue(value: AccountValueDto): AccountValueDto {
     is_primary,
     created_at,
     updated_at,
+  };
+}
+
+function sanitizeAccountValueHistory(history: AccountValueHistoryDto): AccountValueHistoryDto {
+  const { id, account_value_id, account_id, old_value, new_value, changed_at } = history;
+
+  return {
+    id,
+    account_value_id,
+    account_id,
+    old_value,
+    new_value,
+    changed_at,
   };
 }
 
@@ -57,4 +71,14 @@ export function softDeleteAccountValue(valueId: string): Promise<void> {
   return invoke("soft_delete_account_value", {
     valueId,
   });
+}
+
+export async function listAccountValueHistory(
+  valueId: string,
+): Promise<AccountValueHistoryDto[]> {
+  const history = await invoke<AccountValueHistoryDto[]>("list_account_value_history", {
+    valueId,
+  });
+
+  return history.map(sanitizeAccountValueHistory);
 }

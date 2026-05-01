@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import type {
   AddSecretRequest,
   RevealedSecretDto,
+  SecretHistoryDto,
   SecretMetadataDto,
   UpdateSecretRequest,
 } from "../types";
@@ -17,6 +18,19 @@ function sanitizeSecretMetadata(secret: SecretMetadataDto): SecretMetadataDto {
     is_primary,
     created_at,
     updated_at,
+  };
+}
+
+function sanitizeSecretHistory(history: SecretHistoryDto): SecretHistoryDto {
+  const { id, secret_id, account_id, changed_at, has_old_value, has_new_value } = history;
+
+  return {
+    id,
+    secret_id,
+    account_id,
+    changed_at,
+    has_old_value,
+    has_new_value,
   };
 }
 
@@ -80,4 +94,12 @@ export function softDeleteSecret(secretId: string): Promise<void> {
   return invoke("soft_delete_secret", {
     secretId,
   });
+}
+
+export async function listSecretHistory(secretId: string): Promise<SecretHistoryDto[]> {
+  const history = await invoke<SecretHistoryDto[]>("list_secret_history", {
+    secretId,
+  });
+
+  return history.map(sanitizeSecretHistory);
 }

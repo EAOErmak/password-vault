@@ -7,6 +7,7 @@ type SecretRowProps = {
   onCopy: (secret: SecretMetadataDto) => void;
   onDelete: (secret: SecretMetadataDto) => void;
   onEdit: (secret: SecretMetadataDto) => void;
+  onHistory: (secret: SecretMetadataDto) => void;
   onReveal: (secret: SecretMetadataDto) => void;
   secret: SecretMetadataDto;
 };
@@ -17,6 +18,7 @@ export function SecretRow({
   onCopy,
   onDelete,
   onEdit,
+  onHistory,
   onReveal,
   secret,
 }: SecretRowProps) {
@@ -35,6 +37,14 @@ export function SecretRow({
       <div className="value-row__footer">
         <small>Updated {formatDateTime(secret.updated_at)}</small>
         <div className="value-row__actions">
+          <button
+            className="button-secondary button-small"
+            disabled={isBusy}
+            onClick={() => onHistory(secret)}
+            type="button"
+          >
+            History
+          </button>
           <button
             className="button-secondary button-small"
             disabled={isBusy}

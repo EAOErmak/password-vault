@@ -24,10 +24,12 @@ pub fn run() {
             commands::value_commands::add_account_value,
             commands::value_commands::update_account_value,
             commands::value_commands::soft_delete_account_value,
+            commands::value_commands::list_account_value_history,
             commands::secret_commands::add_secret,
             commands::secret_commands::update_secret,
             commands::secret_commands::reveal_secret,
-            commands::secret_commands::soft_delete_secret
+            commands::secret_commands::soft_delete_secret,
+            commands::secret_commands::list_secret_history
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

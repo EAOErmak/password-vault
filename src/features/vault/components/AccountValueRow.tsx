@@ -5,6 +5,7 @@ type AccountValueRowProps = {
   isBusy: boolean;
   onDelete: (value: AccountValueDto) => void;
   onEdit: (value: AccountValueDto) => void;
+  onHistory: (value: AccountValueDto) => void;
   value: AccountValueDto;
 };
 
@@ -12,6 +13,7 @@ export function AccountValueRow({
   isBusy,
   onDelete,
   onEdit,
+  onHistory,
   value,
 }: AccountValueRowProps) {
   return (
@@ -29,6 +31,14 @@ export function AccountValueRow({
       <div className="value-row__footer">
         <small>Updated {formatDateTime(value.updated_at)}</small>
         <div className="value-row__actions">
+          <button
+            className="button-secondary button-small"
+            disabled={isBusy}
+            onClick={() => onHistory(value)}
+            type="button"
+          >
+            History
+          </button>
           <button
             className="button-secondary button-small"
             disabled={isBusy}

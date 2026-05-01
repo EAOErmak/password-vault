@@ -4,6 +4,7 @@ use zeroize::Zeroize;
 
 use crate::app_state::AppState;
 use crate::commands::{into_command_result, CommandResult};
+use crate::vault::dto::history_dto::SecretHistoryDto;
 use crate::vault::dto::secret_dto::{
     AddSecretRequest, RevealedSecretDto, SecretMetadataDto, UpdateSecretRequest,
 };
@@ -46,4 +47,13 @@ pub fn reveal_secret(
 pub fn soft_delete_secret(state: State<'_, AppState>, secret_id: Uuid) -> CommandResult<()> {
     let service = SecretService;
     into_command_result(service.soft_delete_secret(state.inner(), secret_id))
+}
+
+#[tauri::command]
+pub fn list_secret_history(
+    state: State<'_, AppState>,
+    secret_id: Uuid,
+) -> CommandResult<Vec<SecretHistoryDto>> {
+    let service = SecretService;
+    into_command_result(service.list_secret_history(state.inner(), secret_id))
 }

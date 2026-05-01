@@ -21,6 +21,15 @@ struct AccountValueRow {
     deleted_at: Option<String>,
 }
 
+struct AccountValueHistoryRow {
+    id: String,
+    account_value_id: String,
+    account_id: String,
+    old_value: String,
+    new_value: String,
+    changed_at: String,
+}
+
 impl ValueRepository {
     pub fn create(
         executor: &impl SqlExecutor,
@@ -187,6 +196,24 @@ impl ValueRepository {
         Ok(())
     }
 
+    pub fn list_history_by_value(
+        executor: &impl SqlExecutor,
+        value_id: Uuid,
+    ) -> Result<Vec<AccountValueHistory>, VaultError> {
+        let mut statement = executor.connection().prepare(
+            "SELECT id, account_value_id, account_id, old_value, new_value, changed_at
+             FROM account_value_history
+             WHERE account_value_id = ?1
+             ORDER BY changed_at DESC",
+        )?;
+
+        let rows = statement
+            .query_map(params![value_id.to_string()], Self::map_history_row)?
+            .collect::<Result<Vec<_>, _>>()?;
+
+        rows.into_iter().map(Self::build_history).collect()
+    }
+
     fn map_row(row: &Row<'_>) -> rusqlite::Result<AccountValueRow> {
         Ok(AccountValueRow {
             id: row.get(0)?,
@@ -201,6 +228,17 @@ impl ValueRepository {
         })
     }
 
+    fn map_history_row(row: &Row<'_>) -> rusqlite::Result<AccountValueHistoryRow> {
+        Ok(AccountValueHistoryRow {
+            id: row.get(0)?,
+            account_value_id: row.get(1)?,
+            account_id: row.get(2)?,
+            old_value: row.get(3)?,
+            new_value: row.get(4)?,
+            changed_at: row.get(5)?,
+        })
+    }
+
     fn build_account_value(row: AccountValueRow) -> Result<AccountValue, VaultError> {
         Ok(AccountValue {
             id: parse_uuid(&row.id)?,
@@ -212,6 +250,17 @@ impl ValueRepository {
             created_at: parse_timestamp(&row.created_at)?,
             updated_at: parse_timestamp(&row.updated_at)?,
             deleted_at: parse_optional_timestamp(row.deleted_at)?,
+        })
+    }
+
+    fn build_history(row: AccountValueHistoryRow) -> Result<AccountValueHistory, VaultError> {
+        Ok(AccountValueHistory {
+            id: parse_uuid(&row.id)?,
+            account_value_id: parse_uuid(&row.account_value_id)?,
+            account_id: parse_uuid(&row.account_id)?,
+            old_value: row.old_value,
+            new_value: row.new_value,
+            changed_at: parse_timestamp(&row.changed_at)?,
         })
     }
 }
