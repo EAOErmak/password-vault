@@ -1,49 +1,175 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
+import { useEffect, useState } from "react";
 import "./App.css";
+import {
+  createVault,
+  getVaultErrorMessage,
+  getVaultStatus,
+  lockVault,
+  normalizeVaultPath,
+  readKnownVaultPath,
+  storeKnownVaultPath,
+  type VaultStatus,
+  unlockVault,
+} from "./lib/vault";
+import { CreateVaultPage } from "./pages/CreateVaultPage";
+import { UnlockVaultPage } from "./pages/UnlockVaultPage";
+import { VaultHomePage } from "./pages/VaultHomePage";
+
+type AppView = "loading" | "create" | "unlock" | "home";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [view, setView] = useState<AppView>("loading");
+  const [vaultStatus, setVaultStatus] = useState<VaultStatus | null>(null);
+  const [knownVaultPath, setKnownVaultPath] = useState<string | null>(() =>
+    readKnownVaultPath(),
+  );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isBusy, setIsBusy] = useState(false);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  useEffect(() => {
+    void syncVaultStatus();
+  }, []);
+
+  const syncVaultStatus = async () => {
+    setErrorMessage(null);
+    setView("loading");
+
+    try {
+      const status = await getVaultStatus();
+      applyVaultStatus(status, readKnownVaultPath());
+    } catch (error) {
+      const fallbackPath = readKnownVaultPath();
+      setVaultStatus(null);
+      setKnownVaultPath(fallbackPath);
+      setErrorMessage(getVaultErrorMessage(error));
+      setView(fallbackPath ? "unlock" : "create");
+    }
+  };
+
+  const applyVaultStatus = (
+    status: VaultStatus,
+    fallbackPath: string | null = knownVaultPath,
+  ) => {
+    const rememberedPath =
+      storeKnownVaultPath(status.path) ?? normalizeVaultPath(fallbackPath);
+
+    setVaultStatus(status);
+    setKnownVaultPath(rememberedPath);
+    setErrorMessage(null);
+
+    if (status.is_unlocked) {
+      setView("home");
+      return;
+    }
+
+    setView(rememberedPath ? "unlock" : "create");
+  };
+
+  const handleCreateVault = async (path: string, masterPassword: string) => {
+    setIsBusy(true);
+    setErrorMessage(null);
+
+    try {
+      const status = await createVault(path, masterPassword);
+      const fallbackPath = storeKnownVaultPath(path);
+      applyVaultStatus(status, fallbackPath);
+    } catch (error) {
+      setErrorMessage(getVaultErrorMessage(error));
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleUnlockVault = async (path: string, masterPassword: string) => {
+    setIsBusy(true);
+    setErrorMessage(null);
+
+    try {
+      const status = await unlockVault(path, masterPassword);
+      const fallbackPath = storeKnownVaultPath(path);
+      applyVaultStatus(status, fallbackPath);
+    } catch (error) {
+      setErrorMessage(getVaultErrorMessage(error));
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const handleLockVault = async () => {
+    setIsBusy(true);
+    setErrorMessage(null);
+
+    try {
+      const status = await lockVault();
+      applyVaultStatus(status, knownVaultPath);
+    } catch (error) {
+      setErrorMessage(getVaultErrorMessage(error));
+    } finally {
+      setIsBusy(false);
+    }
+  };
+
+  const showCreatePage = () => {
+    setErrorMessage(null);
+    setView("create");
+  };
+
+  const showUnlockPage = () => {
+    setErrorMessage(null);
+    setView("unlock");
+  };
+
+  const currentVaultPath =
+    normalizeVaultPath(vaultStatus?.path) ?? knownVaultPath ?? null;
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <main className="app-shell">
+      <section className="app-panel">
+        <header className="app-header">
+          <p className="eyebrow">Password Vault</p>
+          <h1>Vault Lifecycle</h1>
+          <p className="intro">
+            Create a vault, unlock an existing one, or lock the current session.
+            Account management comes next.
+          </p>
+        </header>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+        {view === "loading" ? (
+          <section className="loading-state">
+            <h2>Checking vault status</h2>
+            <p>Loading the current session state from Tauri.</p>
+          </section>
+        ) : null}
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
-        />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
+        {view === "create" ? (
+          <CreateVaultPage
+            errorMessage={errorMessage}
+            initialPath={currentVaultPath}
+            isSubmitting={isBusy}
+            onSubmit={handleCreateVault}
+            onSwitchToUnlock={showUnlockPage}
+          />
+        ) : null}
+
+        {view === "unlock" ? (
+          <UnlockVaultPage
+            errorMessage={errorMessage}
+            initialPath={currentVaultPath}
+            isSubmitting={isBusy}
+            onSubmit={handleUnlockVault}
+            onSwitchToCreate={showCreatePage}
+          />
+        ) : null}
+
+        {view === "home" ? (
+          <VaultHomePage
+            errorMessage={errorMessage}
+            isLocking={isBusy}
+            onLock={handleLockVault}
+            vaultPath={currentVaultPath}
+          />
+        ) : null}
+      </section>
     </main>
   );
 }

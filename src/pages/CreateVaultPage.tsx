@@ -1,0 +1,89 @@
+import { useEffect, useState, type FormEvent } from "react";
+
+type CreateVaultPageProps = {
+  errorMessage: string | null;
+  initialPath: string | null;
+  isSubmitting: boolean;
+  onSubmit: (path: string, masterPassword: string) => Promise<void>;
+  onSwitchToUnlock: () => void;
+};
+
+export function CreateVaultPage({
+  errorMessage,
+  initialPath,
+  isSubmitting,
+  onSubmit,
+  onSwitchToUnlock,
+}: CreateVaultPageProps) {
+  const [path, setPath] = useState(initialPath ?? "");
+  const [masterPassword, setMasterPassword] = useState("");
+
+  useEffect(() => {
+    setPath(initialPath ?? "");
+  }, [initialPath]);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      await onSubmit(path, masterPassword);
+    } finally {
+      setMasterPassword("");
+    }
+  };
+
+  const isSubmitDisabled =
+    isSubmitting || path.trim().length === 0 || masterPassword.length === 0;
+
+  return (
+    <section className="page">
+      <div className="page-copy">
+        <h2>Create Vault</h2>
+        <p>Create a new encrypted vault file and unlock it for this app session.</p>
+      </div>
+
+      <form className="vault-form" onSubmit={handleSubmit}>
+        <label className="field">
+          <span>Vault path</span>
+          <input
+            autoComplete="off"
+            disabled={isSubmitting}
+            onChange={(event) => setPath(event.currentTarget.value)}
+            placeholder="C:\\Vaults\\personal.vault.db"
+            spellCheck={false}
+            type="text"
+            value={path}
+          />
+        </label>
+
+        <label className="field">
+          <span>Master password</span>
+          <input
+            autoComplete="new-password"
+            disabled={isSubmitting}
+            onChange={(event) => setMasterPassword(event.currentTarget.value)}
+            placeholder="Enter a strong master password"
+            type="password"
+            value={masterPassword}
+          />
+        </label>
+
+        {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
+
+        <div className="actions">
+          <button className="button-primary" disabled={isSubmitDisabled} type="submit">
+            {isSubmitting ? "Creating..." : "Create vault"}
+          </button>
+          <button
+            className="button-secondary"
+            disabled={isSubmitting}
+            onClick={onSwitchToUnlock}
+            type="button"
+          >
+            Unlock existing vault
+          </button>
+        </div>
+      </form>
+    </section>
+  );
+}
