@@ -22,6 +22,8 @@ pub fn run() {
             commands::account_commands::get_account_details,
             commands::account_commands::update_account,
             commands::account_commands::soft_delete_account,
+            commands::import_commands::parse_txt_import,
+            commands::import_commands::import_txt_accounts,
             commands::value_commands::add_account_value,
             commands::value_commands::update_account_value,
             commands::value_commands::soft_delete_account_value,

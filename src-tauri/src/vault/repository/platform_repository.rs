@@ -87,6 +87,24 @@ impl PlatformRepository {
         Ok(count > 0)
     }
 
+    pub fn find_by_normalized_name(
+        executor: &impl SqlExecutor,
+        normalized_name: &str,
+    ) -> Result<Option<Platform>, VaultError> {
+        let row = executor
+            .connection()
+            .query_row(
+                "SELECT id, name, normalized_name, created_at
+                 FROM platforms
+                 WHERE normalized_name = ?1",
+                params![normalized_name],
+                Self::map_row,
+            )
+            .optional()?;
+
+        row.map(Self::build_platform).transpose()
+    }
+
     fn map_row(row: &Row<'_>) -> rusqlite::Result<PlatformRow> {
         Ok(PlatformRow {
             id: row.get(0)?,

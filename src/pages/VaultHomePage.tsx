@@ -11,6 +11,7 @@ import { AccountDetailsPanel } from "../features/vault/components/AccountDetails
 import { AccountList } from "../features/vault/components/AccountList";
 import { CreateAccountDialog } from "../features/vault/components/CreateAccountDialog";
 import { CreatePlatformDialog } from "../features/vault/components/CreatePlatformDialog";
+import { ImportTxtDialog } from "../features/vault/components/ImportTxtDialog";
 import { PlatformSidebar } from "../features/vault/components/PlatformSidebar";
 import { VaultHeader } from "../features/vault/components/VaultHeader";
 import { VaultLayout } from "../features/vault/components/VaultLayout";
@@ -63,6 +64,7 @@ export function VaultHomePage({
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isCreatePlatformOpen, setIsCreatePlatformOpen] = useState(false);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [isCreatingPlatform, setIsCreatingPlatform] = useState(false);
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [createPlatformError, setCreatePlatformError] = useState<string | null>(null);
@@ -81,6 +83,7 @@ export function VaultHomePage({
     setCreateAccountError(null);
     setIsCreatePlatformOpen(false);
     setIsCreateAccountOpen(false);
+    setIsImportOpen(false);
     setReturnToAccountDialog(false);
     setCreateAccountPlatformId(null);
     void loadSnapshot(null, "");
@@ -112,6 +115,7 @@ export function VaultHomePage({
     setIsLoadingDetails(false);
     setIsCreateAccountOpen(false);
     setIsCreatePlatformOpen(false);
+    setIsImportOpen(false);
     setCreateAccountError(null);
     setCreatePlatformError(null);
     setReturnToAccountDialog(false);
@@ -300,6 +304,14 @@ export function VaultHomePage({
     setCreateAccountError(null);
   };
 
+  const handleOpenImport = () => {
+    setIsImportOpen(true);
+  };
+
+  const handleCloseImport = () => {
+    setIsImportOpen(false);
+  };
+
   const handleCreatePlatform = async (request: CreatePlatformRequest) => {
     setIsCreatingPlatform(true);
     setCreatePlatformError(null);
@@ -434,6 +446,7 @@ export function VaultHomePage({
             onLock={onLock}
             onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
+            onOpenImport={handleOpenImport}
             onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
             onRefresh={handleRefresh}
             onSearchChange={handleSearchChange}
@@ -484,6 +497,12 @@ export function VaultHomePage({
         onOpenCreatePlatform={() => handleOpenCreatePlatform(true)}
         onSubmit={handleCreateAccount}
         platforms={platforms}
+      />
+
+      <ImportTxtDialog
+        isOpen={isImportOpen}
+        onClose={handleCloseImport}
+        onImportComplete={handleRefresh}
       />
     </>
   );

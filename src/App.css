@@ -624,6 +624,59 @@ textarea {
   word-break: break-word;
 }
 
+.import-preview {
+  display: grid;
+  gap: 16px;
+}
+
+.import-preview-card,
+.import-account-card,
+.import-field-card,
+.import-result {
+  display: grid;
+  gap: 14px;
+}
+
+.import-account-card {
+  border: 1px solid #d7e0e7;
+  border-radius: 18px;
+  padding: 16px;
+  background: #fbfcfd;
+}
+
+.import-field-list {
+  display: grid;
+  gap: 12px;
+}
+
+.import-field-card {
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid #dde4ea;
+  background: #ffffff;
+}
+
+.import-field-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.import-field-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.warning-banner {
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #fff4dd;
+  color: #684a00;
+  border: 1px solid #f3d690;
+}
+
 @media (max-width: 1180px) {
   .vault-grid {
     grid-template-columns: 240px minmax(0, 1fr);
@@ -663,6 +716,10 @@ textarea {
   .value-row__footer {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .import-field-grid {
+    grid-template-columns: 1fr;
   }
 }
 

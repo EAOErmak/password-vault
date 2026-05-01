@@ -104,6 +104,10 @@ export function getVaultErrorMessage(error: unknown): string {
     return "Select at least one password character set.";
   }
 
+  if (message.includes("import text cannot be empty")) {
+    return "The selected text file is empty.";
+  }
+
   if (message.includes("secret not found")) {
     return "The selected secret no longer exists.";
   }

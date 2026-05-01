@@ -1,4 +1,5 @@
 pub mod account_commands;
+pub mod import_commands;
 pub mod platform_commands;
 pub mod secret_commands;
 pub mod value_commands;

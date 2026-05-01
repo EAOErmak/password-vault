@@ -7,6 +7,7 @@ type VaultHeaderProps = {
   onLock: () => Promise<void>;
   onClearSearch: () => void;
   onOpenCreateAccount: () => void;
+  onOpenImport: () => void;
   onOpenCreatePlatform: () => void;
   onRefresh: () => Promise<void>;
   onSearchChange: (searchQuery: string) => void;
@@ -24,6 +25,7 @@ export function VaultHeader({
   onLock,
   onClearSearch,
   onOpenCreateAccount,
+  onOpenImport,
   onOpenCreatePlatform,
   onRefresh,
   onSearchChange,
@@ -60,6 +62,13 @@ export function VaultHeader({
             type="button"
           >
             New platform
+          </button>
+          <button
+            className="button-secondary"
+            onClick={onOpenImport}
+            type="button"
+          >
+            Import TXT
           </button>
           <button
             className="button-secondary"

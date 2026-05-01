@@ -156,6 +156,40 @@ export type GeneratePasswordOptions = {
   exclude_ambiguous: boolean;
 };
 
+export type TxtImportFieldTarget = "ACCOUNT_VALUE" | "SECRET" | "SKIP";
+
+export type TxtImportFieldDraftDto = {
+  source_key: string;
+  target: TxtImportFieldTarget;
+  label: string;
+  value: string;
+  is_primary: boolean;
+  value_type: AccountValueType | null;
+  secret_type: SecretType | null;
+};
+
+export type TxtImportAccountDraftDto = {
+  platform_name: string;
+  name: string | null;
+  notes: string | null;
+  fields: TxtImportFieldDraftDto[];
+};
+
+export type ParsedTxtImportDto = {
+  accounts: TxtImportAccountDraftDto[];
+};
+
+export type ImportTxtAccountsRequest = {
+  accounts: TxtImportAccountDraftDto[];
+};
+
+export type ImportTxtAccountsResultDto = {
+  platforms_created: number;
+  accounts_imported: number;
+  values_imported: number;
+  secrets_imported: number;
+};
+
 export type ListAccountsFilter = {
   search?: string | null;
   platform_id?: string | null;
