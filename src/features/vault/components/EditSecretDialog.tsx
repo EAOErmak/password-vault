@@ -8,6 +8,7 @@ import {
   usesMultilineSecretValue,
 } from "../utils/secretHelpers";
 import { formatEnumLabel } from "../utils/formatters";
+import { PasswordGeneratorControls } from "./PasswordGeneratorControls";
 
 type EditSecretDialogProps = {
   errorMessage: string | null;
@@ -143,6 +144,14 @@ export function EditSecretDialog({
               {isLoadingCurrentValue ? "Loading current value..." : "Load current value"}
             </button>
           </div>
+
+          {secret.secret_type === "PASSWORD" ? (
+            <PasswordGeneratorControls
+              disabled={isSubmitting || isLoadingCurrentValue}
+              onChangeValue={setSecretValue}
+              value={secretValue}
+            />
+          ) : null}
 
           <label className="field">
             <span>Secret value</span>

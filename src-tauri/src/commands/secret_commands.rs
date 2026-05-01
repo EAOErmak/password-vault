@@ -7,8 +7,10 @@ use crate::clipboard_service::DEFAULT_CLIPBOARD_CLEAR_AFTER_SECONDS;
 use crate::commands::{into_command_result, CommandResult};
 use crate::vault::dto::history_dto::SecretHistoryDto;
 use crate::vault::dto::secret_dto::{
-    AddSecretRequest, RevealedSecretDto, SecretMetadataDto, UpdateSecretRequest,
+    AddSecretRequest, GeneratePasswordOptions, RevealedSecretDto, SecretMetadataDto,
+    UpdateSecretRequest,
 };
+use crate::vault::service::password_service::PasswordService;
 use crate::vault::service::secret_service::SecretService;
 
 #[tauri::command]
@@ -42,6 +44,12 @@ pub fn reveal_secret(
 ) -> CommandResult<RevealedSecretDto> {
     let service = SecretService;
     into_command_result(service.reveal_secret(state.inner(), secret_id))
+}
+
+#[tauri::command]
+pub fn generate_password(options: GeneratePasswordOptions) -> CommandResult<String> {
+    let service = PasswordService;
+    into_command_result(service.generate_password(&options))
 }
 
 #[tauri::command]

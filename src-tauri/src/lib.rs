@@ -29,6 +29,7 @@ pub fn run() {
             commands::secret_commands::add_secret,
             commands::secret_commands::update_secret,
             commands::secret_commands::reveal_secret,
+            commands::secret_commands::generate_password,
             commands::secret_commands::copy_secret_to_clipboard,
             commands::secret_commands::soft_delete_secret,
             commands::secret_commands::list_secret_history

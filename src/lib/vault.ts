@@ -96,6 +96,14 @@ export function getVaultErrorMessage(error: unknown): string {
     return "Secret label is required.";
   }
 
+  if (message.includes("password length must be at least")) {
+    return "Generated passwords must be at least 12 characters long.";
+  }
+
+  if (message.includes("at least one password character set must be enabled")) {
+    return "Select at least one password character set.";
+  }
+
   if (message.includes("secret not found")) {
     return "The selected secret no longer exists.";
   }

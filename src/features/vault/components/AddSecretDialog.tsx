@@ -6,6 +6,7 @@ import {
   SECRET_TYPE_OPTIONS,
   usesMultilineSecretValue,
 } from "../utils/secretHelpers";
+import { PasswordGeneratorControls } from "./PasswordGeneratorControls";
 
 type AddSecretDialogProps = {
   errorMessage: string | null;
@@ -105,6 +106,14 @@ export function AddSecretDialog({
           <p className="field-helper">
             Optional. If empty, "{getDefaultSecretLabel(secretType)}" will be used.
           </p>
+
+          {secretType === "PASSWORD" ? (
+            <PasswordGeneratorControls
+              disabled={isSubmitting}
+              onChangeValue={setSecretValue}
+              value={secretValue}
+            />
+          ) : null}
 
           <label className="field">
             <span>Secret value</span>

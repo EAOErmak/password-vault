@@ -147,6 +147,15 @@ export type UpdateSecretRequest = {
   is_primary: boolean;
 };
 
+export type GeneratePasswordOptions = {
+  length: number;
+  include_uppercase: boolean;
+  include_lowercase: boolean;
+  include_digits: boolean;
+  include_symbols: boolean;
+  exclude_ambiguous: boolean;
+};
+
 export type ListAccountsFilter = {
   search?: string | null;
   platform_id?: string | null;

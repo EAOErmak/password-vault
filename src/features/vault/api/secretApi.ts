@@ -1,6 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import type {
   AddSecretRequest,
+  GeneratePasswordOptions,
   RevealedSecretDto,
   SecretHistoryDto,
   SecretMetadataDto,
@@ -88,6 +89,12 @@ export async function revealSecret(secretId: string): Promise<RevealedSecretDto>
   });
 
   return sanitizeRevealedSecret(secret);
+}
+
+export function generatePassword(options: GeneratePasswordOptions): Promise<string> {
+  return invoke("generate_password", {
+    options,
+  });
 }
 
 export function copySecretToClipboard(secretId: string, clearAfterSeconds = 30): Promise<void> {

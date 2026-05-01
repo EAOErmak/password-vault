@@ -20,6 +20,16 @@ pub struct UpdateSecretRequest {
     pub is_primary: bool,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+pub struct GeneratePasswordOptions {
+    pub length: usize,
+    pub include_uppercase: bool,
+    pub include_lowercase: bool,
+    pub include_digits: bool,
+    pub include_symbols: bool,
+    pub exclude_ambiguous: bool,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct SecretMetadataDto {
     pub id: Uuid,
