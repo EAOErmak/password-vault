@@ -108,6 +108,78 @@ export function getVaultErrorMessage(error: unknown): string {
     return "The selected text file is empty.";
   }
 
+  if (message.includes("active vault file is missing")) {
+    return "The current vault file is missing from disk.";
+  }
+
+  if (message.includes("active vault file could not be found for backup export")) {
+    return "The current vault file could not be found for backup export.";
+  }
+
+  if (message.includes("active vault file could not be found for restore")) {
+    return "The current vault file could not be found for restore.";
+  }
+
+  if (message.includes("backup source path cannot be empty")) {
+    return "Encrypted backup path is required.";
+  }
+
+  if (message.includes("encrypted backup source path cannot be empty")) {
+    return "Encrypted backup path is required.";
+  }
+
+  if (message.includes("encrypted backup file not found")) {
+    return "Encrypted backup file not found.";
+  }
+
+  if (message.includes("backup destination must be different from the active vault file")) {
+    return "Choose a different file path for the encrypted backup.";
+  }
+
+  if (message.includes("backup source must be different from the active vault file")) {
+    return "Choose a different encrypted backup file to restore.";
+  }
+
+  if (message.includes("unable to export encrypted backup")) {
+    return "The encrypted backup could not be created.";
+  }
+
+  if (message.includes("unable to export the encrypted backup")) {
+    return "The encrypted backup could not be created.";
+  }
+
+  if (message.includes("unable to prepare the encrypted backup for restore")) {
+    return "The selected encrypted backup could not be prepared for restore.";
+  }
+
+  if (message.includes("unable to create a safety backup before restore")) {
+    return "The current vault could not be backed up before restore.";
+  }
+
+  if (message.includes("unable to restore encrypted backup")) {
+    return "The encrypted backup could not be restored.";
+  }
+
+  if (message.includes("unable to restore the previous vault from the safety backup")) {
+    return "Restore failed and the previous vault safety backup could not be reapplied automatically.";
+  }
+
+  if (message.includes("previous vault safety backup could not be reapplied")) {
+    return "Restore failed and the previous vault safety backup could not be reapplied automatically.";
+  }
+
+  if (message.includes("unable to create the pre-restore safety backup")) {
+    return "The current vault could not be backed up before restore. Unlock the vault again to continue.";
+  }
+
+  if (message.includes("unable to restore the encrypted backup")) {
+    return "The encrypted backup could not be restored. Unlock the vault again to continue.";
+  }
+
+  if (message.includes("restore failed and the original vault could not be restored automatically")) {
+    return "Restore failed and the previous vault could not be put back automatically. Recover it from the safety backup manually.";
+  }
+
   if (message.includes("secret not found")) {
     return "The selected secret no longer exists.";
   }

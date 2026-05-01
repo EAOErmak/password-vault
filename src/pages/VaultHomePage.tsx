@@ -8,6 +8,7 @@ import {
   updateAccountValue,
 } from "../features/vault/api/valueApi";
 import { AccountDetailsPanel } from "../features/vault/components/AccountDetailsPanel";
+import { BackupRestoreDialog } from "../features/vault/components/BackupRestoreDialog";
 import { AccountList } from "../features/vault/components/AccountList";
 import { CreateAccountDialog } from "../features/vault/components/CreateAccountDialog";
 import { CreatePlatformDialog } from "../features/vault/components/CreatePlatformDialog";
@@ -23,6 +24,7 @@ import type {
   CreateAccountRequest,
   CreatePlatformRequest,
   PlatformDto,
+  RestoreEncryptedBackupDto,
   UpdateAccountValueRequest,
   UpdateSecretRequest,
 } from "../features/vault/types";
@@ -32,6 +34,8 @@ type VaultHomePageProps = {
   errorMessage: string | null;
   isLocking: boolean;
   onLock: () => Promise<void>;
+  onRestoreComplete: (result: RestoreEncryptedBackupDto) => Promise<void> | void;
+  onRestoreInterrupted: (message: string) => Promise<void> | void;
   sessionResetToken: number;
   vaultPath: string | null;
 };
@@ -45,6 +49,8 @@ export function VaultHomePage({
   errorMessage,
   isLocking,
   onLock,
+  onRestoreComplete,
+  onRestoreInterrupted,
   sessionResetToken,
   vaultPath,
 }: VaultHomePageProps) {
@@ -65,6 +71,7 @@ export function VaultHomePage({
   const [isCreatePlatformOpen, setIsCreatePlatformOpen] = useState(false);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
+  const [isBackupRestoreOpen, setIsBackupRestoreOpen] = useState(false);
   const [isCreatingPlatform, setIsCreatingPlatform] = useState(false);
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [createPlatformError, setCreatePlatformError] = useState<string | null>(null);
@@ -84,6 +91,7 @@ export function VaultHomePage({
     setIsCreatePlatformOpen(false);
     setIsCreateAccountOpen(false);
     setIsImportOpen(false);
+    setIsBackupRestoreOpen(false);
     setReturnToAccountDialog(false);
     setCreateAccountPlatformId(null);
     void loadSnapshot(null, "");
@@ -116,6 +124,7 @@ export function VaultHomePage({
     setIsCreateAccountOpen(false);
     setIsCreatePlatformOpen(false);
     setIsImportOpen(false);
+    setIsBackupRestoreOpen(false);
     setCreateAccountError(null);
     setCreatePlatformError(null);
     setReturnToAccountDialog(false);
@@ -312,6 +321,14 @@ export function VaultHomePage({
     setIsImportOpen(false);
   };
 
+  const handleOpenBackupRestore = () => {
+    setIsBackupRestoreOpen(true);
+  };
+
+  const handleCloseBackupRestore = () => {
+    setIsBackupRestoreOpen(false);
+  };
+
   const handleCreatePlatform = async (request: CreatePlatformRequest) => {
     setIsCreatingPlatform(true);
     setCreatePlatformError(null);
@@ -444,6 +461,7 @@ export function VaultHomePage({
             isLoading={isLoadingSnapshot}
             isLocking={isLocking}
             onLock={onLock}
+            onOpenBackupRestore={handleOpenBackupRestore}
             onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
             onOpenImport={handleOpenImport}
@@ -503,6 +521,14 @@ export function VaultHomePage({
         isOpen={isImportOpen}
         onClose={handleCloseImport}
         onImportComplete={handleRefresh}
+      />
+
+      <BackupRestoreDialog
+        isOpen={isBackupRestoreOpen}
+        onClose={handleCloseBackupRestore}
+        onRestoreComplete={onRestoreComplete}
+        onRestoreInterrupted={onRestoreInterrupted}
+        vaultPath={vaultPath}
       />
     </>
   );

@@ -28,6 +28,7 @@ function App() {
     readKnownVaultPath(),
   );
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const [sessionResetToken, setSessionResetToken] = useState(0);
 
@@ -85,6 +86,7 @@ function App() {
 
   const syncVaultStatus = async () => {
     setErrorMessage(null);
+    setStatusMessage(null);
     setView("loading");
 
     try {
@@ -121,6 +123,7 @@ function App() {
   const handleCreateVault = async (path: string, masterPassword: string) => {
     setIsBusy(true);
     setErrorMessage(null);
+    setStatusMessage(null);
 
     try {
       const status = await createVault(path, masterPassword);
@@ -136,6 +139,7 @@ function App() {
   const handleUnlockVault = async (path: string, masterPassword: string) => {
     setIsBusy(true);
     setErrorMessage(null);
+    setStatusMessage(null);
 
     try {
       const status = await unlockVault(path, masterPassword);
@@ -156,6 +160,7 @@ function App() {
     isLockingRef.current = true;
     setIsBusy(true);
     setErrorMessage(null);
+    setStatusMessage(null);
 
     if (reason === "auto") {
       setSessionResetToken((currentToken) => currentToken + 1);
@@ -182,12 +187,50 @@ function App() {
 
   const showCreatePage = () => {
     setErrorMessage(null);
+    setStatusMessage(null);
     setView("create");
   };
 
   const showUnlockPage = () => {
     setErrorMessage(null);
+    setStatusMessage(null);
     setView("unlock");
+  };
+
+  const handleRestoreComplete = async ({
+    restored_path: restoredPath,
+    safety_backup_path: safetyBackupPath,
+  }: {
+    restored_path: string;
+    safety_backup_path: string;
+  }) => {
+    const rememberedPath = storeKnownVaultPath(restoredPath);
+
+    setSessionResetToken((currentToken) => currentToken + 1);
+    setVaultStatus({
+      is_unlocked: false,
+      path: null,
+    });
+    setKnownVaultPath(rememberedPath);
+    setErrorMessage(null);
+    setStatusMessage(
+      `Restore complete. Unlock the restored vault to continue. Safety backup created at ${safetyBackupPath}.`,
+    );
+    setView("unlock");
+  };
+
+  const handleRestoreInterrupted = async (message: string) => {
+    const rememberedPath = readKnownVaultPath() ?? knownVaultPath;
+
+    setSessionResetToken((currentToken) => currentToken + 1);
+    setVaultStatus({
+      is_unlocked: false,
+      path: null,
+    });
+    setKnownVaultPath(rememberedPath);
+    setStatusMessage(null);
+    setErrorMessage(message);
+    setView(rememberedPath ? "unlock" : "create");
   };
 
   const currentVaultPath =
@@ -199,6 +242,8 @@ function App() {
         errorMessage={errorMessage}
         isLocking={isBusy}
         onLock={handleLockVault}
+        onRestoreComplete={handleRestoreComplete}
+        onRestoreInterrupted={handleRestoreInterrupted}
         sessionResetToken={sessionResetToken}
         vaultPath={currentVaultPath}
       />
@@ -231,6 +276,7 @@ function App() {
             isSubmitting={isBusy}
             onSubmit={handleCreateVault}
             onSwitchToUnlock={showUnlockPage}
+            statusMessage={statusMessage}
           />
         ) : null}
 
@@ -241,6 +287,7 @@ function App() {
             isSubmitting={isBusy}
             onSubmit={handleUnlockVault}
             onSwitchToCreate={showCreatePage}
+            statusMessage={statusMessage}
           />
         ) : null}
 

@@ -14,6 +14,8 @@ pub fn run() {
             commands::vault_commands::create_vault,
             commands::vault_commands::unlock_vault,
             commands::vault_commands::lock_vault,
+            commands::vault_commands::export_encrypted_backup,
+            commands::vault_commands::restore_encrypted_backup,
             commands::vault_commands::get_vault_status,
             commands::platform_commands::create_platform,
             commands::platform_commands::list_platforms,

@@ -6,6 +6,7 @@ type VaultHeaderProps = {
   isLocking: boolean;
   onLock: () => Promise<void>;
   onClearSearch: () => void;
+  onOpenBackupRestore: () => void;
   onOpenCreateAccount: () => void;
   onOpenImport: () => void;
   onOpenCreatePlatform: () => void;
@@ -24,6 +25,7 @@ export function VaultHeader({
   isLocking,
   onLock,
   onClearSearch,
+  onOpenBackupRestore,
   onOpenCreateAccount,
   onOpenImport,
   onOpenCreatePlatform,
@@ -69,6 +71,13 @@ export function VaultHeader({
             type="button"
           >
             Import TXT
+          </button>
+          <button
+            className="button-secondary"
+            onClick={onOpenBackupRestore}
+            type="button"
+          >
+            Backup / Restore
           </button>
           <button
             className="button-secondary"

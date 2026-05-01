@@ -190,6 +190,15 @@ export type ImportTxtAccountsResultDto = {
   secrets_imported: number;
 };
 
+export type ExportEncryptedBackupDto = {
+  backup_path: string;
+};
+
+export type RestoreEncryptedBackupDto = {
+  restored_path: string;
+  safety_backup_path: string;
+};
+
 export type ListAccountsFilter = {
   search?: string | null;
   platform_id?: string | null;

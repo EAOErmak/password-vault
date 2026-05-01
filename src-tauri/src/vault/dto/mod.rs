@@ -1,4 +1,5 @@
 pub mod account_dto;
+pub mod backup_dto;
 pub mod history_dto;
 pub mod import_dto;
 pub mod platform_dto;

@@ -677,6 +677,36 @@ textarea {
   border: 1px solid #f3d690;
 }
 
+.backup-sections {
+  display: grid;
+  gap: 16px;
+}
+
+.backup-section {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #d7e0e7;
+  border-radius: 18px;
+  background: #fbfcfd;
+}
+
+.backup-section__header {
+  display: grid;
+  gap: 6px;
+}
+
+.backup-section__header h4 {
+  margin: 0;
+}
+
+.warning-list {
+  margin: 8px 0 0;
+  padding-left: 20px;
+  display: grid;
+  gap: 6px;
+}
+
 @media (max-width: 1180px) {
   .vault-grid {
     grid-template-columns: 240px minmax(0, 1fr);

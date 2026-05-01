@@ -6,6 +6,7 @@ type UnlockVaultPageProps = {
   isSubmitting: boolean;
   onSubmit: (path: string, masterPassword: string) => Promise<void>;
   onSwitchToCreate: () => void;
+  statusMessage: string | null;
 };
 
 export function UnlockVaultPage({
@@ -14,6 +15,7 @@ export function UnlockVaultPage({
   isSubmitting,
   onSubmit,
   onSwitchToCreate,
+  statusMessage,
 }: UnlockVaultPageProps) {
   const [path, setPath] = useState(initialPath ?? "");
   const [masterPassword, setMasterPassword] = useState("");
@@ -68,6 +70,7 @@ export function UnlockVaultPage({
           />
         </label>
 
+        {statusMessage ? <p className="status-toast">{statusMessage}</p> : null}
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
 
         <div className="actions">
