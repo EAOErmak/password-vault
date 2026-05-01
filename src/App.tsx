@@ -122,6 +122,17 @@ function App() {
   const currentVaultPath =
     normalizeVaultPath(vaultStatus?.path) ?? knownVaultPath ?? null;
 
+  if (view === "home") {
+    return (
+      <VaultHomePage
+        errorMessage={errorMessage}
+        isLocking={isBusy}
+        onLock={handleLockVault}
+        vaultPath={currentVaultPath}
+      />
+    );
+  }
+
   return (
     <main className="app-shell">
       <section className="app-panel">
@@ -161,14 +172,6 @@ function App() {
           />
         ) : null}
 
-        {view === "home" ? (
-          <VaultHomePage
-            errorMessage={errorMessage}
-            isLocking={isBusy}
-            onLock={handleLockVault}
-            vaultPath={currentVaultPath}
-          />
-        ) : null}
       </section>
     </main>
   );

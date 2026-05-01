@@ -55,6 +55,10 @@ export function lockVault(): Promise<VaultStatus> {
 export function getVaultErrorMessage(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
 
+  if (message.includes("validation failed:")) {
+    return message.replace("validation failed:", "").trim();
+  }
+
   if (message.includes("invalid master password")) {
     return "Wrong master password.";
   }
@@ -77,6 +81,26 @@ export function getVaultErrorMessage(error: unknown): string {
 
   if (message.includes("invalid vault file")) {
     return "The selected file is not a valid vault.";
+  }
+
+  if (message.includes("platform name cannot be empty")) {
+    return "Platform name is required.";
+  }
+
+  if (message.includes("platform already exists")) {
+    return "A platform with that name already exists.";
+  }
+
+  if (message.includes("platform not found")) {
+    return "The selected platform no longer exists.";
+  }
+
+  if (message.includes("account not found")) {
+    return "The selected account no longer exists.";
+  }
+
+  if (message.includes("vault is locked")) {
+    return "The vault is locked. Unlock it again to continue.";
   }
 
   return message || "Something went wrong while talking to the vault.";
