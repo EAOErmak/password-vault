@@ -28,6 +28,30 @@ function sanitizeValueMetadata(value: AccountValueDto): AccountValueMetadata {
   return metadata;
 }
 
+function sanitizeAccountValue(value: AccountValueDto): AccountValueDto {
+  const {
+    id,
+    account_id,
+    value_type,
+    label,
+    value: accountValue,
+    is_primary,
+    created_at,
+    updated_at,
+  } = value;
+
+  return {
+    id,
+    account_id,
+    value_type,
+    label,
+    value: accountValue,
+    is_primary,
+    created_at,
+    updated_at,
+  };
+}
+
 function sanitizeSecretMetadata(secret: SecretMetadataDto): SecretMetadataDto {
   const { id, account_id, secret_type, label, is_primary, created_at, updated_at } = secret;
 
@@ -85,7 +109,7 @@ function sanitizeAccountDetails(account: AccountDetailsDto): AccountDetails {
     created_at,
     updated_at,
     platform: sanitizePlatform(platform),
-    values: values.map(sanitizeValueMetadata),
+    values: values.map(sanitizeAccountValue),
     secrets: secrets.map(sanitizeSecretMetadata),
   };
 }

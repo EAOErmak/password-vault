@@ -53,11 +53,8 @@ export function lockVault(): Promise<VaultStatus> {
 }
 
 export function getVaultErrorMessage(error: unknown): string {
-  const message = error instanceof Error ? error.message : String(error);
-
-  if (message.includes("validation failed:")) {
-    return message.replace("validation failed:", "").trim();
-  }
+  const rawMessage = error instanceof Error ? error.message : String(error);
+  const message = rawMessage.replace("validation failed:", "").trim();
 
   if (message.includes("invalid master password")) {
     return "Wrong master password.";
@@ -77,6 +74,18 @@ export function getVaultErrorMessage(error: unknown): string {
 
   if (message.includes("vault path cannot be empty")) {
     return "Vault path is required.";
+  }
+
+  if (message.includes("account value cannot be empty")) {
+    return "Value is required.";
+  }
+
+  if (message.includes("account value label cannot be empty")) {
+    return "Label is required.";
+  }
+
+  if (message.includes("account value not found")) {
+    return "The selected value no longer exists.";
   }
 
   if (message.includes("invalid vault file")) {

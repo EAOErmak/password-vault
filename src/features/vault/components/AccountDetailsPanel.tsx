@@ -1,6 +1,9 @@
 import type {
   AccountDetails,
+  AddAccountValueRequest,
+  UpdateAccountValueRequest,
 } from "../types";
+import { AccountValuesSection } from "./AccountValuesSection";
 import {
   formatDateTime,
   formatEnumLabel,
@@ -13,6 +16,9 @@ type AccountDetailsPanelProps = {
   errorMessage: string | null;
   hasAccounts: boolean;
   isLoading: boolean;
+  onAddValue: (accountId: string, request: AddAccountValueRequest) => Promise<void>;
+  onDeleteValue: (valueId: string) => Promise<void>;
+  onUpdateValue: (valueId: string, request: UpdateAccountValueRequest) => Promise<void>;
 };
 
 export function AccountDetailsPanel({
@@ -20,6 +26,9 @@ export function AccountDetailsPanel({
   errorMessage,
   hasAccounts,
   isLoading,
+  onAddValue,
+  onDeleteValue,
+  onUpdateValue,
 }: AccountDetailsPanelProps) {
   return (
     <section className="vault-card panel-card">
@@ -64,29 +73,12 @@ export function AccountDetailsPanel({
             </div>
           </section>
 
-          <section className="details-section">
-            <div className="section-heading">
-              <h4>Value metadata</h4>
-              <span>{account.values.length}</span>
-            </div>
-
-            {account.values.length === 0 ? (
-              <p className="muted-state">No account value metadata yet.</p>
-            ) : (
-              <div className="metadata-list">
-                {account.values.map((value) => (
-                  <article className="metadata-item" key={value.id}>
-                    <div className="metadata-item__header">
-                      <strong>{value.label}</strong>
-                      {value.is_primary ? <span className="pill">Primary</span> : null}
-                    </div>
-                    <p>{formatEnumLabel(value.value_type)}</p>
-                    <small>Updated {formatDateTime(value.updated_at)}</small>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
+          <AccountValuesSection
+            account={account}
+            onAddValue={onAddValue}
+            onDeleteValue={onDeleteValue}
+            onUpdateValue={onUpdateValue}
+          />
 
           <section className="details-section">
             <div className="section-heading">

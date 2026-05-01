@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { createAccount, getAccountDetails, listAccounts } from "../features/vault/api/accountApi";
 import { createPlatform, listPlatforms } from "../features/vault/api/platformApi";
+import {
+  addAccountValue,
+  softDeleteAccountValue,
+  updateAccountValue,
+} from "../features/vault/api/valueApi";
 import { AccountDetailsPanel } from "../features/vault/components/AccountDetailsPanel";
 import { AccountList } from "../features/vault/components/AccountList";
 import { CreateAccountDialog } from "../features/vault/components/CreateAccountDialog";
@@ -11,9 +16,11 @@ import { VaultLayout } from "../features/vault/components/VaultLayout";
 import type {
   AccountDetails,
   AccountSummary,
+  AddAccountValueRequest,
   CreateAccountRequest,
   CreatePlatformRequest,
   PlatformDto,
+  UpdateAccountValueRequest,
 } from "../features/vault/types";
 import { getVaultErrorMessage } from "../lib/vault";
 
@@ -80,33 +87,44 @@ export function VaultHomePage({
       return;
     }
 
+    void requestAccountDetails(selectedAccountId);
+  }, [selectedAccountId]);
+
+  const requestAccountDetails = async (
+    accountId: string,
+    clearCurrentSelection = true,
+  ): Promise<AccountDetails | null> => {
     const requestId = detailsRequestRef.current + 1;
     detailsRequestRef.current = requestId;
     setIsLoadingDetails(true);
     setDetailsError(null);
 
-    void getAccountDetails(selectedAccountId)
-      .then((details) => {
-        if (detailsRequestRef.current !== requestId) {
-          return;
-        }
+    if (clearCurrentSelection) {
+      setSelectedAccount(null);
+    }
 
-        setSelectedAccount(details);
-      })
-      .catch((currentError: unknown) => {
-        if (detailsRequestRef.current !== requestId) {
-          return;
-        }
+    try {
+      const details = await getAccountDetails(accountId);
+      if (detailsRequestRef.current !== requestId) {
+        return null;
+      }
 
-        setSelectedAccount(null);
-        setDetailsError(getVaultErrorMessage(currentError));
-      })
-      .finally(() => {
-        if (detailsRequestRef.current === requestId) {
-          setIsLoadingDetails(false);
-        }
-      });
-  }, [selectedAccountId]);
+      setSelectedAccount(details);
+      return details;
+    } catch (currentError) {
+      if (detailsRequestRef.current !== requestId) {
+        return null;
+      }
+
+      setSelectedAccount(null);
+      setDetailsError(getVaultErrorMessage(currentError));
+      return null;
+    } finally {
+      if (detailsRequestRef.current === requestId) {
+        setIsLoadingDetails(false);
+      }
+    }
+  };
 
   const loadSnapshot = async (
     nextPlatformId: string | null,
@@ -178,6 +196,14 @@ export function VaultHomePage({
     await loadSnapshot(selectedPlatformId, {
       preferredAccountId: selectedAccountId,
       seedDetails: selectedAccount,
+    });
+  };
+
+  const refreshSelectedAccountContext = async (accountId: string) => {
+    const details = await requestAccountDetails(accountId, false);
+    await loadSnapshot(selectedPlatformId, {
+      preferredAccountId: accountId,
+      seedDetails: details,
     });
   };
 
@@ -267,6 +293,35 @@ export function VaultHomePage({
     }
   };
 
+  const handleAddAccountValue = async (
+    accountId: string,
+    request: AddAccountValueRequest,
+  ) => {
+    await addAccountValue(accountId, request);
+    await refreshSelectedAccountContext(accountId);
+  };
+
+  const handleUpdateAccountValue = async (
+    valueId: string,
+    request: UpdateAccountValueRequest,
+  ) => {
+    if (!selectedAccountId) {
+      throw new Error("No account selected.");
+    }
+
+    await updateAccountValue(valueId, request);
+    await refreshSelectedAccountContext(selectedAccountId);
+  };
+
+  const handleDeleteAccountValue = async (valueId: string) => {
+    if (!selectedAccountId) {
+      throw new Error("No account selected.");
+    }
+
+    await softDeleteAccountValue(valueId);
+    await refreshSelectedAccountContext(selectedAccountId);
+  };
+
   const selectedPlatformName =
     selectedPlatformId === null
       ? null
@@ -283,6 +338,9 @@ export function VaultHomePage({
             errorMessage={detailsError}
             hasAccounts={accounts.length > 0}
             isLoading={isLoadingDetails}
+            onAddValue={handleAddAccountValue}
+            onDeleteValue={handleDeleteAccountValue}
+            onUpdateValue={handleUpdateAccountValue}
           />
         }
         header={

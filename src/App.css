@@ -112,6 +112,12 @@ textarea {
   gap: 8px;
 }
 
+.field-helper {
+  margin: -6px 0 0;
+  color: #55606c;
+  font-size: 0.9rem;
+}
+
 .field span,
 .summary-label,
 .metric-label,
@@ -199,6 +205,16 @@ textarea {
   cursor: not-allowed;
   opacity: 0.62;
   transform: none;
+}
+
+.button-small {
+  padding: 8px 14px;
+  font-size: 0.92rem;
+}
+
+.button-danger {
+  background: #fde8e8;
+  color: #8a1d1d;
 }
 
 .error-banner {
@@ -364,6 +380,12 @@ textarea {
   padding-top: 2px;
 }
 
+.section-heading__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .details-grid {
   display: grid;
   gap: 12px;
@@ -393,6 +415,49 @@ textarea {
   border: 1px solid #d7e0e7;
   border-radius: 18px;
   background: #fbfcfd;
+}
+
+.value-row__title {
+  display: grid;
+  gap: 4px;
+}
+
+.value-row__type {
+  color: #55606c;
+  font-size: 0.9rem;
+}
+
+.value-row__content {
+  margin: 0;
+  color: #192126;
+  word-break: break-word;
+}
+
+.value-row__footer,
+.value-row__actions,
+.checkbox-field {
+  display: flex;
+  align-items: center;
+}
+
+.value-row__footer {
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.value-row__actions {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.checkbox-field {
+  gap: 10px;
+  color: #192126;
+}
+
+.checkbox-field input {
+  width: 16px;
+  height: 16px;
 }
 
 .pill,

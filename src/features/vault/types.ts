@@ -70,8 +70,7 @@ export type AccountSummary = Omit<AccountSummaryDto, "values"> & {
   values: AccountValueMetadata[];
 };
 
-export type AccountDetails = Omit<AccountDetailsDto, "values" | "secrets"> & {
-  values: AccountValueMetadata[];
+export type AccountDetails = Omit<AccountDetailsDto, "secrets"> & {
   secrets: SecretMetadataDto[];
 };
 
@@ -89,6 +88,20 @@ export type UpdateAccountRequest = {
   name: string | null;
   platform_id: string;
   notes: string | null;
+};
+
+export type AddAccountValueRequest = {
+  value_type: AccountValueType;
+  label: string;
+  value: string;
+  is_primary: boolean;
+};
+
+export type UpdateAccountValueRequest = {
+  value_type: AccountValueType;
+  label: string;
+  value: string;
+  is_primary: boolean;
 };
 
 export type ListAccountsFilter = {
