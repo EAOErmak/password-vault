@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { listSecretHistory, revealSecret } from "../api/secretApi";
+import { copySecretToClipboard, listSecretHistory, revealSecret } from "../api/secretApi";
 import type {
   AccountDetails,
   AddSecretRequest,
@@ -28,6 +28,7 @@ export function SecretsSection({
   onDeleteSecret,
   onUpdateSecret,
 }: SecretsSectionProps) {
+  const clipboardClearAfterSeconds = 30;
   const copyFeedbackTimerRef = useRef<number | null>(null);
   const revealRequestRef = useRef(0);
   const historyRequestRef = useRef(0);
@@ -237,26 +238,13 @@ export function SecretsSection({
     setCopySuccessMessage(null);
     setIsCopyingSecretId(secret.id);
 
-    let revealedSecretValue: string | null = null;
-
     try {
-      {
-        const revealed = await revealSecret(secret.id);
-        revealedSecretValue = revealed.secret_value;
-      }
-
-      if (!navigator.clipboard) {
-        throw new Error("Clipboard access is unavailable.");
-      }
-      if (revealedSecretValue === null) {
-        throw new Error("Unable to copy the selected secret.");
-      }
-
-      // TODO: move clipboard writes to Rust so the app can clear the OS clipboard on a timer.
-      await navigator.clipboard.writeText(revealedSecretValue);
+      await copySecretToClipboard(secret.id, clipboardClearAfterSeconds);
 
       setCopiedSecretId(secret.id);
-      setCopySuccessMessage("Secret copied to clipboard.");
+      setCopySuccessMessage(
+        `Copied. Clipboard will be cleared in ${clipboardClearAfterSeconds} seconds.`,
+      );
       if (copyFeedbackTimerRef.current !== null) {
         window.clearTimeout(copyFeedbackTimerRef.current);
       }
@@ -274,7 +262,6 @@ export function SecretsSection({
       setCopySuccessMessage(null);
       setActionError(getVaultErrorMessage(error));
     } finally {
-      revealedSecretValue = null;
       setIsCopyingSecretId(null);
     }
   };

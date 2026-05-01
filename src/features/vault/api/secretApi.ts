@@ -90,6 +90,13 @@ export async function revealSecret(secretId: string): Promise<RevealedSecretDto>
   return sanitizeRevealedSecret(secret);
 }
 
+export function copySecretToClipboard(secretId: string, clearAfterSeconds = 30): Promise<void> {
+  return invoke("copy_secret_to_clipboard", {
+    secretId,
+    clearAfterSeconds,
+  });
+}
+
 export function softDeleteSecret(secretId: string): Promise<void> {
   return invoke("soft_delete_secret", {
     secretId,

@@ -2,6 +2,7 @@ use uuid::Uuid;
 use zeroize::Zeroize;
 
 use crate::app_state::AppState;
+use crate::clipboard_service::{ClipboardService, SystemClipboardBackend};
 use crate::vault::domain::SecretHistory;
 use crate::vault::dto::history_dto::SecretHistoryDto;
 use crate::vault::dto::secret_dto::{
@@ -114,6 +115,16 @@ impl SecretService {
         })
     }
 
+    pub fn copy_secret_to_clipboard(
+        &self,
+        state: &AppState,
+        secret_id: Uuid,
+        clear_after_seconds: Option<u64>,
+    ) -> Result<(), VaultError> {
+        let clipboard = ClipboardService::<SystemClipboardBackend>::system();
+        self.copy_secret_to_clipboard_with(state, secret_id, clear_after_seconds, &clipboard)
+    }
+
     pub fn soft_delete_secret(&self, state: &AppState, secret_id: Uuid) -> Result<(), VaultError> {
         state.with_connection_mut(|connection| {
             let deleted = SecretRepository::soft_delete(connection, secret_id, &now_utc())?;
@@ -139,6 +150,26 @@ impl SecretService {
             let history = SecretRepository::list_history_by_secret(connection, secret_id)?;
             Ok(history.into_iter().map(Self::to_history_dto).collect())
         })
+    }
+
+    fn copy_secret_to_clipboard_with<B>(
+        &self,
+        state: &AppState,
+        secret_id: Uuid,
+        clear_after_seconds: Option<u64>,
+        clipboard: &ClipboardService<B>,
+    ) -> Result<(), VaultError>
+    where
+        B: crate::clipboard_service::ClipboardBackend,
+    {
+        let secret_value = state.with_connection(|connection| {
+            let secret = SecretRepository::find_active_by_id(connection, secret_id)?
+                .ok_or_else(|| VaultError::NotFound(format!("secret not found: {secret_id}")))?;
+
+            Ok(secret.secret_value)
+        })?;
+
+        clipboard.copy_text_with_auto_clear(secret_value, clear_after_seconds)
     }
 
     fn ensure_account_exists(

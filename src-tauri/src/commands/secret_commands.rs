@@ -3,6 +3,7 @@ use uuid::Uuid;
 use zeroize::Zeroize;
 
 use crate::app_state::AppState;
+use crate::clipboard_service::DEFAULT_CLIPBOARD_CLEAR_AFTER_SECONDS;
 use crate::commands::{into_command_result, CommandResult};
 use crate::vault::dto::history_dto::SecretHistoryDto;
 use crate::vault::dto::secret_dto::{
@@ -41,6 +42,20 @@ pub fn reveal_secret(
 ) -> CommandResult<RevealedSecretDto> {
     let service = SecretService;
     into_command_result(service.reveal_secret(state.inner(), secret_id))
+}
+
+#[tauri::command]
+pub fn copy_secret_to_clipboard(
+    state: State<'_, AppState>,
+    secret_id: Uuid,
+    clear_after_seconds: Option<u64>,
+) -> CommandResult<()> {
+    let service = SecretService;
+    into_command_result(service.copy_secret_to_clipboard(
+        state.inner(),
+        secret_id,
+        clear_after_seconds.or(Some(DEFAULT_CLIPBOARD_CLEAR_AFTER_SECONDS)),
+    ))
 }
 
 #[tauri::command]
