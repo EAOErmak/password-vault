@@ -433,6 +433,12 @@ textarea {
   word-break: break-word;
 }
 
+.secret-row__masked {
+  margin: 0;
+  color: #55606c;
+  letter-spacing: 0.18em;
+}
+
 .value-row__footer,
 .value-row__actions,
 .checkbox-field {
@@ -458,6 +464,32 @@ textarea {
 .checkbox-field input {
   width: 16px;
   height: 16px;
+}
+
+.secret-dialog-toolbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.revealed-secret {
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border: 1px solid #d7e0e7;
+  border-radius: 18px;
+  background: #fbfcfd;
+}
+
+.revealed-secret__value {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #f4f7f8;
+  color: #192126;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .pill,
@@ -529,6 +561,12 @@ textarea {
 
   .vault-grid {
     grid-template-columns: 1fr;
+  }
+
+  .secret-dialog-toolbar,
+  .value-row__footer {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

@@ -88,6 +88,18 @@ export function getVaultErrorMessage(error: unknown): string {
     return "The selected value no longer exists.";
   }
 
+  if (message.includes("secret value cannot be empty")) {
+    return "Secret value is required.";
+  }
+
+  if (message.includes("secret label cannot be empty")) {
+    return "Secret label is required.";
+  }
+
+  if (message.includes("secret not found")) {
+    return "The selected secret no longer exists.";
+  }
+
   if (message.includes("invalid vault file")) {
     return "The selected file is not a valid vault.";
   }

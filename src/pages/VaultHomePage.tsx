@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createAccount, getAccountDetails, listAccounts } from "../features/vault/api/accountApi";
 import { createPlatform, listPlatforms } from "../features/vault/api/platformApi";
+import { addSecret, softDeleteSecret, updateSecret } from "../features/vault/api/secretApi";
 import {
   addAccountValue,
   softDeleteAccountValue,
@@ -17,10 +18,12 @@ import type {
   AccountDetails,
   AccountSummary,
   AddAccountValueRequest,
+  AddSecretRequest,
   CreateAccountRequest,
   CreatePlatformRequest,
   PlatformDto,
   UpdateAccountValueRequest,
+  UpdateSecretRequest,
 } from "../features/vault/types";
 import { getVaultErrorMessage } from "../lib/vault";
 
@@ -322,6 +325,35 @@ export function VaultHomePage({
     await refreshSelectedAccountContext(selectedAccountId);
   };
 
+  const handleAddSecret = async (
+    accountId: string,
+    request: AddSecretRequest,
+  ) => {
+    await addSecret(accountId, request);
+    await refreshSelectedAccountContext(accountId);
+  };
+
+  const handleUpdateSecret = async (
+    secretId: string,
+    request: UpdateSecretRequest,
+  ) => {
+    if (!selectedAccountId) {
+      throw new Error("No account selected.");
+    }
+
+    await updateSecret(secretId, request);
+    await refreshSelectedAccountContext(selectedAccountId);
+  };
+
+  const handleDeleteSecret = async (secretId: string) => {
+    if (!selectedAccountId) {
+      throw new Error("No account selected.");
+    }
+
+    await softDeleteSecret(secretId);
+    await refreshSelectedAccountContext(selectedAccountId);
+  };
+
   const selectedPlatformName =
     selectedPlatformId === null
       ? null
@@ -339,7 +371,10 @@ export function VaultHomePage({
             hasAccounts={accounts.length > 0}
             isLoading={isLoadingDetails}
             onAddValue={handleAddAccountValue}
+            onAddSecret={handleAddSecret}
+            onDeleteSecret={handleDeleteSecret}
             onDeleteValue={handleDeleteAccountValue}
+            onUpdateSecret={handleUpdateSecret}
             onUpdateValue={handleUpdateAccountValue}
           />
         }

@@ -1,12 +1,14 @@
 import type {
   AccountDetails,
   AddAccountValueRequest,
+  AddSecretRequest,
   UpdateAccountValueRequest,
+  UpdateSecretRequest,
 } from "../types";
 import { AccountValuesSection } from "./AccountValuesSection";
+import { SecretsSection } from "./SecretsSection";
 import {
   formatDateTime,
-  formatEnumLabel,
   formatOptionalName,
   formatOptionalText,
 } from "../utils/formatters";
@@ -19,6 +21,9 @@ type AccountDetailsPanelProps = {
   onAddValue: (accountId: string, request: AddAccountValueRequest) => Promise<void>;
   onDeleteValue: (valueId: string) => Promise<void>;
   onUpdateValue: (valueId: string, request: UpdateAccountValueRequest) => Promise<void>;
+  onAddSecret: (accountId: string, request: AddSecretRequest) => Promise<void>;
+  onDeleteSecret: (secretId: string) => Promise<void>;
+  onUpdateSecret: (secretId: string, request: UpdateSecretRequest) => Promise<void>;
 };
 
 export function AccountDetailsPanel({
@@ -29,6 +34,9 @@ export function AccountDetailsPanel({
   onAddValue,
   onDeleteValue,
   onUpdateValue,
+  onAddSecret,
+  onDeleteSecret,
+  onUpdateSecret,
 }: AccountDetailsPanelProps) {
   return (
     <section className="vault-card panel-card">
@@ -80,29 +88,12 @@ export function AccountDetailsPanel({
             onUpdateValue={onUpdateValue}
           />
 
-          <section className="details-section">
-            <div className="section-heading">
-              <h4>Secret metadata</h4>
-              <span>{account.secrets.length}</span>
-            </div>
-
-            {account.secrets.length === 0 ? (
-              <p className="muted-state">No secret metadata yet.</p>
-            ) : (
-              <div className="metadata-list">
-                {account.secrets.map((secret) => (
-                  <article className="metadata-item" key={secret.id}>
-                    <div className="metadata-item__header">
-                      <strong>{secret.label}</strong>
-                      {secret.is_primary ? <span className="pill">Primary</span> : null}
-                    </div>
-                    <p>{formatEnumLabel(secret.secret_type)}</p>
-                    <small>Value hidden. Updated {formatDateTime(secret.updated_at)}</small>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
+          <SecretsSection
+            account={account}
+            onAddSecret={onAddSecret}
+            onDeleteSecret={onDeleteSecret}
+            onUpdateSecret={onUpdateSecret}
+          />
         </div>
       ) : null}
     </section>
