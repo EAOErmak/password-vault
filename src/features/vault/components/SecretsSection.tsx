@@ -28,7 +28,7 @@ export function SecretsSection({
   onDeleteSecret,
   onUpdateSecret,
 }: SecretsSectionProps) {
-  const copyResetTimerRef = useRef<number | null>(null);
+  const copyFeedbackTimerRef = useRef<number | null>(null);
   const revealRequestRef = useRef(0);
   const historyRequestRef = useRef(0);
 
@@ -41,6 +41,7 @@ export function SecretsSection({
   const [isRevealOpen, setIsRevealOpen] = useState(false);
   const [isRevealing, setIsRevealing] = useState(false);
   const [revealError, setRevealError] = useState<string | null>(null);
+  const [copySuccessMessage, setCopySuccessMessage] = useState<string | null>(null);
   const [copiedSecretId, setCopiedSecretId] = useState<string | null>(null);
   const [isCopyingSecretId, setIsCopyingSecretId] = useState<string | null>(null);
   const [historySecret, setHistorySecret] = useState<SecretMetadataDto | null>(null);
@@ -49,6 +50,11 @@ export function SecretsSection({
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
 
   useEffect(() => {
+    if (copyFeedbackTimerRef.current !== null) {
+      window.clearTimeout(copyFeedbackTimerRef.current);
+      copyFeedbackTimerRef.current = null;
+    }
+
     historyRequestRef.current += 1;
     setDialogError(null);
     setActionError(null);
@@ -59,6 +65,7 @@ export function SecretsSection({
     setIsRevealOpen(false);
     setIsRevealing(false);
     setRevealError(null);
+    setCopySuccessMessage(null);
     setCopiedSecretId(null);
     setIsCopyingSecretId(null);
     setHistorySecret(null);
@@ -69,8 +76,8 @@ export function SecretsSection({
 
   useEffect(() => {
     return () => {
-      if (copyResetTimerRef.current !== null) {
-        window.clearTimeout(copyResetTimerRef.current);
+      if (copyFeedbackTimerRef.current !== null) {
+        window.clearTimeout(copyFeedbackTimerRef.current);
       }
     };
   }, []);
@@ -227,28 +234,47 @@ export function SecretsSection({
 
   const handleCopy = async (secret: SecretMetadataDto) => {
     setActionError(null);
+    setCopySuccessMessage(null);
     setIsCopyingSecretId(secret.id);
 
+    let revealedSecretValue: string | null = null;
+
     try {
-      const revealed = await revealSecret(secret.id);
+      {
+        const revealed = await revealSecret(secret.id);
+        revealedSecretValue = revealed.secret_value;
+      }
+
       if (!navigator.clipboard) {
         throw new Error("Clipboard access is unavailable.");
       }
+      if (revealedSecretValue === null) {
+        throw new Error("Unable to copy the selected secret.");
+      }
 
       // TODO: move clipboard writes to Rust so the app can clear the OS clipboard on a timer.
-      await navigator.clipboard.writeText(revealed.secret_value);
+      await navigator.clipboard.writeText(revealedSecretValue);
 
       setCopiedSecretId(secret.id);
-      if (copyResetTimerRef.current !== null) {
-        window.clearTimeout(copyResetTimerRef.current);
+      setCopySuccessMessage("Secret copied to clipboard.");
+      if (copyFeedbackTimerRef.current !== null) {
+        window.clearTimeout(copyFeedbackTimerRef.current);
       }
-      copyResetTimerRef.current = window.setTimeout(() => {
+      copyFeedbackTimerRef.current = window.setTimeout(() => {
+        setCopySuccessMessage(null);
         setCopiedSecretId(null);
-        copyResetTimerRef.current = null;
+        copyFeedbackTimerRef.current = null;
       }, 2000);
     } catch (error) {
+      if (copyFeedbackTimerRef.current !== null) {
+        window.clearTimeout(copyFeedbackTimerRef.current);
+        copyFeedbackTimerRef.current = null;
+      }
+      setCopiedSecretId(null);
+      setCopySuccessMessage(null);
       setActionError(getVaultErrorMessage(error));
     } finally {
+      revealedSecretValue = null;
       setIsCopyingSecretId(null);
     }
   };
@@ -266,6 +292,11 @@ export function SecretsSection({
       </div>
 
       {actionError ? <p className="error-banner">{actionError}</p> : null}
+      {copySuccessMessage ? (
+        <div aria-live="polite" className="status-toast" role="status">
+          {copySuccessMessage}
+        </div>
+      ) : null}
 
       {account.secrets.length === 0 ? (
         <div className="empty-state">
@@ -285,6 +316,7 @@ export function SecretsSection({
                 isCopyingSecretId !== null ||
                 isLoadingHistory
               }
+              isCopying={isCopyingSecretId === secret.id}
               key={secret.id}
               onCopy={handleCopy}
               onDelete={handleDelete}

@@ -100,6 +100,14 @@ export function getVaultErrorMessage(error: unknown): string {
     return "The selected secret no longer exists.";
   }
 
+  if (message.includes("Clipboard access is unavailable")) {
+    return "Clipboard access is unavailable on this device.";
+  }
+
+  if (message.includes("Unable to copy the selected secret")) {
+    return "The selected secret could not be copied.";
+  }
+
   if (message.includes("invalid vault file")) {
     return "The selected file is not a valid vault.";
   }

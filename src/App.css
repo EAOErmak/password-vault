@@ -225,6 +225,14 @@ textarea {
   color: #8a1d1d;
 }
 
+.status-toast {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: #e7f6ed;
+  color: #1f4d39;
+}
+
 .inline-error,
 .muted-state {
   margin: 0;

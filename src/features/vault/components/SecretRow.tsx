@@ -4,6 +4,7 @@ import { formatDateTime, formatEnumLabel } from "../utils/formatters";
 type SecretRowProps = {
   copied: boolean;
   isBusy: boolean;
+  isCopying: boolean;
   onCopy: (secret: SecretMetadataDto) => void;
   onDelete: (secret: SecretMetadataDto) => void;
   onEdit: (secret: SecretMetadataDto) => void;
@@ -15,6 +16,7 @@ type SecretRowProps = {
 export function SecretRow({
   copied,
   isBusy,
+  isCopying,
   onCopy,
   onDelete,
   onEdit,
@@ -59,7 +61,7 @@ export function SecretRow({
             onClick={() => onCopy(secret)}
             type="button"
           >
-            {copied ? "Copied" : "Copy"}
+            {isCopying ? "Copying..." : copied ? "Copied" : "Copy"}
           </button>
           <button
             className="button-secondary button-small"
