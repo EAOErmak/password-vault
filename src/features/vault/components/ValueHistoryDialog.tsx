@@ -37,18 +37,22 @@ export function ValueHistoryDialog({
         }}
       >
         <div className="dialog-header">
-          <div>
-            <h3>Value history</h3>
+          <div style={{ width: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <h3 style={{ margin: 0 }}>Value history</h3>
+              <button
+                className="button-ghost button-small"
+                onClick={onClose}
+                type="button"
+                style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}
+              >
+                Close
+              </button>
+            </div>
             <p>
               {value.label} - {formatEnumLabel(value.value_type)}
             </p>
           </div>
-        </div>
-
-        <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: "16px" }}>
-          <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
-            Close
-          </button>
         </div>
 
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
@@ -77,11 +81,6 @@ export function ValueHistoryDialog({
           />
         ) : null}
 
-        <div className="actions">
-          <button className="button-primary" onClick={onClose} type="button">
-            Close
-          </button>
-        </div>
       </div>
     </div>
   );

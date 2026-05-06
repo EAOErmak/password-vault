@@ -41,20 +41,25 @@ export function SecretHistoryDialog({
         }}
       >
         <div className="dialog-header">
-          <div>
-            <h3>Secret history</h3>
+          <div style={{ width: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <h3 style={{ margin: 0 }}>Secret history</h3>
+              <button
+                className="button-ghost button-small"
+                onClick={onClose}
+                type="button"
+                style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}
+              >
+                Close
+              </button>
+            </div>
             <p>
               {secret.label} - {formatEnumLabel(secret.secret_type)}
             </p>
           </div>
         </div>
 
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <p className="field-helper" style={{ margin: 0 }}>Historical secret values remain hidden by default.</p>
-          <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
-            Close
-          </button>
-        </div>
+        <p className="field-helper">Historical secret values remain hidden by default.</p>
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 
@@ -81,11 +86,6 @@ export function SecretHistoryDialog({
           />
         ) : null}
 
-        <div className="actions">
-          <button className="button-primary" onClick={onClose} type="button">
-            Close
-          </button>
-        </div>
       </div>
     </div>
   );
