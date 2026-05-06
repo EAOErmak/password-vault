@@ -14,6 +14,7 @@ import { EditSecretDialog } from "./EditSecretDialog";
 import { RevealSecretDialog } from "./RevealSecretDialog";
 import { SecretHistoryDialog } from "./SecretHistoryDialog";
 import { SecretRow } from "./SecretRow";
+import { DeleteSecretConfirmDialog } from "./DeleteSecretConfirmDialog";
 
 type SecretsSectionProps = {
   account: AccountDetails;
@@ -49,6 +50,8 @@ export function SecretsSection({
   const [secretHistory, setSecretHistory] = useState<SecretHistoryDto[]>([]);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  
+  const [deletingSecret, setDeletingSecret] = useState<SecretMetadataDto | null>(null);
 
   useEffect(() => {
     if (copyFeedbackTimerRef.current !== null) {
@@ -73,6 +76,7 @@ export function SecretsSection({
     setSecretHistory([]);
     setHistoryError(null);
     setIsLoadingHistory(false);
+    setDeletingSecret(null);
   }, [account.id]);
 
   useEffect(() => {
@@ -184,20 +188,20 @@ export function SecretsSection({
     }
   };
 
-  const handleDelete = async (secret: SecretMetadataDto) => {
-    const confirmed = window.confirm(
-      `Delete "${secret.label}" from ${account.name?.trim() || account.platform.name}?`,
-    );
-    if (!confirmed) {
-      return;
-    }
+  const handleDeleteClick = (secret: SecretMetadataDto) => {
+    setDeletingSecret(secret);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!deletingSecret) return;
+    
     setIsSubmitting(true);
     setDialogError(null);
     setActionError(null);
 
     try {
-      await onDeleteSecret(secret.id);
+      await onDeleteSecret(deletingSecret.id);
+      setDeletingSecret(null);
     } catch (error) {
       setActionError(getVaultErrorMessage(error));
     } finally {
@@ -306,7 +310,7 @@ export function SecretsSection({
               isCopying={isCopyingSecretId === secret.id}
               key={secret.id}
               onCopy={handleCopy}
-              onDelete={handleDelete}
+              onDelete={handleDeleteClick}
               onEdit={handleOpenEdit}
               onHistory={handleOpenHistory}
               onReveal={handleReveal}
@@ -348,6 +352,15 @@ export function SecretsSection({
         isOpen={historySecret !== null}
         onClose={handleCloseHistory}
         secret={historySecret}
+      />
+
+      <DeleteSecretConfirmDialog
+        account={account}
+        secret={deletingSecret}
+        isOpen={deletingSecret !== null}
+        isDeleting={isSubmitting}
+        onClose={() => setDeletingSecret(null)}
+        onConfirm={handleConfirmDelete}
       />
     </section>
   );

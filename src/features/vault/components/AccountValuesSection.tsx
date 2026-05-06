@@ -12,6 +12,7 @@ import { AddAccountValueDialog } from "./AddAccountValueDialog";
 import { AccountValueRow } from "./AccountValueRow";
 import { EditAccountValueDialog } from "./EditAccountValueDialog";
 import { ValueHistoryDialog } from "./ValueHistoryDialog";
+import { DeleteValueConfirmDialog } from "./DeleteValueConfirmDialog";
 
 type AccountValuesSectionProps = {
   account: AccountDetails;
@@ -36,6 +37,8 @@ export function AccountValuesSection({
   const [valueHistory, setValueHistory] = useState<AccountValueHistoryDto[]>([]);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  
+  const [deletingValue, setDeletingValue] = useState<AccountValueDto | null>(null);
 
   useEffect(() => {
     historyRequestRef.current += 1;
@@ -47,7 +50,9 @@ export function AccountValuesSection({
     setHistoryValue(null);
     setValueHistory([]);
     setHistoryError(null);
+    setHistoryError(null);
     setIsLoadingHistory(false);
+    setDeletingValue(null);
   }, [account.id]);
 
   const handleOpenAdd = () => {
@@ -143,20 +148,20 @@ export function AccountValuesSection({
     }
   };
 
-  const handleDelete = async (value: AccountValueDto) => {
-    const confirmed = window.confirm(
-      `Delete "${value.label}" from ${account.name?.trim() || account.platform.name}?`,
-    );
-    if (!confirmed) {
-      return;
-    }
+  const handleDeleteClick = (value: AccountValueDto) => {
+    setDeletingValue(value);
+  };
 
+  const handleConfirmDelete = async () => {
+    if (!deletingValue) return;
+    
     setIsSubmitting(true);
     setDialogError(null);
     setActionError(null);
 
     try {
-      await onDeleteValue(value.id);
+      await onDeleteValue(deletingValue.id);
+      setDeletingValue(null);
     } catch (error) {
       setActionError(getVaultErrorMessage(error));
     } finally {
@@ -191,7 +196,7 @@ export function AccountValuesSection({
             <AccountValueRow
               isBusy={isSubmitting || isLoadingHistory}
               key={value.id}
-              onDelete={handleDelete}
+              onDelete={handleDeleteClick}
               onEdit={handleOpenEdit}
               onHistory={handleOpenHistory}
               value={value}
@@ -224,6 +229,15 @@ export function AccountValuesSection({
         isOpen={historyValue !== null}
         onClose={handleCloseHistory}
         value={historyValue}
+      />
+
+      <DeleteValueConfirmDialog
+        account={account}
+        value={deletingValue}
+        isOpen={deletingValue !== null}
+        isDeleting={isSubmitting}
+        onClose={() => setDeletingValue(null)}
+        onConfirm={handleConfirmDelete}
       />
     </section>
   );

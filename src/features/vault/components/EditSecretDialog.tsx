@@ -101,12 +101,7 @@ export function EditSecretDialog({
   return (
     <div className="dialog-backdrop" role="presentation">
       <div aria-modal="true" className="dialog-card" role="dialog">
-        <div className="dialog-header">
-          <div>
-            <h3>Edit secret</h3>
-            <p>Enter a replacement value or load the current one explicitly first.</p>
-          </div>
-        </div>
+
 
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">

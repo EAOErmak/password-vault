@@ -166,12 +166,7 @@ export function AccountDetailsDialog({
             />
 
             <section className="details-section details-section--danger">
-              <div className="section-heading">
-                <h4>Delete account</h4>
-              </div>
-              <p className="field-helper">
-                This performs a soft delete and removes the account from the active list.
-              </p>
+
               <div className="actions">
                 <button
                   className="button-secondary button-danger"
