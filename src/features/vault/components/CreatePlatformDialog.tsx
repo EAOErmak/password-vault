@@ -36,12 +36,7 @@ export function CreatePlatformDialog({
   return (
     <div className="dialog-backdrop" role="presentation">
       <div aria-modal="true" className="dialog-card" role="dialog">
-        <div className="dialog-header">
-          <div>
-            <h3>Create platform</h3>
-            <p>Add a platform to group related accounts.</p>
-          </div>
-        </div>
+
 
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">
