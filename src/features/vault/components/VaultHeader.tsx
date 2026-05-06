@@ -125,81 +125,9 @@ export function VaultHeader({
         </div>
       </div>
 
-      <div className="vault-search-row">
-        <label className="field vault-search-field">
-          <span>Search accounts</span>
-          <input
-            autoComplete="off"
-            onChange={(event) => onSearchChange(event.currentTarget.value)}
-            placeholder="Search by name, platform, notes, or safe values"
-            spellCheck={false}
-            type="search"
-            value={searchQuery}
-          />
-        </label>
 
-        {hasSearchQuery ? (
-          <button className="button-secondary" onClick={onClearSearch} type="button">
-            Clear search
-          </button>
-        ) : null}
-      </div>
 
-      <p className="field-helper">
-        Search uses safe account metadata only. Secret values are excluded.
-      </p>
 
-      <div className="vault-platform-filter">
-        <div className="vault-platform-filter__header">
-          <div>
-            <h2>Platforms</h2>
-            <p>Filter the account list by platform.</p>
-          </div>
-        </div>
-
-        {isLoading && platforms.length === 0 ? (
-          <p className="muted-state">Loading platforms...</p>
-        ) : null}
-
-        {!isLoading && platforms.length === 0 ? (
-          <div className="empty-state empty-state--compact">
-            <p>No platforms yet.</p>
-          </div>
-        ) : null}
-
-        {platforms.length > 0 ? (
-          <div className="platform-filter-list">
-            <button
-              className={
-                selectedPlatformId === null
-                  ? "list-button list-button--selected platform-filter-button"
-                  : "list-button platform-filter-button"
-              }
-              onClick={() => onSelectPlatform(null)}
-              type="button"
-            >
-              <span>All platforms</span>
-              <small>{platforms.length}</small>
-            </button>
-
-            {platforms.map((platform) => (
-              <button
-                className={
-                  selectedPlatformId === platform.id
-                    ? "list-button list-button--selected platform-filter-button"
-                    : "list-button platform-filter-button"
-                }
-                key={platform.id}
-                onClick={() => onSelectPlatform(platform.id)}
-                type="button"
-              >
-                <span>{platform.name}</span>
-                <small>{platform.normalized_name}</small>
-              </button>
-            ))}
-          </div>
-        ) : null}
-      </div>
 
       {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
     </section>

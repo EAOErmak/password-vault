@@ -24,7 +24,6 @@ export function AccountFiltersBar({
       <div className="vault-platform-filter__header">
         <div>
           <h2>Filters</h2>
-          <p>Filter the visible accounts by platform, value, or name.</p>
         </div>
       </div>
 

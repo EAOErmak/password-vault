@@ -14,7 +14,6 @@ import { ACCOUNT_VALUE_TYPE_OPTIONS } from "../utils/accountValueHelpers";
 import { AddSecretDialog } from "./AddSecretDialog";
 import { EditAccountValueDialog } from "./EditAccountValueDialog";
 import { EditSecretDialog } from "./EditSecretDialog";
-import { AccountActionBlocks } from "./AccountActionBlocks";
 import { AccountFiltersBar } from "./AccountFiltersBar";
 import type { PlatformDto } from "../types";
 
@@ -169,9 +168,6 @@ export function AccountList({
 
   const trimmedSearchQuery = searchQuery.trim();
   const hasSearchQuery = trimmedSearchQuery.length > 0;
-  const title = selectedPlatformName
-    ? `${selectedPlatformName} account access`
-    : "Account access";
 
   const trimmedValueFilter = clientValueFilter.trim().toLowerCase();
   const trimmedNameFilter = clientNameFilter.trim().toLowerCase();
@@ -373,22 +369,6 @@ export function AccountList({
 
   return (
     <section className="vault-card panel-card">
-      <div className="panel-header">
-        <div>
-          <h2>{title}</h2>
-          <p>
-            {hasSearchQuery
-              ? `Matching "${trimmedSearchQuery}" across safe account metadata only.`
-              : "Fast actions stay on safe values and password metadata only."}
-          </p>
-        </div>
-      </div>
-
-      <AccountActionBlocks 
-        onOpenCreateAccount={onOpenCreateAccount}
-        onOpenCreatePlatform={onOpenCreatePlatform}
-      />
-
       <AccountFiltersBar 
         clientNameFilter={clientNameFilter}
         clientPlatformFilter={clientPlatformFilter}
