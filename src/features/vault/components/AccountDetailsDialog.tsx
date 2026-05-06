@@ -91,13 +91,13 @@ export function AccountDetailsDialog({
     <div className="dialog-backdrop" role="presentation">
       <div
         aria-modal="true"
-        className="dialog-card dialog-card--xwide dialog-card--scrollable"
+        className="dialog-card dialog-card--wide dialog-card--scrollable account-details-dialog"
         role="dialog"
       >
         <div className="dialog-header">
           <div>
             <h3>Account details</h3>
-            <p>Secret values and secret history stay hidden until you explicitly reveal them.</p>
+            <p>Review values and secrets without exposing protected secret data by default.</p>
           </div>
           <button className="button-ghost" onClick={onClose} type="button">
             Close
@@ -117,16 +117,17 @@ export function AccountDetailsDialog({
         {!isLoading && account ? (
           <div className="details-panel">
             <section className="details-section">
-              <h3>{formatOptionalName(account.name)}</h3>
-              <dl className="details-grid">
+              <div className="account-details-summary">
                 <div>
-                  <dt>Name</dt>
-                  <dd>{formatOptionalName(account.name)}</dd>
+                  <h3>{formatOptionalName(account.name)}</h3>
+                  <p>{account.platform.name}</p>
                 </div>
-                <div>
-                  <dt>Platform</dt>
-                  <dd>{account.platform.name}</dd>
+                <div className="account-details-summary__stats">
+                  <span className="status-pill">{account.values.length} values</span>
+                  <span className="status-pill">{account.secrets.length} secrets</span>
                 </div>
+              </div>
+              <dl className="details-grid details-grid--compact">
                 <div>
                   <dt>Created</dt>
                   <dd>{formatDateTime(account.created_at)}</dd>
@@ -141,12 +142,7 @@ export function AccountDetailsDialog({
                 <p>{formatOptionalText(account.notes, "No notes.")}</p>
               </div>
               <div className="details-inline-note">
-                <span className="summary-label">Value history</span>
-                <p>Use the History action on each value to inspect changes.</p>
-              </div>
-              <div className="details-inline-note">
-                <span className="summary-label">Secret history</span>
-                <p>Use the History action on each secret to review masked change records.</p>
+                <p>Use History for change records and Reveal only when a secret value is needed.</p>
               </div>
             </section>
 

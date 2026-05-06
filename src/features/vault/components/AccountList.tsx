@@ -14,6 +14,9 @@ import { ACCOUNT_VALUE_TYPE_OPTIONS } from "../utils/accountValueHelpers";
 import { AddSecretDialog } from "./AddSecretDialog";
 import { EditAccountValueDialog } from "./EditAccountValueDialog";
 import { EditSecretDialog } from "./EditSecretDialog";
+import { AccountActionBlocks } from "./AccountActionBlocks";
+import { AccountFiltersBar } from "./AccountFiltersBar";
+import type { PlatformDto } from "../types";
 
 type AccountListProps = {
   accounts: AccountSummary[];
@@ -37,6 +40,8 @@ type AccountListProps = {
   searchQuery: string;
   selectedAccountId: string | null;
   selectedPlatformName: string | null;
+  platforms: PlatformDto[];
+  onOpenCreatePlatform: () => void;
 };
 
 type AccountTableDisplayRow = AccountTableRow & {
@@ -143,6 +148,8 @@ export function AccountList({
   searchQuery,
   selectedAccountId,
   selectedPlatformName,
+  platforms,
+  onOpenCreatePlatform,
 }: AccountListProps) {
   const clipboardClearAfterSeconds = 30;
   const feedbackTimerRef = useRef<number | null>(null);
@@ -156,12 +163,35 @@ export function AccountList({
   const [addingSecretAccount, setAddingSecretAccount] = useState<AccountSummary | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
+  const [clientPlatformFilter, setClientPlatformFilter] = useState<string | null>(null);
+  const [clientValueFilter, setClientValueFilter] = useState("");
+  const [clientNameFilter, setClientNameFilter] = useState("");
+
   const trimmedSearchQuery = searchQuery.trim();
   const hasSearchQuery = trimmedSearchQuery.length > 0;
   const title = selectedPlatformName
     ? `${selectedPlatformName} account access`
     : "Account access";
-  const rows = useMemo(() => buildTableRows(accounts), [accounts]);
+
+  const trimmedValueFilter = clientValueFilter.trim().toLowerCase();
+  const trimmedNameFilter = clientNameFilter.trim().toLowerCase();
+  const hasClientFilters = clientPlatformFilter !== null || trimmedValueFilter.length > 0 || trimmedNameFilter.length > 0;
+
+  const rows = useMemo(() => {
+    let baseRows = buildTableRows(accounts);
+    
+    if (clientPlatformFilter !== null) {
+      baseRows = baseRows.filter((r) => r.account.platform.id === clientPlatformFilter);
+    }
+    if (trimmedValueFilter) {
+      baseRows = baseRows.filter((r) => r.value && r.value.toLowerCase().includes(trimmedValueFilter));
+    }
+    if (trimmedNameFilter) {
+      baseRows = baseRows.filter((r) => r.accountName && r.accountName.toLowerCase().includes(trimmedNameFilter));
+    }
+    
+    return baseRows;
+  }, [accounts, clientPlatformFilter, trimmedValueFilter, trimmedNameFilter]);
 
   useEffect(() => {
     return () => {
@@ -352,10 +382,22 @@ export function AccountList({
               : "Fast actions stay on safe values and password metadata only."}
           </p>
         </div>
-        <button className="button-primary" onClick={onOpenCreateAccount} type="button">
-          Create account
-        </button>
       </div>
+
+      <AccountActionBlocks 
+        onOpenCreateAccount={onOpenCreateAccount}
+        onOpenCreatePlatform={onOpenCreatePlatform}
+      />
+
+      <AccountFiltersBar 
+        clientNameFilter={clientNameFilter}
+        clientPlatformFilter={clientPlatformFilter}
+        clientValueFilter={clientValueFilter}
+        onNameFilterChange={setClientNameFilter}
+        onPlatformFilterChange={setClientPlatformFilter}
+        onValueFilterChange={setClientValueFilter}
+        platforms={platforms}
+      />
 
       {errorMessage && accounts.length === 0 ? <p className="error-banner">{errorMessage}</p> : null}
       {actionError ? <p className="error-banner">{actionError}</p> : null}
@@ -389,9 +431,22 @@ export function AccountList({
             </button>
           </div>
         </div>
+      ) : !isLoading && accounts.length > 0 && rows.length === 0 && hasClientFilters ? (
+        <div className="empty-state">
+          <p>No accounts match the current filters.</p>
+          <div className="actions">
+            <button className="button-secondary" onClick={() => {
+              setClientNameFilter("");
+              setClientPlatformFilter(null);
+              setClientValueFilter("");
+            }} type="button">
+              Clear filters
+            </button>
+          </div>
+        </div>
       ) : null}
 
-      {accounts.length > 0 ? (
+      {accounts.length > 0 && rows.length > 0 ? (
         <div className="account-table-wrapper">
           {isLoading ? <p className="muted-state">Refreshing account table...</p> : null}
           <table className="account-table">

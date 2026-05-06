@@ -107,6 +107,13 @@ textarea {
   gap: 16px;
 }
 
+.dialog-card .vault-form {
+  padding: 18px;
+  border: 1px solid #dbe4ea;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #f9fbfc 0%, #f3f7f9 100%);
+}
+
 .field {
   display: grid;
   gap: 8px;
@@ -272,6 +279,11 @@ textarea {
   align-items: flex-start;
 }
 
+.dialog-header--actions-only {
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
 .panel-header h2,
 .dialog-header h3,
 .details-section h3,
@@ -297,6 +309,29 @@ textarea {
   flex: 1;
 }
 
+.vault-platform-filter {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.vault-platform-filter__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.vault-platform-filter__header h2 {
+  margin: 0;
+}
+
+.platform-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
 .metric-card {
   display: grid;
   gap: 6px;
@@ -319,6 +354,18 @@ textarea {
   grid-template-columns: 250px minmax(0, 1fr) 360px;
   gap: 20px;
   align-items: start;
+}
+
+.vault-grid--sidebar-main {
+  grid-template-columns: 250px minmax(0, 1fr);
+}
+
+.vault-grid--main-details {
+  grid-template-columns: minmax(0, 1fr) 360px;
+}
+
+.vault-grid--main-only {
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .vault-column {
@@ -353,6 +400,11 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 4px;
+}
+
+.platform-filter-button {
+  width: auto;
+  min-width: 180px;
 }
 
 .account-list-item {
@@ -410,6 +462,11 @@ textarea {
   gap: 12px;
 }
 
+.details-grid--compact {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 16px;
+}
+
 .details-grid div {
   display: grid;
   gap: 4px;
@@ -438,6 +495,50 @@ textarea {
 
 .details-inline-note p {
   margin: 0;
+}
+
+.account-details-dialog {
+  width: min(100%, 840px);
+}
+
+.account-details-dialog .dialog-header {
+  margin-bottom: 6px;
+}
+
+.account-details-dialog .details-section {
+  gap: 12px;
+}
+
+.account-details-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.account-details-summary p {
+  margin: 4px 0 0;
+  color: #55606c;
+}
+
+.account-details-summary__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.account-details-dialog .details-inline-note {
+  padding: 12px 14px;
+}
+
+.account-details-dialog .metadata-item {
+  padding: 12px 14px;
+  border-radius: 16px;
+}
+
+.account-details-dialog .section-heading {
+  align-items: flex-start;
 }
 
 .details-section--danger {
@@ -794,6 +895,11 @@ textarea {
     grid-template-columns: 240px minmax(0, 1fr);
   }
 
+  .vault-grid--main-details,
+  .vault-grid--main-only {
+    grid-template-columns: 1fr;
+  }
+
   .vault-column--details {
     grid-column: 1 / -1;
   }
@@ -802,7 +908,8 @@ textarea {
 @media (max-width: 900px) {
   .vault-header-row,
   .panel-header,
-  .dialog-header {
+  .dialog-header,
+  .vault-platform-filter__header {
     flex-direction: column;
   }
 
@@ -832,6 +939,16 @@ textarea {
 
   .import-field-grid {
     grid-template-columns: 1fr;
+  }
+
+  .details-grid--compact {
+    grid-template-columns: 1fr;
+  }
+
+  .account-details-summary,
+  .account-details-summary__stats {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

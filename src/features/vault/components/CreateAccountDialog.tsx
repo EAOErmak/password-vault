@@ -55,11 +55,7 @@ export function CreateAccountDialog({
   return (
     <div className="dialog-backdrop" role="presentation">
       <div aria-modal="true" className="dialog-card" role="dialog">
-        <div className="dialog-header">
-          <div>
-            <h3>Create account</h3>
-            <p>Store the account record now. Account values and secrets come later.</p>
-          </div>
+        <div className="dialog-header dialog-header--actions-only">
           <button className="button-ghost" onClick={onClose} type="button">
             Close
           </button>
@@ -73,7 +69,7 @@ export function CreateAccountDialog({
                 Create platform
               </button>
               <button className="button-secondary" onClick={onClose} type="button">
-                Cancel
+                Close
               </button>
             </div>
           </div>

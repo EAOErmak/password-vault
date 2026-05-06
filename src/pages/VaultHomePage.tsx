@@ -13,13 +13,11 @@ import {
   updateAccountValue,
 } from "../features/vault/api/valueApi";
 import { AccountDetailsDialog } from "../features/vault/components/AccountDetailsDialog";
-import { AccountDetailsPanel } from "../features/vault/components/AccountDetailsPanel";
 import { BackupRestoreDialog } from "../features/vault/components/BackupRestoreDialog";
 import { AccountList } from "../features/vault/components/AccountList";
 import { CreateAccountDialog } from "../features/vault/components/CreateAccountDialog";
 import { CreatePlatformDialog } from "../features/vault/components/CreatePlatformDialog";
 import { ImportTxtDialog } from "../features/vault/components/ImportTxtDialog";
-import { PlatformSidebar } from "../features/vault/components/PlatformSidebar";
 import { VaultHeader } from "../features/vault/components/VaultHeader";
 import { VaultLayout } from "../features/vault/components/VaultLayout";
 import type {
@@ -104,18 +102,6 @@ export function VaultHomePage({
     setCreateAccountPlatformId(null);
     void loadSnapshot(null, "");
   }, [vaultPath]);
-
-  useEffect(() => {
-    if (!selectedAccountId) {
-      detailsRequestRef.current += 1;
-      setSelectedAccount(null);
-      setDetailsError(null);
-      setIsLoadingDetails(false);
-      return;
-    }
-
-    void requestAccountDetails(selectedAccountId);
-  }, [selectedAccountId]);
 
   useEffect(() => {
     if (sessionResetToken === lastSessionResetTokenRef.current) {
@@ -297,6 +283,7 @@ export function VaultHomePage({
       setSelectedAccountId(accountId);
       setSelectedAccount(null);
       setDetailsError(null);
+      void requestAccountDetails(accountId);
     } else if (!selectedAccount && !isLoadingDetails) {
       void requestAccountDetails(accountId);
     }
@@ -495,15 +482,6 @@ export function VaultHomePage({
   return (
     <>
       <VaultLayout
-        details={
-          <AccountDetailsPanel
-            account={selectedAccount}
-            errorMessage={detailsError}
-            hasAccounts={accounts.length > 0}
-            isLoading={isLoadingDetails}
-            onOpenDetails={handleOpenAccountDetails}
-          />
-        }
         header={
           <VaultHeader
             accountCount={accounts.length}
@@ -519,8 +497,11 @@ export function VaultHomePage({
             onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
             onRefresh={handleRefresh}
             onSearchChange={handleSearchChange}
+            onSelectPlatform={handleSelectPlatform}
             platformCount={platforms.length}
+            platforms={platforms}
             searchQuery={searchQuery}
+            selectedPlatformId={selectedPlatformId}
             vaultPath={vaultPath}
           />
         }
@@ -539,16 +520,8 @@ export function VaultHomePage({
             searchQuery={searchQuery}
             selectedAccountId={selectedAccountId}
             selectedPlatformName={selectedPlatformName}
-          />
-        }
-        sidebar={
-          <PlatformSidebar
-            errorMessage={dataError}
-            isLoading={isLoadingSnapshot}
-            onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
-            onSelectPlatform={handleSelectPlatform}
             platforms={platforms}
-            selectedPlatformId={selectedPlatformId}
+            onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
           />
         }
       />
