@@ -275,7 +275,6 @@ export function SecretsSection({
       <div className="section-heading">
         <h4>Secrets</h4>
         <div className="section-heading__actions">
-          <span>{account.secrets.length}</span>
           <button className="button-secondary button-small" onClick={handleOpenAdd} type="button">
             Add secret
           </button>
@@ -298,7 +297,7 @@ export function SecretsSection({
         </div>
       ) : (
         <div className="metadata-list">
-          {account.secrets.map((secret) => (
+          {[account.secrets.find(s => s.is_primary) || account.secrets[0]].filter(Boolean).map((secret) => (
             <SecretRow
               copied={copiedSecretId === secret.id}
               isBusy={

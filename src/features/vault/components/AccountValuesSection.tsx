@@ -174,7 +174,6 @@ export function AccountValuesSection({
       <div className="section-heading">
         <h4>Values</h4>
         <div className="section-heading__actions">
-          <span>{account.values.length}</span>
           <button className="button-secondary button-small" onClick={handleOpenAdd} type="button">
             Add value
           </button>
@@ -192,7 +191,7 @@ export function AccountValuesSection({
         </div>
       ) : (
         <div className="metadata-list">
-          {account.values.map((value) => (
+          {[account.values.find(v => v.is_primary) || account.values[0]].filter(Boolean).map((value) => (
             <AccountValueRow
               isBusy={isSubmitting || isLoadingHistory}
               key={value.id}
