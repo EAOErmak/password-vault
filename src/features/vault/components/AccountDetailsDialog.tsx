@@ -14,6 +14,7 @@ import {
 } from "../utils/formatters";
 import { AccountValuesSection } from "./AccountValuesSection";
 import { SecretsSection } from "./SecretsSection";
+import { DeleteAccountConfirmDialog } from "./DeleteAccountConfirmDialog";
 
 type AccountDetailsDialogProps = {
   account: AccountDetails | null;
@@ -46,33 +47,34 @@ export function AccountDetailsDialog({
 }: AccountDetailsDialogProps) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
       setDeleteError(null);
       setIsDeleting(false);
+      setIsConfirmDeleteOpen(false);
     }
   }, [isOpen]);
 
   useEffect(() => {
     setDeleteError(null);
     setIsDeleting(false);
+    setIsConfirmDeleteOpen(false);
   }, [account?.id]);
 
   if (!isOpen) {
     return null;
   }
-
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!account) {
       return;
     }
+    setIsConfirmDeleteOpen(true);
+  };
 
-    const accountLabel = account.name?.trim() || account.platform.name;
-    const confirmed = window.confirm(
-      `Soft-delete "${accountLabel}" and hide its values and secrets from the active vault view?`,
-    );
-    if (!confirmed) {
+  const handleConfirmDelete = async () => {
+    if (!account) {
       return;
     }
 
@@ -103,7 +105,6 @@ export function AccountDetailsDialog({
         <div className="dialog-header">
           <div>
             <h3>Account details</h3>
-            <p>Review values and secrets without exposing protected secret data by default.</p>
           </div>
           <button className="button-ghost" onClick={onClose} type="button">
             Close
@@ -147,9 +148,7 @@ export function AccountDetailsDialog({
                 <span className="summary-label">Notes</span>
                 <p>{formatOptionalText(account.notes, "No notes.")}</p>
               </div>
-              <div className="details-inline-note">
-                <p>Use History for change records and Reveal only when a secret value is needed.</p>
-              </div>
+
             </section>
 
             <AccountValuesSection
@@ -188,6 +187,16 @@ export function AccountDetailsDialog({
             </section>
           </div>
         ) : null}
+
+        {account && (
+          <DeleteAccountConfirmDialog
+            account={account}
+            isDeleting={isDeleting}
+            isOpen={isConfirmDeleteOpen}
+            onClose={() => setIsConfirmDeleteOpen(false)}
+            onConfirm={handleConfirmDelete}
+          />
+        )}
       </div>
     </div>
   );

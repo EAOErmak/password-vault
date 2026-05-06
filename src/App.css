@@ -499,6 +499,12 @@ textarea {
 
 .account-details-dialog {
   width: min(100%, 840px);
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.account-details-dialog::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 .account-details-dialog .dialog-header {
