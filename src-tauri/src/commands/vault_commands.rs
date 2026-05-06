@@ -60,3 +60,21 @@ pub fn get_vault_status(state: State<'_, AppState>) -> CommandResult<VaultStatus
     let service = VaultService;
     into_command_result(service.get_vault_status(state.inner()))
 }
+
+#[tauri::command]
+pub fn store_auto_unlock(
+    path: String,
+    mut master_password: String,
+    expires_in_ms: u64,
+) -> CommandResult<()> {
+    let service = VaultService;
+    let result = service.store_auto_unlock(&path, &master_password, expires_in_ms);
+    master_password.zeroize();
+    into_command_result(result)
+}
+
+#[tauri::command]
+pub fn attempt_auto_unlock(state: State<'_, AppState>) -> CommandResult<VaultStatusDto> {
+    let service = VaultService;
+    into_command_result(service.attempt_auto_unlock(state.inner()))
+}

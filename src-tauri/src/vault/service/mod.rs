@@ -5,3 +5,4 @@ pub mod platform_service;
 pub mod secret_service;
 pub mod value_service;
 pub mod vault_service;
+pub mod keychain_service;

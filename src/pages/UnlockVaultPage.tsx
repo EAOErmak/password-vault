@@ -4,7 +4,7 @@ type UnlockVaultPageProps = {
   errorMessage: string | null;
   initialPath: string | null;
   isSubmitting: boolean;
-  onSubmit: (path: string, masterPassword: string) => Promise<void>;
+  onSubmit: (path: string, masterPassword: string, autoLockMs: number | null) => Promise<void>;
   onSwitchToCreate: () => void;
   statusMessage: string | null;
 };
@@ -19,6 +19,7 @@ export function UnlockVaultPage({
 }: UnlockVaultPageProps) {
   const [path, setPath] = useState(initialPath ?? "");
   const [masterPassword, setMasterPassword] = useState("");
+  const [autoLockMs, setAutoLockMs] = useState<number | null>(5 * 60 * 1000); // Default to 5 mins
 
   useEffect(() => {
     setPath(initialPath ?? "");
@@ -28,7 +29,7 @@ export function UnlockVaultPage({
     event.preventDefault();
 
     try {
-      await onSubmit(path, masterPassword);
+      await onSubmit(path, masterPassword, autoLockMs);
     } finally {
       setMasterPassword("");
     }
@@ -68,6 +69,22 @@ export function UnlockVaultPage({
             type="password"
             value={masterPassword}
           />
+        </label>
+
+        <label className="field">
+          <span>Stay logged in for</span>
+          <select
+            disabled={isSubmitting}
+            onChange={(e) => setAutoLockMs(e.target.value === "never" ? null : parseInt(e.target.value, 10))}
+            value={autoLockMs === null ? "never" : autoLockMs.toString()}
+          >
+            <option value="300000">5 minutes</option>
+            <option value="900000">15 minutes</option>
+            <option value="1800000">30 minutes</option>
+            <option value="3600000">1 hour</option>
+            <option value="14400000">4 hours</option>
+            <option value="never">Until app is closed</option>
+          </select>
         </label>
 
         {statusMessage ? <p className="status-toast">{statusMessage}</p> : null}

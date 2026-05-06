@@ -9,6 +9,8 @@ import {
   normalizeVaultPath,
   readKnownVaultPath,
   storeKnownVaultPath,
+  attemptAutoUnlock,
+  storeAutoUnlock,
   type VaultStatus,
   unlockVault,
 } from "./lib/vault";
@@ -23,6 +25,7 @@ function App() {
   const isLockingRef = useRef(false);
 
   const [view, setView] = useState<AppView>("loading");
+  const [autoLockTimeout, setAutoLockTimeout] = useState<number | null>(AUTO_LOCK_TIMEOUT_MS);
   const [vaultStatus, setVaultStatus] = useState<VaultStatus | null>(null);
   const [knownVaultPath, setKnownVaultPath] = useState<string | null>(() =>
     readKnownVaultPath(),
@@ -55,9 +58,12 @@ function App() {
 
     const scheduleAutoLock = () => {
       clearAutoLockTimer();
+      if (autoLockTimeout === null) {
+        return;
+      }
       autoLockTimerRef.current = window.setTimeout(() => {
         void handleAutoLock();
-      }, AUTO_LOCK_TIMEOUT_MS);
+      }, autoLockTimeout);
     };
 
     const handleActivity = () => {
@@ -82,7 +88,7 @@ function App() {
       window.removeEventListener("scroll", handleActivity);
       clearAutoLockTimer();
     };
-  }, [isBusy, view]);
+  }, [isBusy, view, autoLockTimeout]);
 
   const syncVaultStatus = async () => {
     setErrorMessage(null);
@@ -90,6 +96,12 @@ function App() {
     setView("loading");
 
     try {
+      const autoStatus = await attemptAutoUnlock();
+      if (autoStatus.is_unlocked) {
+        applyVaultStatus(autoStatus, readKnownVaultPath());
+        return;
+      }
+
       const status = await getVaultStatus();
       applyVaultStatus(status, readKnownVaultPath());
     } catch (error) {
@@ -136,13 +148,17 @@ function App() {
     }
   };
 
-  const handleUnlockVault = async (path: string, masterPassword: string) => {
+  const handleUnlockVault = async (path: string, masterPassword: string, autoLockMs: number | null) => {
     setIsBusy(true);
     setErrorMessage(null);
     setStatusMessage(null);
+    setAutoLockTimeout(autoLockMs);
 
     try {
       const status = await unlockVault(path, masterPassword);
+      if (autoLockMs !== null) {
+        await storeAutoUnlock(path, masterPassword, autoLockMs).catch(console.error);
+      }
       const fallbackPath = storeKnownVaultPath(path);
       applyVaultStatus(status, fallbackPath);
     } catch (error) {

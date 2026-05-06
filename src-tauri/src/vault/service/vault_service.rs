@@ -8,6 +8,8 @@ use crate::vault::db::connection::{create_encrypted_database, open_encrypted_dat
 use crate::vault::dto::backup_dto::{ExportEncryptedBackupDto, RestoreEncryptedBackupDto};
 use crate::vault::dto::VaultStatusDto;
 use crate::vault::error::VaultError;
+use crate::vault::service::keychain_service::{AutoUnlockPayload, KeychainService};
+use std::time::{SystemTime, UNIX_EPOCH};
 
 pub struct VaultService;
 
@@ -44,6 +46,53 @@ impl VaultService {
 
     pub fn lock_vault(&self, state: &AppState) -> Result<VaultStatusDto, VaultError> {
         state.clear_session()?;
+        let _ = KeychainService::clear_session(); // ignore error if not found
+        self.get_vault_status(state)
+    }
+
+    pub fn store_auto_unlock(
+        &self,
+        path: &str,
+        master_password: &str,
+        expires_in_ms: u64,
+    ) -> Result<(), VaultError> {
+        let now = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .map_err(|e| VaultError::Internal(e.to_string()))?
+            .as_millis() as u64;
+
+        let payload = AutoUnlockPayload {
+            master_password: master_password.to_string(),
+            path: self.parse_path(path)?.display().to_string(),
+            expires_at: now + expires_in_ms,
+        };
+
+        KeychainService::store_session(&payload)
+    }
+
+    pub fn attempt_auto_unlock(&self, state: &AppState) -> Result<VaultStatusDto, VaultError> {
+        if let Some(mut payload) = KeychainService::get_session()? {
+            let now = SystemTime::now()
+                .duration_since(UNIX_EPOCH)
+                .map_err(|e| VaultError::Internal(e.to_string()))?
+                .as_millis() as u64;
+
+            if now < payload.expires_at {
+                let result = self.unlock_vault(state, &payload.path, &payload.master_password);
+                use zeroize::Zeroize;
+                payload.master_password.zeroize();
+                
+                if result.is_err() {
+                    let _ = KeychainService::clear_session();
+                }
+                return result;
+            } else {
+                let _ = KeychainService::clear_session();
+                use zeroize::Zeroize;
+                payload.master_password.zeroize();
+            }
+        }
+
         self.get_vault_status(state)
     }
 

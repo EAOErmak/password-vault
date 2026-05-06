@@ -52,6 +52,22 @@ export function lockVault(): Promise<VaultStatus> {
   return invoke<VaultStatus>("lock_vault");
 }
 
+export function attemptAutoUnlock(): Promise<VaultStatus> {
+  return invoke<VaultStatus>("attempt_auto_unlock");
+}
+
+export function storeAutoUnlock(
+  path: string,
+  masterPassword: string,
+  expiresInMs: number,
+): Promise<void> {
+  return invoke<void>("store_auto_unlock", {
+    path,
+    masterPassword,
+    expiresInMs,
+  });
+}
+
 export function getVaultErrorMessage(error: unknown): string {
   const rawMessage = error instanceof Error ? error.message : String(error);
   const message = rawMessage.replace("validation failed:", "").trim();
