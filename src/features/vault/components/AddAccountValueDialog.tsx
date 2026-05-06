@@ -68,14 +68,16 @@ export function AddAccountValueDialog({
             <h3>Add value</h3>
             <p>Add a non-secret account identifier.</p>
           </div>
-          <button className="button-ghost" onClick={onClose} type="button">
-            Close
-          </button>
         </div>
 
         <form className="vault-form" onSubmit={handleSubmit}>
-          <label className="field">
-            <span>Type</span>
+          <div className="field">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span className="summary-label">Type</span>
+              <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
+                Close
+              </button>
+            </div>
             <select
               className="select-input"
               disabled={isSubmitting}
@@ -88,7 +90,7 @@ export function AddAccountValueDialog({
                 </option>
               ))}
             </select>
-          </label>
+          </div>
 
           <label className="field">
             <span>Label</span>

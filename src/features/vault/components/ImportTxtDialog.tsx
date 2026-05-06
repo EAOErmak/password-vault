@@ -123,15 +123,17 @@ export function ImportTxtDialog({
               Preview and confirm every mapping before anything is written into the encrypted vault.
             </p>
           </div>
-          <button className="button-ghost" disabled={isBusy} onClick={onClose} type="button">
-            Close
-          </button>
         </div>
 
         {step === "select" ? (
           <div className="vault-form">
-            <label className="field">
-              <span>TXT file</span>
+            <div className="field">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="summary-label">TXT file</span>
+                <button className="button-ghost button-small" disabled={isBusy} onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
+                  Close
+                </button>
+              </div>
               <input
                 accept=".txt,text/plain"
                 disabled={isBusy}
@@ -144,7 +146,7 @@ export function ImportTxtDialog({
                 ref={fileInputRef}
                 type="file"
               />
-            </label>
+            </div>
 
             <p className="field-helper">
               The original plaintext file will not be deleted automatically.

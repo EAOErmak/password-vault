@@ -41,14 +41,16 @@ export function CreatePlatformDialog({
             <h3>Create platform</h3>
             <p>Add a platform to group related accounts.</p>
           </div>
-          <button className="button-ghost" onClick={onClose} type="button">
-            Close
-          </button>
         </div>
 
         <form className="vault-form" onSubmit={handleSubmit}>
-          <label className="field">
-            <span>Platform name</span>
+          <div className="field">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span className="summary-label">Platform name</span>
+              <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
+                Close
+              </button>
+            </div>
             <input
               autoComplete="off"
               disabled={isSubmitting}
@@ -57,7 +59,7 @@ export function CreatePlatformDialog({
               type="text"
               value={name}
             />
-          </label>
+          </div>
 
           {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
 

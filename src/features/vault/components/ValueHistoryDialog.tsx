@@ -33,7 +33,10 @@ export function ValueHistoryDialog({
               {value.label} - {formatEnumLabel(value.value_type)}
             </p>
           </div>
-          <button className="button-ghost" onClick={onClose} type="button">
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: "16px" }}>
+          <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
             Close
           </button>
         </div>

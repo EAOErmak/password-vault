@@ -28,9 +28,6 @@ export function RevealSecretDialog({
             <h3>Reveal secret</h3>
             <p>Close this dialog to remove the revealed value from React state.</p>
           </div>
-          <button className="button-ghost" onClick={onClose} type="button">
-            Hide
-          </button>
         </div>
 
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
@@ -38,12 +35,17 @@ export function RevealSecretDialog({
 
         {!isLoading && secret ? (
           <div className="revealed-secret">
-            <div className="metadata-item__header">
-              <div className="value-row__title">
+            <div className="metadata-item__header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+              <div className="value-row__title" style={{ flexGrow: 1 }}>
                 <strong>{secret.label}</strong>
                 <span className="value-row__type">{formatEnumLabel(secret.secret_type)}</span>
               </div>
-              {secret.is_primary ? <span className="pill">Primary</span> : null}
+              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                {secret.is_primary ? <span className="pill">Primary</span> : null}
+                <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-4px -8px -4px 0" }}>
+                  Hide
+                </button>
+              </div>
             </div>
 
             <pre className="revealed-secret__value">{secret.secret_value}</pre>

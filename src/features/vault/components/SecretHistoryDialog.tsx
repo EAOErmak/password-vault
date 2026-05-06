@@ -37,12 +37,14 @@ export function SecretHistoryDialog({
               {secret.label} - {formatEnumLabel(secret.secret_type)}
             </p>
           </div>
-          <button className="button-ghost" onClick={onClose} type="button">
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <p className="field-helper" style={{ margin: 0 }}>Historical secret values remain hidden by default.</p>
+          <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
             Close
           </button>
         </div>
-
-        <p className="field-helper">Historical secret values remain hidden by default.</p>
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 

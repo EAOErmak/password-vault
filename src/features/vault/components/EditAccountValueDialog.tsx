@@ -68,16 +68,18 @@ export function EditAccountValueDialog({
             <h3>Edit value</h3>
             <p>Update the stored identifier. History stays in the Rust backend.</p>
           </div>
-          <button className="button-ghost" onClick={onClose} type="button">
-            Close
-          </button>
         </div>
 
         <form className="vault-form" onSubmit={handleSubmit}>
-          <label className="field">
-            <span>Type</span>
+          <div className="field">
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <span className="summary-label">Type</span>
+              <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
+                Close
+              </button>
+            </div>
             <input disabled type="text" value={formatEnumLabel(value.value_type)} />
-          </label>
+          </div>
 
           <label className="field">
             <span>Label</span>

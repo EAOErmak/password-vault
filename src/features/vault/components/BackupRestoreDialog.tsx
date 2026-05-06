@@ -113,9 +113,6 @@ export function BackupRestoreDialog({
               available here.
             </p>
           </div>
-          <button className="button-ghost" disabled={isBusy} onClick={onClose} type="button">
-            Close
-          </button>
         </div>
 
         <div className="backup-sections">
@@ -128,8 +125,13 @@ export function BackupRestoreDialog({
               </p>
             </div>
 
-            <label className="field">
-              <span>Destination path or folder</span>
+            <div className="field">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="summary-label">Destination path or folder</span>
+                <button className="button-ghost button-small" disabled={isBusy} onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
+                  Close
+                </button>
+              </div>
               <input
                 autoComplete="off"
                 disabled={isBusy}
@@ -143,7 +145,7 @@ export function BackupRestoreDialog({
                 type="text"
                 value={exportPath}
               />
-            </label>
+            </div>
 
             {exportStatusMessage ? <p className="status-toast">{exportStatusMessage}</p> : null}
             {exportErrorMessage ? <p className="error-banner">{exportErrorMessage}</p> : null}
