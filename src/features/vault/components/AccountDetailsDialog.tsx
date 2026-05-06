@@ -91,8 +91,14 @@ export function AccountDetailsDialog({
     <div className="dialog-backdrop" role="presentation">
       <div
         aria-modal="true"
-        className="dialog-card dialog-card--wide dialog-card--scrollable account-details-dialog"
+        className="dialog-card dialog-card--scrollable account-details-dialog"
         role="dialog"
+        style={{
+          background: "linear-gradient(180deg, #f4f7f9 0%, #eef3f6 100%)",
+          boxShadow: "0 20px 40px rgba(25, 33, 38, 0.12)",
+          border: "1px solid rgba(25, 33, 38, 0.08)",
+          borderRadius: "24px"
+        }}
       >
         <div className="dialog-header">
           <div>

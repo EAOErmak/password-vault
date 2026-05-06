@@ -55,12 +55,6 @@ export function CreateAccountDialog({
   return (
     <div className="dialog-backdrop" role="presentation">
       <div aria-modal="true" className="dialog-card" role="dialog">
-        <div className="dialog-header dialog-header--actions-only">
-          <button className="button-ghost" onClick={onClose} type="button">
-            Close
-          </button>
-        </div>
-
         {!hasPlatforms ? (
           <div className="empty-state">
             <p>Create a platform before adding an account.</p>
@@ -75,8 +69,13 @@ export function CreateAccountDialog({
           </div>
         ) : (
           <form className="vault-form" onSubmit={handleSubmit}>
-            <label className="field">
-              <span>Platform</span>
+            <div className="field">
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <span className="summary-label">Platform</span>
+                <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
+                  Close
+                </button>
+              </div>
               <select
                 className="select-input"
                 disabled={isSubmitting}
@@ -89,7 +88,7 @@ export function CreateAccountDialog({
                   </option>
                 ))}
               </select>
-            </label>
+            </div>
 
             <label className="field">
               <span>Account name</span>
