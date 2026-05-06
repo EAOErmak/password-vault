@@ -112,24 +112,6 @@ impl SecretRepository {
         rows.into_iter().map(Self::build_secret_metadata).collect()
     }
 
-    pub fn count_active_by_account(
-        executor: &impl SqlExecutor,
-        account_id: Uuid,
-    ) -> Result<usize, VaultError> {
-        let count: i64 = executor.connection().query_row(
-            "SELECT COUNT(1)
-             FROM secrets s
-             INNER JOIN accounts a ON a.id = s.account_id
-             WHERE s.account_id = ?1
-               AND s.deleted_at IS NULL
-               AND a.deleted_at IS NULL",
-            params![account_id.to_string()],
-            |row| row.get(0),
-        )?;
-
-        Ok(count as usize)
-    }
-
     pub fn find_active_by_id(
         executor: &impl SqlExecutor,
         secret_id: Uuid,

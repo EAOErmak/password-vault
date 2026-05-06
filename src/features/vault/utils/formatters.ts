@@ -20,7 +20,7 @@ export function formatEnumLabel(value: string): string {
 }
 
 export function formatOptionalName(value: string | null): string {
-  return value?.trim() ? value : "Untitled account";
+  return value?.trim() ? value : "-";
 }
 
 export function formatOptionalText(

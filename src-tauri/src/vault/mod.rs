@@ -312,6 +312,7 @@ mod tests {
 
         assert_eq!(accounts.len(), 1);
         assert_eq!(accounts[0].secret_count, 1);
+        assert!(!serialized.contains("\"secret_value\""));
         assert!(!serialized.contains("secret-not-for-lists"));
     }
 
@@ -341,6 +342,7 @@ mod tests {
         let details_json = serde_json::to_string(&details).unwrap();
         let revealed = secret_service.reveal_secret(&state, metadata.id).unwrap();
 
+        assert!(!details_json.contains("\"secret_value\""));
         assert!(!details_json.contains("reveal-me-once"));
         assert_eq!(revealed.secret_value, "reveal-me-once");
     }

@@ -1,12 +1,4 @@
-import type {
-  AccountDetails,
-  AddAccountValueRequest,
-  AddSecretRequest,
-  UpdateAccountValueRequest,
-  UpdateSecretRequest,
-} from "../types";
-import { AccountValuesSection } from "./AccountValuesSection";
-import { SecretsSection } from "./SecretsSection";
+import type { AccountDetails } from "../types";
 import {
   formatDateTime,
   formatOptionalName,
@@ -18,12 +10,7 @@ type AccountDetailsPanelProps = {
   errorMessage: string | null;
   hasAccounts: boolean;
   isLoading: boolean;
-  onAddValue: (accountId: string, request: AddAccountValueRequest) => Promise<void>;
-  onDeleteValue: (valueId: string) => Promise<void>;
-  onUpdateValue: (valueId: string, request: UpdateAccountValueRequest) => Promise<void>;
-  onAddSecret: (accountId: string, request: AddSecretRequest) => Promise<void>;
-  onDeleteSecret: (secretId: string) => Promise<void>;
-  onUpdateSecret: (secretId: string, request: UpdateSecretRequest) => Promise<void>;
+  onOpenDetails: (accountId: string) => void;
 };
 
 export function AccountDetailsPanel({
@@ -31,19 +18,14 @@ export function AccountDetailsPanel({
   errorMessage,
   hasAccounts,
   isLoading,
-  onAddValue,
-  onDeleteValue,
-  onUpdateValue,
-  onAddSecret,
-  onDeleteSecret,
-  onUpdateSecret,
+  onOpenDetails,
 }: AccountDetailsPanelProps) {
   return (
     <section className="vault-card panel-card">
       <div className="panel-header">
         <div>
-          <h2>Account details</h2>
-          <p>Secret values remain hidden.</p>
+          <h2>Selected account</h2>
+          <p>Review safe metadata here, then open full details for history and secret actions.</p>
         </div>
       </div>
 
@@ -53,7 +35,7 @@ export function AccountDetailsPanel({
 
       {!isLoading && !account ? (
         <div className="empty-state empty-state--compact">
-          <p>{hasAccounts ? "Select an account to see its metadata." : "No selected account."}</p>
+          <p>{hasAccounts ? "Select an account row to preview it." : "No selected account."}</p>
         </div>
       ) : null}
 
@@ -63,8 +45,20 @@ export function AccountDetailsPanel({
             <h3>{formatOptionalName(account.name)}</h3>
             <dl className="details-grid">
               <div>
+                <dt>Name</dt>
+                <dd>{formatOptionalName(account.name)}</dd>
+              </div>
+              <div>
                 <dt>Platform</dt>
                 <dd>{account.platform.name}</dd>
+              </div>
+              <div>
+                <dt>Values</dt>
+                <dd>{account.values.length}</dd>
+              </div>
+              <div>
+                <dt>Secrets</dt>
+                <dd>{account.secrets.length}</dd>
               </div>
               <div>
                 <dt>Created</dt>
@@ -79,21 +73,16 @@ export function AccountDetailsPanel({
               <span className="summary-label">Notes</span>
               <p>{formatOptionalText(account.notes, "No notes.")}</p>
             </div>
+            <div className="actions">
+              <button
+                className="button-primary"
+                onClick={() => onOpenDetails(account.id)}
+                type="button"
+              >
+                Open details
+              </button>
+            </div>
           </section>
-
-          <AccountValuesSection
-            account={account}
-            onAddValue={onAddValue}
-            onDeleteValue={onDeleteValue}
-            onUpdateValue={onUpdateValue}
-          />
-
-          <SecretsSection
-            account={account}
-            onAddSecret={onAddSecret}
-            onDeleteSecret={onDeleteSecret}
-            onUpdateSecret={onUpdateSecret}
-          />
         </div>
       ) : null}
     </section>

@@ -59,8 +59,8 @@ impl AccountService {
                 .into_iter()
                 .map(|record| {
                     let values = ValueRepository::list_by_account(connection, record.account.id)?;
-                    let secret_count =
-                        SecretRepository::count_active_by_account(connection, record.account.id)?;
+                    let secrets =
+                        SecretRepository::list_metadata_by_account(connection, record.account.id)?;
 
                     Ok(AccountListItemDto {
                         id: record.account.id,
@@ -68,7 +68,11 @@ impl AccountService {
                         platform: Self::to_platform_dto(record.platform),
                         notes: record.account.notes,
                         values: values.into_iter().map(Self::to_value_dto).collect(),
-                        secret_count,
+                        secret_count: secrets.len(),
+                        secrets: secrets
+                            .into_iter()
+                            .map(Self::to_secret_metadata_dto)
+                            .collect(),
                         created_at: record.account.created_at,
                         updated_at: record.account.updated_at,
                     })

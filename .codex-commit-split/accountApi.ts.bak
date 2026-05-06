@@ -5,11 +5,11 @@ import type {
   AccountSummary,
   AccountSummaryDto,
   AccountValueDto,
+  AccountValueMetadata,
   CreateAccountRequest,
   ListAccountsFilter,
   PlatformDto,
   SecretMetadataDto,
-  UpdateAccountRequest,
 } from "../types";
 
 function sanitizePlatform(platform: PlatformDto): PlatformDto {
@@ -21,6 +21,11 @@ function sanitizePlatform(platform: PlatformDto): PlatformDto {
     normalized_name,
     created_at,
   };
+}
+
+function sanitizeValueMetadata(value: AccountValueDto): AccountValueMetadata {
+  const { value: _ignoredValue, ...metadata } = value;
+  return metadata;
 }
 
 function sanitizeAccountValue(value: AccountValueDto): AccountValueDto {
@@ -71,7 +76,6 @@ function sanitizeAccountSummary(account: AccountSummaryDto): AccountSummary {
     updated_at,
     platform,
     values,
-    secrets,
   } = account;
 
   return {
@@ -82,8 +86,7 @@ function sanitizeAccountSummary(account: AccountSummaryDto): AccountSummary {
     created_at,
     updated_at,
     platform: sanitizePlatform(platform),
-    values: values.map(sanitizeAccountValue),
-    secrets: secrets.map(sanitizeSecretMetadata),
+    values: values.map(sanitizeValueMetadata),
   };
 }
 
@@ -139,22 +142,4 @@ export async function createAccount(
   });
 
   return sanitizeAccountDetails(account);
-}
-
-export async function updateAccount(
-  accountId: string,
-  request: UpdateAccountRequest,
-): Promise<AccountDetails> {
-  const account = await invoke<AccountDetailsDto>("update_account", {
-    accountId,
-    request,
-  });
-
-  return sanitizeAccountDetails(account);
-}
-
-export function softDeleteAccount(accountId: string): Promise<void> {
-  return invoke("soft_delete_account", {
-    accountId,
-  });
 }

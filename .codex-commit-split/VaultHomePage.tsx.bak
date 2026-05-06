@@ -1,24 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import {
-  createAccount,
-  getAccountDetails,
-  listAccounts,
-  softDeleteAccount,
-} from "../features/vault/api/accountApi";
+import { createAccount, getAccountDetails, listAccounts } from "../features/vault/api/accountApi";
 import { createPlatform, listPlatforms } from "../features/vault/api/platformApi";
-import { addSecret, softDeleteSecret, updateSecret } from "../features/vault/api/secretApi";
 import {
   addAccountValue,
   softDeleteAccountValue,
   updateAccountValue,
 } from "../features/vault/api/valueApi";
-import { AccountDetailsDialog } from "../features/vault/components/AccountDetailsDialog";
 import { AccountDetailsPanel } from "../features/vault/components/AccountDetailsPanel";
-import { BackupRestoreDialog } from "../features/vault/components/BackupRestoreDialog";
 import { AccountList } from "../features/vault/components/AccountList";
 import { CreateAccountDialog } from "../features/vault/components/CreateAccountDialog";
 import { CreatePlatformDialog } from "../features/vault/components/CreatePlatformDialog";
-import { ImportTxtDialog } from "../features/vault/components/ImportTxtDialog";
 import { PlatformSidebar } from "../features/vault/components/PlatformSidebar";
 import { VaultHeader } from "../features/vault/components/VaultHeader";
 import { VaultLayout } from "../features/vault/components/VaultLayout";
@@ -26,13 +17,10 @@ import type {
   AccountDetails,
   AccountSummary,
   AddAccountValueRequest,
-  AddSecretRequest,
   CreateAccountRequest,
   CreatePlatformRequest,
   PlatformDto,
-  RestoreEncryptedBackupDto,
   UpdateAccountValueRequest,
-  UpdateSecretRequest,
 } from "../features/vault/types";
 import { getVaultErrorMessage } from "../lib/vault";
 
@@ -40,9 +28,6 @@ type VaultHomePageProps = {
   errorMessage: string | null;
   isLocking: boolean;
   onLock: () => Promise<void>;
-  onRestoreComplete: (result: RestoreEncryptedBackupDto) => Promise<void> | void;
-  onRestoreInterrupted: (message: string) => Promise<void> | void;
-  sessionResetToken: number;
   vaultPath: string | null;
 };
 
@@ -55,18 +40,13 @@ export function VaultHomePage({
   errorMessage,
   isLocking,
   onLock,
-  onRestoreComplete,
-  onRestoreInterrupted,
-  sessionResetToken,
   vaultPath,
 }: VaultHomePageProps) {
   const snapshotRequestRef = useRef(0);
   const detailsRequestRef = useRef(0);
-  const lastSessionResetTokenRef = useRef(sessionResetToken);
 
   const [platforms, setPlatforms] = useState<PlatformDto[]>([]);
   const [selectedPlatformId, setSelectedPlatformId] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [accounts, setAccounts] = useState<AccountSummary[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState<string | null>(null);
   const [selectedAccount, setSelectedAccount] = useState<AccountDetails | null>(null);
@@ -76,9 +56,6 @@ export function VaultHomePage({
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isCreatePlatformOpen, setIsCreatePlatformOpen] = useState(false);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
-  const [isImportOpen, setIsImportOpen] = useState(false);
-  const [isBackupRestoreOpen, setIsBackupRestoreOpen] = useState(false);
-  const [isAccountDetailsOpen, setIsAccountDetailsOpen] = useState(false);
   const [isCreatingPlatform, setIsCreatingPlatform] = useState(false);
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [createPlatformError, setCreatePlatformError] = useState<string | null>(null);
@@ -88,7 +65,6 @@ export function VaultHomePage({
 
   useEffect(() => {
     setSelectedPlatformId(null);
-    setSearchQuery("");
     setSelectedAccountId(null);
     setSelectedAccount(null);
     setDataError(null);
@@ -97,12 +73,9 @@ export function VaultHomePage({
     setCreateAccountError(null);
     setIsCreatePlatformOpen(false);
     setIsCreateAccountOpen(false);
-    setIsImportOpen(false);
-    setIsBackupRestoreOpen(false);
-    setIsAccountDetailsOpen(false);
     setReturnToAccountDialog(false);
     setCreateAccountPlatformId(null);
-    void loadSnapshot(null, "");
+    void loadSnapshot(null);
   }, [vaultPath]);
 
   useEffect(() => {
@@ -116,28 +89,6 @@ export function VaultHomePage({
 
     void requestAccountDetails(selectedAccountId);
   }, [selectedAccountId]);
-
-  useEffect(() => {
-    if (sessionResetToken === lastSessionResetTokenRef.current) {
-      return;
-    }
-
-    lastSessionResetTokenRef.current = sessionResetToken;
-    snapshotRequestRef.current += 1;
-    detailsRequestRef.current += 1;
-    setSelectedAccountId(null);
-    setSelectedAccount(null);
-    setDetailsError(null);
-    setIsLoadingDetails(false);
-    setIsCreateAccountOpen(false);
-    setIsCreatePlatformOpen(false);
-    setIsImportOpen(false);
-    setIsBackupRestoreOpen(false);
-    setIsAccountDetailsOpen(false);
-    setCreateAccountError(null);
-    setCreatePlatformError(null);
-    setReturnToAccountDialog(false);
-  }, [sessionResetToken]);
 
   const requestAccountDetails = async (
     accountId: string,
@@ -177,12 +128,10 @@ export function VaultHomePage({
 
   const loadSnapshot = async (
     nextPlatformId: string | null,
-    nextSearchQuery: string,
     options: LoadSnapshotOptions = {},
   ) => {
     const requestId = snapshotRequestRef.current + 1;
     snapshotRequestRef.current = requestId;
-    const normalizedSearchQuery = nextSearchQuery.trim();
 
     setSelectedPlatformId(nextPlatformId);
     setIsLoadingSnapshot(true);
@@ -190,13 +139,9 @@ export function VaultHomePage({
     setDetailsError(null);
 
     try {
-      const filter = {
-        ...(nextPlatformId ? { platform_id: nextPlatformId } : {}),
-        ...(normalizedSearchQuery ? { search: normalizedSearchQuery } : {}),
-      };
       const [nextPlatforms, nextAccounts] = await Promise.all([
         listPlatforms(),
-        Object.keys(filter).length > 0 ? listAccounts(filter) : listAccounts(),
+        listAccounts(nextPlatformId ? { platform_id: nextPlatformId } : undefined),
       ]);
 
       if (snapshotRequestRef.current !== requestId) {
@@ -248,7 +193,7 @@ export function VaultHomePage({
   };
 
   const handleRefresh = async () => {
-    await loadSnapshot(selectedPlatformId, searchQuery, {
+    await loadSnapshot(selectedPlatformId, {
       preferredAccountId: selectedAccountId,
       seedDetails: selectedAccount,
     });
@@ -256,56 +201,20 @@ export function VaultHomePage({
 
   const refreshSelectedAccountContext = async (accountId: string) => {
     const details = await requestAccountDetails(accountId, false);
-    await loadSnapshot(selectedPlatformId, searchQuery, {
+    await loadSnapshot(selectedPlatformId, {
       preferredAccountId: accountId,
       seedDetails: details,
     });
   };
 
   const handleSelectPlatform = (platformId: string | null) => {
-    void loadSnapshot(platformId, searchQuery);
-  };
-
-  const handleSearchChange = (nextSearchQuery: string) => {
-    setSearchQuery(nextSearchQuery);
-    void loadSnapshot(selectedPlatformId, nextSearchQuery, {
-      preferredAccountId: selectedAccountId,
-      seedDetails: selectedAccount,
-    });
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    void loadSnapshot(selectedPlatformId, "", {
-      preferredAccountId: selectedAccountId,
-      seedDetails: selectedAccount,
-    });
+    void loadSnapshot(platformId);
   };
 
   const handleSelectAccount = (accountId: string) => {
-    if (selectedAccountId === accountId && selectedAccount) {
-      return;
-    }
-
     setSelectedAccountId(accountId);
     setSelectedAccount(null);
     setDetailsError(null);
-  };
-
-  const handleOpenAccountDetails = (accountId: string) => {
-    if (selectedAccountId !== accountId) {
-      setSelectedAccountId(accountId);
-      setSelectedAccount(null);
-      setDetailsError(null);
-    } else if (!selectedAccount && !isLoadingDetails) {
-      void requestAccountDetails(accountId);
-    }
-
-    setIsAccountDetailsOpen(true);
-  };
-
-  const handleCloseAccountDetails = () => {
-    setIsAccountDetailsOpen(false);
   };
 
   const handleOpenCreatePlatform = (shouldReturnToAccountDialog = false) => {
@@ -342,22 +251,6 @@ export function VaultHomePage({
     setCreateAccountError(null);
   };
 
-  const handleOpenImport = () => {
-    setIsImportOpen(true);
-  };
-
-  const handleCloseImport = () => {
-    setIsImportOpen(false);
-  };
-
-  const handleOpenBackupRestore = () => {
-    setIsBackupRestoreOpen(true);
-  };
-
-  const handleCloseBackupRestore = () => {
-    setIsBackupRestoreOpen(false);
-  };
-
   const handleCreatePlatform = async (request: CreatePlatformRequest) => {
     setIsCreatingPlatform(true);
     setCreatePlatformError(null);
@@ -369,7 +262,7 @@ export function VaultHomePage({
       setReturnToAccountDialog(false);
       setCreateAccountPlatformId(platform.id);
       setIsCreatePlatformOpen(false);
-      await loadSnapshot(platform.id, searchQuery);
+      await loadSnapshot(platform.id);
 
       if (shouldReturn) {
         setIsCreateAccountOpen(true);
@@ -389,7 +282,7 @@ export function VaultHomePage({
       const account = await createAccount(request);
       setIsCreateAccountOpen(false);
       setCreateAccountPlatformId(account.platform.id);
-      await loadSnapshot(account.platform.id, searchQuery, {
+      await loadSnapshot(account.platform.id, {
         preferredAccountId: account.id,
         seedDetails: account,
       });
@@ -429,62 +322,6 @@ export function VaultHomePage({
     await refreshSelectedAccountContext(selectedAccountId);
   };
 
-  const handleAddSecret = async (
-    accountId: string,
-    request: AddSecretRequest,
-  ) => {
-    await addSecret(accountId, request);
-    await refreshSelectedAccountContext(accountId);
-  };
-
-  const handleUpdateSecret = async (
-    secretId: string,
-    request: UpdateSecretRequest,
-  ) => {
-    if (!selectedAccountId) {
-      throw new Error("No account selected.");
-    }
-
-    await updateSecret(secretId, request);
-    await refreshSelectedAccountContext(selectedAccountId);
-  };
-
-  const handleDeleteSecret = async (secretId: string) => {
-    if (!selectedAccountId) {
-      throw new Error("No account selected.");
-    }
-
-    await softDeleteSecret(secretId);
-    await refreshSelectedAccountContext(selectedAccountId);
-  };
-
-  const handleUpdateAccountValueForAccount = async (
-    accountId: string,
-    valueId: string,
-    request: UpdateAccountValueRequest,
-  ) => {
-    await updateAccountValue(valueId, request);
-    await refreshSelectedAccountContext(accountId);
-  };
-
-  const handleUpdateSecretForAccount = async (
-    accountId: string,
-    secretId: string,
-    request: UpdateSecretRequest,
-  ) => {
-    await updateSecret(secretId, request);
-    await refreshSelectedAccountContext(accountId);
-  };
-
-  const handleDeleteAccount = async (accountId: string) => {
-    await softDeleteAccount(accountId);
-    setIsAccountDetailsOpen(false);
-    await loadSnapshot(selectedPlatformId, searchQuery, {
-      preferredAccountId: null,
-      seedDetails: null,
-    });
-  };
-
   const selectedPlatformName =
     selectedPlatformId === null
       ? null
@@ -501,7 +338,9 @@ export function VaultHomePage({
             errorMessage={detailsError}
             hasAccounts={accounts.length > 0}
             isLoading={isLoadingDetails}
-            onOpenDetails={handleOpenAccountDetails}
+            onAddValue={handleAddAccountValue}
+            onDeleteValue={handleDeleteAccountValue}
+            onUpdateValue={handleUpdateAccountValue}
           />
         }
         header={
@@ -512,15 +351,10 @@ export function VaultHomePage({
             isLoading={isLoadingSnapshot}
             isLocking={isLocking}
             onLock={onLock}
-            onOpenBackupRestore={handleOpenBackupRestore}
-            onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
-            onOpenImport={handleOpenImport}
             onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
             onRefresh={handleRefresh}
-            onSearchChange={handleSearchChange}
             platformCount={platforms.length}
-            searchQuery={searchQuery}
             vaultPath={vaultPath}
           />
         }
@@ -529,14 +363,8 @@ export function VaultHomePage({
             accounts={accounts}
             errorMessage={dataError}
             isLoading={isLoadingSnapshot}
-            onAddSecret={handleAddSecret}
-            onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
-            onOpenDetails={handleOpenAccountDetails}
             onSelectAccount={handleSelectAccount}
-            onUpdateSecret={handleUpdateSecretForAccount}
-            onUpdateValue={handleUpdateAccountValueForAccount}
-            searchQuery={searchQuery}
             selectedAccountId={selectedAccountId}
             selectedPlatformName={selectedPlatformName}
           />
@@ -570,35 +398,6 @@ export function VaultHomePage({
         onOpenCreatePlatform={() => handleOpenCreatePlatform(true)}
         onSubmit={handleCreateAccount}
         platforms={platforms}
-      />
-
-      <ImportTxtDialog
-        isOpen={isImportOpen}
-        onClose={handleCloseImport}
-        onImportComplete={handleRefresh}
-      />
-
-      <BackupRestoreDialog
-        isOpen={isBackupRestoreOpen}
-        onClose={handleCloseBackupRestore}
-        onRestoreComplete={onRestoreComplete}
-        onRestoreInterrupted={onRestoreInterrupted}
-        vaultPath={vaultPath}
-      />
-
-      <AccountDetailsDialog
-        account={selectedAccount}
-        errorMessage={detailsError}
-        isLoading={isLoadingDetails}
-        isOpen={isAccountDetailsOpen}
-        onAddValue={handleAddAccountValue}
-        onAddSecret={handleAddSecret}
-        onClose={handleCloseAccountDetails}
-        onDeleteAccount={handleDeleteAccount}
-        onDeleteSecret={handleDeleteSecret}
-        onDeleteValue={handleDeleteAccountValue}
-        onUpdateSecret={handleUpdateSecret}
-        onUpdateValue={handleUpdateAccountValue}
       />
     </>
   );

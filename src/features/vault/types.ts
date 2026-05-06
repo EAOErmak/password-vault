@@ -77,6 +77,7 @@ export type AccountSummaryDto = {
   platform: PlatformDto;
   notes: string | null;
   values: AccountValueDto[];
+  secrets: SecretMetadataDto[];
   secret_count: number;
   created_at: string;
   updated_at: string;
@@ -93,14 +94,24 @@ export type AccountDetailsDto = {
   updated_at: string;
 };
 
-export type AccountValueMetadata = Omit<AccountValueDto, "value">;
-
-export type AccountSummary = Omit<AccountSummaryDto, "values"> & {
-  values: AccountValueMetadata[];
-};
+export type AccountSummary = AccountSummaryDto;
 
 export type AccountDetails = Omit<AccountDetailsDto, "secrets"> & {
   secrets: SecretMetadataDto[];
+};
+
+export type AccountTableRow = {
+  accountId: string;
+  accountName: string | null;
+  platformName: string;
+  valueId: string | null;
+  value: string | null;
+  valueType: AccountValueType | null;
+  hasAnyPasswordSecret: boolean;
+  primaryPasswordSecretId: string | null;
+  hasPrimaryPasswordSecret: boolean;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type CreatePlatformRequest = {

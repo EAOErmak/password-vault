@@ -33,6 +33,7 @@ pub struct AccountListItemDto {
     pub platform: PlatformDto,
     pub notes: Option<String>,
     pub values: Vec<AccountValueDto>,
+    pub secrets: Vec<SecretMetadataDto>,
     pub secret_count: usize,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
