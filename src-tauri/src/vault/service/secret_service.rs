@@ -27,15 +27,25 @@ impl SecretService {
 
         state.with_connection_mut(|connection| {
             Self::ensure_account_exists(connection, account_id)?;
+            
+            let now = now_utc();
+            let transaction = connection.transaction()?;
+
+            if request.is_primary {
+                SecretRepository::demote_all_primaries(&transaction, account_id, &now)?;
+            }
+
             let secret = SecretRepository::create(
-                connection,
+                &transaction,
                 account_id,
                 &request.secret_type,
                 &label,
                 &request.secret_value,
                 request.is_primary,
-                &now_utc(),
+                &now,
             )?;
+            
+            transaction.commit()?;
 
             Ok(Self::to_metadata_dto(secret))
         })
@@ -67,6 +77,10 @@ impl SecretService {
                         changed_at: now.clone(),
                     };
                     SecretRepository::insert_history(&transaction, &history)?;
+                }
+
+                if request.is_primary {
+                    SecretRepository::demote_all_primaries(&transaction, current.account_id, &now)?;
                 }
 
                 let updated = SecretRepository::update(

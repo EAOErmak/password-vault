@@ -1,6 +1,7 @@
 import type { SecretHistoryDto, SecretMetadataDto } from "../types";
 import { formatDateTime, formatEnumLabel } from "../utils/formatters";
 import { HistoryTimeline } from "./HistoryTimeline";
+import { SecretRow } from "./SecretRow";
 
 type SecretHistoryDialogProps = {
   errorMessage: string | null;
@@ -9,6 +10,14 @@ type SecretHistoryDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   secret: SecretMetadataDto | null;
+  otherSecrets?: SecretMetadataDto[];
+  onCopy?: (secret: SecretMetadataDto) => Promise<void>;
+  onDelete?: (secret: SecretMetadataDto) => void;
+  onEdit?: (secret: SecretMetadataDto) => void;
+  onHistory?: (secret: SecretMetadataDto) => Promise<void>;
+  onReveal?: (secret: SecretMetadataDto) => Promise<void>;
+  copiedSecretId?: string | null;
+  isCopyingSecretId?: string | null;
 };
 
 function renderMaskedValue(hasValue: boolean): string {
@@ -22,6 +31,14 @@ export function SecretHistoryDialog({
   isOpen,
   onClose,
   secret,
+  otherSecrets,
+  onCopy,
+  onDelete,
+  onEdit,
+  onHistory,
+  onReveal,
+  copiedSecretId,
+  isCopyingSecretId,
 }: SecretHistoryDialogProps) {
   if (!isOpen || !secret) {
     return null;
@@ -53,38 +70,32 @@ export function SecretHistoryDialog({
                 Close
               </button>
             </div>
-            <p>
-              {secret.label} - {formatEnumLabel(secret.secret_type)}
-            </p>
           </div>
         </div>
 
-        <p className="field-helper">Historical secret values remain hidden by default.</p>
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 
-        {!isLoading ? (
-          <HistoryTimeline
-            columns={[
-              { key: "changedAt", label: "Changed" },
-              { key: "oldValue", label: "Old value" },
-              { key: "newValue", label: "New value" },
-            ]}
-            emptyMessage="No history yet."
-            rows={history.map((entry) => ({
-              id: entry.id,
-              cells: [
-                formatDateTime(entry.changed_at),
-                <span className="secret-row__masked" key={`${entry.id}:old`}>
-                  {renderMaskedValue(entry.has_old_value)}
-                </span>,
-                <span className="secret-row__masked" key={`${entry.id}:new`}>
-                  {renderMaskedValue(entry.has_new_value)}
-                </span>,
-              ],
-            }))}
-          />
-        ) : null}
+        {otherSecrets && otherSecrets.length > 0 && onCopy && onDelete && onEdit && onHistory && onReveal && (
+          <div style={{ marginTop: "16px" }}>
+            <div className="metadata-list">
+              {otherSecrets.map((s) => (
+                <SecretRow
+                  copied={copiedSecretId === s.id}
+                  isBusy={isLoading}
+                  isCopying={isCopyingSecretId === s.id}
+                  key={s.id}
+                  onCopy={onCopy}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                  onHistory={onHistory}
+                  onReveal={onReveal}
+                  secret={s}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

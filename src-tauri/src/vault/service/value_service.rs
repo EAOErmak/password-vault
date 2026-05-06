@@ -25,15 +25,25 @@ impl ValueService {
 
         state.with_connection_mut(|connection| {
             Self::ensure_account_exists(connection, account_id)?;
+            
+            let now = now_utc();
+            let transaction = connection.transaction()?;
+
+            if request.is_primary {
+                ValueRepository::demote_all_primaries(&transaction, account_id, &now)?;
+            }
+
             let account_value = ValueRepository::create(
-                connection,
+                &transaction,
                 account_id,
                 &request.value_type,
                 &label,
                 &value,
                 request.is_primary,
-                &now_utc(),
+                &now,
             )?;
+            
+            transaction.commit()?;
 
             Ok(Self::to_dto(account_value))
         })
@@ -67,6 +77,10 @@ impl ValueService {
                         changed_at: now.clone(),
                     };
                     ValueRepository::insert_history(&transaction, &history)?;
+                }
+
+                if request.is_primary {
+                    ValueRepository::demote_all_primaries(&transaction, current.account_id, &now)?;
                 }
 
                 let updated = ValueRepository::update(

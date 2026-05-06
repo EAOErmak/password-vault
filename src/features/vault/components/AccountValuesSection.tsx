@@ -228,6 +228,10 @@ export function AccountValuesSection({
         isOpen={historyValue !== null}
         onClose={handleCloseHistory}
         value={historyValue}
+        otherValues={account.values.filter(v => v.id !== (historyValue?.id))}
+        onDelete={handleDeleteClick}
+        onEdit={handleOpenEdit}
+        onHistory={handleOpenHistory}
       />
 
       <DeleteValueConfirmDialog

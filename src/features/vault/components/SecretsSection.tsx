@@ -351,6 +351,14 @@ export function SecretsSection({
         isOpen={historySecret !== null}
         onClose={handleCloseHistory}
         secret={historySecret}
+        otherSecrets={account.secrets.filter(s => s.id !== (historySecret?.id))}
+        onCopy={handleCopy}
+        onDelete={handleDeleteClick}
+        onEdit={handleOpenEdit}
+        onHistory={handleOpenHistory}
+        onReveal={handleReveal}
+        copiedSecretId={copiedSecretId}
+        isCopyingSecretId={isCopyingSecretId}
       />
 
       <DeleteSecretConfirmDialog

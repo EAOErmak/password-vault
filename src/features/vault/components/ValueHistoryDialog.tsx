@@ -1,6 +1,7 @@
 import type { AccountValueDto, AccountValueHistoryDto } from "../types";
 import { formatDateTime, formatEnumLabel } from "../utils/formatters";
 import { HistoryTimeline } from "./HistoryTimeline";
+import { AccountValueRow } from "./AccountValueRow";
 
 type ValueHistoryDialogProps = {
   errorMessage: string | null;
@@ -9,6 +10,10 @@ type ValueHistoryDialogProps = {
   isOpen: boolean;
   onClose: () => void;
   value: AccountValueDto | null;
+  otherValues?: AccountValueDto[];
+  onDelete?: (value: AccountValueDto) => void;
+  onEdit?: (value: AccountValueDto) => void;
+  onHistory?: (value: AccountValueDto) => void;
 };
 
 export function ValueHistoryDialog({
@@ -18,6 +23,10 @@ export function ValueHistoryDialog({
   isOpen,
   onClose,
   value,
+  otherValues,
+  onDelete,
+  onEdit,
+  onHistory,
 }: ValueHistoryDialogProps) {
   if (!isOpen || !value) {
     return null;
@@ -49,37 +58,30 @@ export function ValueHistoryDialog({
                 Close
               </button>
             </div>
-            <p>
-              {value.label} - {formatEnumLabel(value.value_type)}
-            </p>
           </div>
         </div>
 
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 
-        {!isLoading ? (
-          <HistoryTimeline
-            columns={[
-              { key: "changedAt", label: "Changed" },
-              { key: "oldValue", label: "Old value" },
-              { key: "newValue", label: "New value" },
-            ]}
-            emptyMessage="No history yet."
-            rows={history.map((entry) => ({
-              id: entry.id,
-              cells: [
-                formatDateTime(entry.changed_at),
-                <span className="history-table__value" key={`${entry.id}:old`}>
-                  {entry.old_value}
-                </span>,
-                <span className="history-table__value" key={`${entry.id}:new`}>
-                  {entry.new_value}
-                </span>,
-              ],
-            }))}
-          />
-        ) : null}
+
+
+        {otherValues && otherValues.length > 0 && onDelete && onEdit && onHistory && (
+          <div style={{ marginTop: "16px" }}>
+            <div className="metadata-list">
+              {otherValues.map((v) => (
+                <AccountValueRow
+                  isBusy={isLoading}
+                  key={v.id}
+                  onDelete={onDelete}
+                  onEdit={onEdit}
+                  onHistory={onHistory}
+                  value={v}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

@@ -151,6 +151,25 @@ impl ValueRepository {
         Ok(affected_rows > 0)
     }
 
+    pub fn demote_all_primaries(
+        executor: &impl SqlExecutor,
+        account_id: Uuid,
+        now: &DateTime<Utc>,
+    ) -> Result<bool, VaultError> {
+        let timestamp = to_timestamp(now);
+        let affected_rows = executor.connection().execute(
+            "UPDATE account_values
+             SET is_primary = 0,
+                 updated_at = ?1
+             WHERE account_id = ?2
+               AND is_primary = 1
+               AND deleted_at IS NULL",
+            params![&timestamp, account_id.to_string()],
+        )?;
+
+        Ok(affected_rows > 0)
+    }
+
     pub fn soft_delete(
         executor: &impl SqlExecutor,
         value_id: Uuid,
