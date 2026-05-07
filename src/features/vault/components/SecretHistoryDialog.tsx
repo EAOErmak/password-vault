@@ -5,7 +5,7 @@ import { DialogBackdrop } from "./DialogBackdrop";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { SecretRow } from "./SecretRow";
 
-const HISTORY_PAGE_SIZE = 4;
+const HISTORY_PAGE_SIZE = 3;
 
 type SecretHistoryDialogProps = {
   errorMessage: string | null;
@@ -36,6 +36,7 @@ export function SecretHistoryDialog({
 }: SecretHistoryDialogProps) {
   const [historyPage, setHistoryPage] = useState(1);
   const [otherSecretsPage, setOtherSecretsPage] = useState(1);
+  const [activeTab, setActiveTab] = useState<"history" | "other">("history");
 
   useEffect(() => {
     if (!isOpen || !secret) {
@@ -44,6 +45,7 @@ export function SecretHistoryDialog({
 
     setHistoryPage(1);
     setOtherSecretsPage(1);
+    setActiveTab("history");
   }, [isOpen, secret?.id]);
 
   const hasHistory = history.length > 0;
@@ -107,68 +109,90 @@ export function SecretHistoryDialog({
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 
-        {!isLoading && hasHistory ? (
+        {!isLoading && hasOtherSecrets ? (
+          <div className="actions" style={{ marginBottom: "20px" }}>
+            <button
+              className={activeTab === "history" ? "button-primary" : "button-secondary"}
+              onClick={() => setActiveTab("history")}
+              type="button"
+            >
+              Change history
+            </button>
+            <button
+              className={activeTab === "other" ? "button-primary" : "button-secondary"}
+              onClick={() => setActiveTab("other")}
+              type="button"
+            >
+              Other secrets
+            </button>
+          </div>
+        ) : null}
+
+        {!isLoading && activeTab === "history" ? (
           <section className="history-dialog-section">
             <div className="history-dialog-section__header">
               <h4>Change history</h4>
             </div>
-            <div className="history-dialog-panel">
-              <HistoryTimeline
-                columns={[
-                  { key: "date", label: "Date" },
-                  { key: "old", label: "Old Value" },
-                  { key: "new", label: "New Value" },
-                ]}
-                emptyMessage="No history records found for this secret."
-                rows={paginatedHistory.map((h) => ({
-                  id: h.id,
-                  cells: [
-                    formatDateTime(h.changed_at),
-                    h.has_old_value ? "********" : <span className="table-dash">-</span>,
-                    h.has_new_value ? "********" : <span className="table-dash">-</span>,
-                  ],
-                }))}
-              />
-            </div>
-            {history.length > HISTORY_PAGE_SIZE ? (
-              <div className="pagination-bar history-dialog-pagination">
-                <p className="pagination-summary">
-                  Page {resolvedHistoryPage} of {historyPageCount}
-                </p>
-                <div className="pagination-controls">
-                  <button
-                    className="button-secondary button-small pagination-button"
-                    disabled={resolvedHistoryPage === 1}
-                    onClick={() => setHistoryPage((page) => Math.max(1, page - 1))}
-                    type="button"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    className="button-secondary button-small pagination-button"
-                    disabled={resolvedHistoryPage === historyPageCount}
-                    onClick={() =>
-                      setHistoryPage((page) => Math.min(historyPageCount, page + 1))
-                    }
-                    type="button"
-                  >
-                    Next
-                  </button>
+            {hasHistory ? (
+              <>
+                <div className="history-dialog-panel">
+                  <HistoryTimeline
+                    columns={[
+                      { key: "date", label: "Date" },
+                      { key: "old", label: "Old Value" },
+                      { key: "new", label: "New Value" },
+                    ]}
+                    emptyMessage="No history records found for this secret."
+                    rows={paginatedHistory.map((h) => ({
+                      id: h.id,
+                      cells: [
+                        formatDateTime(h.changed_at),
+                        h.has_old_value ? "********" : <span className="table-dash">-</span>,
+                        h.has_new_value ? "********" : <span className="table-dash">-</span>,
+                      ],
+                    }))}
+                  />
+                </div>
+                {history.length > HISTORY_PAGE_SIZE ? (
+                  <div className="pagination-bar history-dialog-pagination">
+                    <p className="pagination-summary">
+                      Page {resolvedHistoryPage} of {historyPageCount}
+                    </p>
+                    <div className="pagination-controls">
+                      <button
+                        className="button-secondary button-small pagination-button"
+                        disabled={resolvedHistoryPage === 1}
+                        onClick={() => setHistoryPage((page) => Math.max(1, page - 1))}
+                        type="button"
+                      >
+                        Previous
+                      </button>
+                      <button
+                        className="button-secondary button-small pagination-button"
+                        disabled={resolvedHistoryPage === historyPageCount}
+                        onClick={() =>
+                          setHistoryPage((page) => Math.min(historyPageCount, page + 1))
+                        }
+                        type="button"
+                      >
+                        Next
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+              </>
+            ) : (
+              <div className="history-dialog-panel">
+                <div className="empty-state empty-state--compact">
+                  <p>No history records found for this secret.</p>
                 </div>
               </div>
-            ) : null}
+            )}
           </section>
         ) : null}
 
-        {!isLoading && !hasHistory && !hasOtherSecrets ? (
-          <div className="history-dialog-panel">
-            <div className="empty-state empty-state--compact">
-              <p>No history records found for this secret.</p>
-            </div>
-          </div>
-        ) : null}
 
-        {hasOtherSecrets ? (
+        {hasOtherSecrets && activeTab === "other" ? (
           <section className="history-dialog-section">
             <div className="history-dialog-section__header">
               <h4>Other secrets</h4>
