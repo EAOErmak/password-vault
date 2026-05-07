@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState, useRef, type FormEvent } from "react";
 
 type UnlockVaultPageProps = {
   errorMessage: string | null;
@@ -20,6 +20,27 @@ export function UnlockVaultPage({
   const [path, setPath] = useState(initialPath ?? "");
   const [masterPassword, setMasterPassword] = useState("");
   const [autoLockMs, setAutoLockMs] = useState<number | null>(5 * 60 * 1000); // Default to 5 mins
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const autoLockOptions = [
+    { value: 300000, label: "5 minutes" },
+    { value: 900000, label: "15 minutes" },
+    { value: 1800000, label: "30 minutes" },
+    { value: 3600000, label: "1 hour" },
+    { value: 14400000, label: "4 hours" },
+    { value: null, label: "Until app is closed" },
+  ];
 
   useEffect(() => {
     setPath(initialPath ?? "");
@@ -71,21 +92,38 @@ export function UnlockVaultPage({
           />
         </label>
 
-        <label className="field">
+        <div className="field" ref={dropdownRef}>
           <span>Stay logged in for</span>
-          <select
-            disabled={isSubmitting}
-            onChange={(e) => setAutoLockMs(e.target.value === "never" ? null : parseInt(e.target.value, 10))}
-            value={autoLockMs === null ? "never" : autoLockMs.toString()}
-          >
-            <option value="300000">5 minutes</option>
-            <option value="900000">15 minutes</option>
-            <option value="1800000">30 minutes</option>
-            <option value="3600000">1 hour</option>
-            <option value="14400000">4 hours</option>
-            <option value="never">Until app is closed</option>
-          </select>
-        </label>
+          <div className="custom-select-container">
+            <button
+              className="select-input custom-select-trigger"
+              disabled={isSubmitting}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              type="button"
+            >
+              {autoLockOptions.find((opt) => opt.value === autoLockMs)?.label}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            {isDropdownOpen && !isSubmitting && (
+              <ul className="custom-select-menu">
+                {autoLockOptions.map((option) => (
+                  <li
+                    key={option.value === null ? "never" : option.value}
+                    className={`custom-select-option ${autoLockMs === option.value ? "selected" : ""}`}
+                    onClick={() => {
+                      setAutoLockMs(option.value);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    {option.label}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
 
         {statusMessage ? <p className="status-toast">{statusMessage}</p> : null}
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}

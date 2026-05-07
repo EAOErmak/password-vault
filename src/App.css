@@ -166,6 +166,52 @@ textarea {
 .select-input:disabled {
   background: #f3f5f7;
   color: #6f7a85;
+  cursor: not-allowed;
+}
+
+.custom-select-container {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  text-align: left;
+}
+
+.custom-select-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: #ffffff;
+  border: 1px solid #ccd6df;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(54, 67, 81, 0.12);
+  z-index: 10;
+}
+
+.custom-select-option {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.custom-select-option:hover {
+  background: #f3f5f7;
+}
+
+.custom-select-option.selected {
+  background: #e7ecf0;
+  color: #192126;
+  font-weight: 500;
 }
 
 .actions,
