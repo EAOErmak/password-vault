@@ -708,17 +708,17 @@ textarea {
 .account-filters-card .custom-select-option {
   margin-bottom: 6px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
+  background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
 }
 
 .account-filters-card .custom-select-option:hover {
   transform: none;
-  background: color-mix(in srgb, var(--surface-muted-alt) 78%, var(--color-border) 22%);
+  background: color-mix(in srgb, var(--surface-muted-alt) 66%, var(--color-border) 34%);
   color: var(--color-text-primary);
 }
 
 .account-filters-card .custom-select-option.selected {
-  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
+  background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
   color: var(--color-text-primary);
   font-weight: 600;
   box-shadow: none;
@@ -758,7 +758,7 @@ textarea {
 .secret-type-select .custom-select-option {
   margin-bottom: 6px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
+  background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
 }
 
 .secret-type-select .custom-select-option:last-child {
@@ -767,12 +767,12 @@ textarea {
 
 .secret-type-select .custom-select-option:hover {
   transform: none;
-  background: color-mix(in srgb, var(--surface-muted-alt) 78%, var(--color-border) 22%);
+  background: color-mix(in srgb, var(--surface-muted-alt) 66%, var(--color-border) 34%);
   color: var(--color-text-primary);
 }
 
 .secret-type-select .custom-select-option.selected {
-  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
+  background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
   color: var(--color-text-primary);
   font-weight: 600;
   box-shadow: none;
@@ -859,7 +859,7 @@ textarea {
 .platform-select .custom-select-option {
   margin-bottom: 6px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
+  background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
 }
 
 .platform-select .custom-select-option:last-child {
@@ -868,12 +868,12 @@ textarea {
 
 .platform-select .custom-select-option:hover {
   transform: none;
-  background: color-mix(in srgb, var(--surface-muted-alt) 78%, var(--color-border) 22%);
+  background: color-mix(in srgb, var(--surface-muted-alt) 66%, var(--color-border) 34%);
   color: var(--color-text-primary);
 }
 
 .platform-select .custom-select-option.selected {
-  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
+  background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
   color: var(--color-text-primary);
   font-weight: 600;
   box-shadow: none;
@@ -882,6 +882,24 @@ textarea {
 .platform-select__empty {
   cursor: default;
   color: var(--color-text-muted);
+}
+
+:root[data-theme="dark"] .account-filters-card .custom-select-option,
+:root[data-theme="dark"] .secret-type-select .custom-select-option,
+:root[data-theme="dark"] .platform-select .custom-select-option {
+  background: color-mix(in srgb, var(--surface-muted) 35%, var(--color-border-subtle) 65%);
+}
+
+:root[data-theme="dark"] .account-filters-card .custom-select-option:hover,
+:root[data-theme="dark"] .secret-type-select .custom-select-option:hover,
+:root[data-theme="dark"] .platform-select .custom-select-option:hover {
+  background: color-mix(in srgb, var(--surface-muted-alt) 28%, var(--color-border-subtle) 72%);
+}
+
+:root[data-theme="dark"] .account-filters-card .custom-select-option.selected,
+:root[data-theme="dark"] .secret-type-select .custom-select-option.selected,
+:root[data-theme="dark"] .platform-select .custom-select-option.selected {
+  background: color-mix(in srgb, var(--surface-muted) 35%, var(--color-border-subtle) 65%);
 }
 
 .edit-value-dialog .field input,
