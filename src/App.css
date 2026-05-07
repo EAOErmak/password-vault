@@ -708,17 +708,17 @@ textarea {
 .account-filters-card .custom-select-option {
   margin-bottom: 6px;
   border-radius: 12px;
-  background: var(--surface-muted);
+  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
 }
 
 .account-filters-card .custom-select-option:hover {
   transform: none;
-  background: var(--surface-muted-alt);
+  background: color-mix(in srgb, var(--surface-muted-alt) 78%, var(--color-border) 22%);
   color: var(--color-text-primary);
 }
 
 .account-filters-card .custom-select-option.selected {
-  background: var(--surface-muted);
+  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
   color: var(--color-text-primary);
   font-weight: 600;
   box-shadow: none;
@@ -758,7 +758,7 @@ textarea {
 .secret-type-select .custom-select-option {
   margin-bottom: 6px;
   border-radius: 12px;
-  background: var(--surface-muted);
+  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
 }
 
 .secret-type-select .custom-select-option:last-child {
@@ -767,12 +767,12 @@ textarea {
 
 .secret-type-select .custom-select-option:hover {
   transform: none;
-  background: var(--surface-muted-alt);
+  background: color-mix(in srgb, var(--surface-muted-alt) 78%, var(--color-border) 22%);
   color: var(--color-text-primary);
 }
 
 .secret-type-select .custom-select-option.selected {
-  background: var(--surface-muted);
+  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
   color: var(--color-text-primary);
   font-weight: 600;
   box-shadow: none;
@@ -859,7 +859,7 @@ textarea {
 .platform-select .custom-select-option {
   margin-bottom: 6px;
   border-radius: 12px;
-  background: var(--surface-muted);
+  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
 }
 
 .platform-select .custom-select-option:last-child {
@@ -868,12 +868,12 @@ textarea {
 
 .platform-select .custom-select-option:hover {
   transform: none;
-  background: var(--surface-muted-alt);
+  background: color-mix(in srgb, var(--surface-muted-alt) 78%, var(--color-border) 22%);
   color: var(--color-text-primary);
 }
 
 .platform-select .custom-select-option.selected {
-  background: var(--surface-muted);
+  background: color-mix(in srgb, var(--surface-muted) 72%, var(--color-border) 28%);
   color: var(--color-text-primary);
   font-weight: 600;
   box-shadow: none;
