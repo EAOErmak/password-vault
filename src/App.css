@@ -450,7 +450,7 @@ textarea {
 }
 
 .vault-layout {
-  width: min(100%, 1440px);
+  width: min(100%, 1152px);
   margin: 0 auto;
   display: grid;
   gap: 20px;
@@ -542,6 +542,10 @@ textarea {
 .account-list-card {
   display: grid;
   gap: 18px;
+}
+
+.account-list-card .account-table-wrapper {
+  margin-inline: -24px;
 }
 
 .account-list-card__header {
@@ -1286,6 +1290,10 @@ textarea {
   .dialog-card {
     padding: 20px;
     border-radius: 20px;
+  }
+
+  .account-list-card .account-table-wrapper {
+    margin-inline: -20px;
   }
 
   .vault-header-actions > * {
