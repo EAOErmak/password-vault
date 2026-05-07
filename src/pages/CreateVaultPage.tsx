@@ -53,11 +53,6 @@ export function CreateVaultPage({
 
   return (
     <section className="page">
-      <div className="page-copy">
-        <h2>Create Vault</h2>
-        <p>Create a new encrypted vault file and unlock it for this app session.</p>
-      </div>
-
       <form className="vault-form create-vault-form" onSubmit={handleSubmit}>
         <label className="field">
           <span>Vault path</span>
