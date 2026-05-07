@@ -5,7 +5,8 @@ import { DialogBackdrop } from "./DialogBackdrop";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { SecretRow } from "./SecretRow";
 
-const HISTORY_PAGE_SIZE = 3;
+const HISTORY_PAGE_SIZE = 4;
+const OTHER_PAGE_SIZE = 3;
 
 type SecretHistoryDialogProps = {
   errorMessage: string | null;
@@ -62,14 +63,14 @@ export function SecretHistoryDialog({
   );
   const otherSecretsPageCount = Math.max(
     1,
-    Math.ceil((otherSecrets?.length ?? 0) / HISTORY_PAGE_SIZE),
+    Math.ceil((otherSecrets?.length ?? 0) / OTHER_PAGE_SIZE),
   );
   const resolvedOtherSecretsPage = Math.min(otherSecretsPage, otherSecretsPageCount);
   const paginatedOtherSecrets = useMemo(
     () =>
       (otherSecrets ?? []).slice(
-        (resolvedOtherSecretsPage - 1) * HISTORY_PAGE_SIZE,
-        resolvedOtherSecretsPage * HISTORY_PAGE_SIZE,
+        (resolvedOtherSecretsPage - 1) * OTHER_PAGE_SIZE,
+        resolvedOtherSecretsPage * OTHER_PAGE_SIZE,
       ),
     [otherSecrets, resolvedOtherSecretsPage],
   );
@@ -217,7 +218,7 @@ export function SecretHistoryDialog({
                 />
               ))}
             </div>
-            {otherSecrets!.length > HISTORY_PAGE_SIZE ? (
+            {otherSecrets!.length > OTHER_PAGE_SIZE ? (
               <div className="pagination-bar history-dialog-pagination">
                 <p className="pagination-summary">
                   Page {resolvedOtherSecretsPage} of {otherSecretsPageCount}

@@ -5,7 +5,8 @@ import { DialogBackdrop } from "./DialogBackdrop";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { AccountValueRow } from "./AccountValueRow";
 
-const HISTORY_PAGE_SIZE = 3;
+const HISTORY_PAGE_SIZE = 4;
+const OTHER_PAGE_SIZE = 3;
 
 type ValueHistoryDialogProps = {
   errorMessage: string | null;
@@ -60,14 +61,14 @@ export function ValueHistoryDialog({
   );
   const otherValuesPageCount = Math.max(
     1,
-    Math.ceil((otherValues?.length ?? 0) / HISTORY_PAGE_SIZE),
+    Math.ceil((otherValues?.length ?? 0) / OTHER_PAGE_SIZE),
   );
   const resolvedOtherValuesPage = Math.min(otherValuesPage, otherValuesPageCount);
   const paginatedOtherValues = useMemo(
     () =>
       (otherValues ?? []).slice(
-        (resolvedOtherValuesPage - 1) * HISTORY_PAGE_SIZE,
-        resolvedOtherValuesPage * HISTORY_PAGE_SIZE,
+        (resolvedOtherValuesPage - 1) * OTHER_PAGE_SIZE,
+        resolvedOtherValuesPage * OTHER_PAGE_SIZE,
       ),
     [otherValues, resolvedOtherValuesPage],
   );
@@ -215,7 +216,7 @@ export function ValueHistoryDialog({
                 />
               ))}
             </div>
-            {otherValues!.length > HISTORY_PAGE_SIZE ? (
+            {otherValues!.length > OTHER_PAGE_SIZE ? (
               <div className="pagination-bar history-dialog-pagination">
                 <p className="pagination-summary">
                   Page {resolvedOtherValuesPage} of {otherValuesPageCount}
