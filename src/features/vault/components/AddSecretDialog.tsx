@@ -6,6 +6,7 @@ import {
   usesMultilineSecretValue,
 } from "../utils/secretHelpers";
 import { PasswordGeneratorControls } from "./PasswordGeneratorControls";
+import { DialogBackdrop } from "./DialogBackdrop";
 import { SecretTypeSelect } from "./SecretTypeSelect";
 
 type AddSecretDialogProps = {
@@ -62,7 +63,7 @@ export function AddSecretDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div aria-modal="true" className="dialog-card add-secret-dialog" role="dialog">
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">
@@ -149,6 +150,6 @@ export function AddSecretDialog({
           </div>
         </form>
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

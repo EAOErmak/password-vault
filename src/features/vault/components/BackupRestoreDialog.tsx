@@ -5,6 +5,7 @@ import {
 } from "../api/backupApi";
 import type { RestoreEncryptedBackupDto } from "../types";
 import { getVaultErrorMessage, getVaultStatus } from "../../../lib/vault";
+import { DialogBackdrop } from "./DialogBackdrop";
 
 type BackupRestoreDialogProps = {
   isOpen: boolean;
@@ -103,7 +104,7 @@ export function BackupRestoreDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop disabled={isBusy} onClose={onClose}>
       <div aria-modal="true" className="dialog-card dialog-card--wide backup-restore-dialog" role="dialog">
         <div className="backup-sections">
           <section className="backup-section">
@@ -225,6 +226,6 @@ export function BackupRestoreDialog({
 
         {vaultPath ? <p className="field-helper">Current vault: {vaultPath}</p> : null}
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

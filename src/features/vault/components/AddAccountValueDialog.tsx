@@ -6,6 +6,7 @@ import {
   isCustomAccountValueType,
   normalizeAccountValueLabel,
 } from "../utils/accountValueHelpers";
+import { DialogBackdrop } from "./DialogBackdrop";
 
 type AddAccountValueDialogProps = {
   errorMessage: string | null;
@@ -61,7 +62,7 @@ export function AddAccountValueDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div aria-modal="true" className="dialog-card add-value-dialog" role="dialog">
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">
@@ -138,6 +139,6 @@ export function AddAccountValueDialog({
           </div>
         </form>
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

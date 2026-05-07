@@ -5,6 +5,7 @@ import type {
   TxtImportAccountDraftDto,
 } from "../types";
 import { getVaultErrorMessage } from "../../../lib/vault";
+import { DialogBackdrop } from "./DialogBackdrop";
 import { ImportPreviewTable } from "./ImportPreviewTable";
 import { ImportResultSummary } from "./ImportResultSummary";
 
@@ -114,7 +115,7 @@ export function ImportTxtDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop disabled={isBusy} onClose={onClose}>
       <div aria-modal="true" className="dialog-card dialog-card--wide import-txt-dialog" role="dialog">
         {step === "select" ? (
           <div className="vault-form">
@@ -216,6 +217,6 @@ export function ImportTxtDialog({
           </>
         ) : null}
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { AccountDetails, PlatformDto, UpdateAccountRequest } from "../types";
+import { DialogBackdrop } from "./DialogBackdrop";
 import { PlatformSelect } from "./PlatformSelect";
 
 type EditAccountDialogProps = {
@@ -50,7 +51,7 @@ export function EditAccountDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div aria-modal="true" className="dialog-card edit-account-dialog" role="dialog">
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">
@@ -111,6 +112,6 @@ export function EditAccountDialog({
           </div>
         </form>
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

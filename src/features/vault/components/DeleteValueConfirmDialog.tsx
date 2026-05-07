@@ -1,4 +1,5 @@
 import type { AccountDetails, AccountValueDto } from "../types";
+import { DialogBackdrop } from "./DialogBackdrop";
 
 type DeleteValueConfirmDialogProps = {
   account: AccountDetails;
@@ -24,7 +25,7 @@ export function DeleteValueConfirmDialog({
   const accountLabel = account.name?.trim() || account.platform.name;
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div
         aria-modal="true"
         className="dialog-card"
@@ -74,6 +75,6 @@ export function DeleteValueConfirmDialog({
           </button>
         </div>
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

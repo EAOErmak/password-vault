@@ -7,6 +7,7 @@ import {
   normalizeSecretLabel,
   usesMultilineSecretValue,
 } from "../utils/secretHelpers";
+import { DialogBackdrop } from "./DialogBackdrop";
 import { PasswordGeneratorControls } from "./PasswordGeneratorControls";
 import { SecretTypeSelect } from "./SecretTypeSelect";
 
@@ -102,7 +103,7 @@ export function EditSecretDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div aria-modal="true" className="dialog-card edit-secret-dialog" role="dialog">
 
 
@@ -203,6 +204,6 @@ export function EditSecretDialog({
           </div>
         </form>
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

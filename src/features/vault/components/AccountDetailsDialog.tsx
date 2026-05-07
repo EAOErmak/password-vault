@@ -15,9 +15,10 @@ import {
   formatOptionalText,
 } from "../utils/formatters";
 import { AccountValuesSection } from "./AccountValuesSection";
-import { SecretsSection } from "./SecretsSection";
 import { DeleteAccountConfirmDialog } from "./DeleteAccountConfirmDialog";
+import { DialogBackdrop } from "./DialogBackdrop";
 import { EditAccountDialog } from "./EditAccountDialog";
+import { SecretsSection } from "./SecretsSection";
 
 type AccountDetailsDialogProps = {
   account: AccountDetails | null;
@@ -124,7 +125,7 @@ export function AccountDetailsDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div
         aria-modal="true"
         className="dialog-card dialog-card--scrollable account-details-dialog"
@@ -250,6 +251,6 @@ export function AccountDetailsDialog({
           platforms={platforms}
         />
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

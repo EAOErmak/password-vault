@@ -1,4 +1,5 @@
 import type { AccountDetails, SecretMetadataDto } from "../types";
+import { DialogBackdrop } from "./DialogBackdrop";
 
 type DeleteSecretConfirmDialogProps = {
   account: AccountDetails;
@@ -24,7 +25,7 @@ export function DeleteSecretConfirmDialog({
   const accountLabel = account.name?.trim() || account.platform.name;
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div
         aria-modal="true"
         className="dialog-card"
@@ -74,6 +75,6 @@ export function DeleteSecretConfirmDialog({
           </button>
         </div>
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

@@ -1,5 +1,6 @@
 import type { SecretHistoryDto, SecretMetadataDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
+import { DialogBackdrop } from "./DialogBackdrop";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { SecretRow } from "./SecretRow";
 
@@ -38,7 +39,7 @@ export function SecretHistoryDialog({
   const hasOtherSecrets = Boolean(otherSecrets && otherSecrets.length > 0 && onDelete && onEdit && onHistory);
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div
         aria-modal="true"
         className="dialog-card dialog-card--wide"
@@ -123,6 +124,6 @@ export function SecretHistoryDialog({
         ) : null}
 
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

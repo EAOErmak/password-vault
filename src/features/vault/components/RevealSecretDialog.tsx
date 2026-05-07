@@ -1,5 +1,6 @@
 import type { RevealedSecretDto } from "../types";
 import { formatEnumLabel } from "../utils/formatters";
+import { DialogBackdrop } from "./DialogBackdrop";
 
 type RevealSecretDialogProps = {
   errorMessage: string | null;
@@ -21,7 +22,7 @@ export function RevealSecretDialog({
   }
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div aria-modal="true" className="dialog-card" role="dialog">
         <div className="dialog-header">
         </div>
@@ -50,6 +51,6 @@ export function RevealSecretDialog({
 
 
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

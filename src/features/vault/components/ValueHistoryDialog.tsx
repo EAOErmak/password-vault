@@ -1,5 +1,6 @@
 import type { AccountValueDto, AccountValueHistoryDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
+import { DialogBackdrop } from "./DialogBackdrop";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { AccountValueRow } from "./AccountValueRow";
 
@@ -36,7 +37,7 @@ export function ValueHistoryDialog({
   const hasOtherValues = Boolean(otherValues && otherValues.length > 0 && onDelete && onEdit && onHistory);
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div
         aria-modal="true"
         className="dialog-card dialog-card--wide"
@@ -121,6 +122,6 @@ export function ValueHistoryDialog({
         ) : null}
 
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

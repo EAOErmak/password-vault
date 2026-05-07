@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { CreatePlatformRequest } from "../types";
+import { DialogBackdrop } from "./DialogBackdrop";
 
 type CreatePlatformDialogProps = {
   errorMessage: string | null;
@@ -34,7 +35,7 @@ export function CreatePlatformDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div aria-modal="true" className="dialog-card create-platform-dialog" role="dialog">
 
 
@@ -77,6 +78,6 @@ export function CreatePlatformDialog({
           </div>
         </form>
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

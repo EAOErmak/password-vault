@@ -186,7 +186,7 @@ export function AccountList({
     if (trimmedNameFilter) {
       baseRows = baseRows.filter((r) => r.accountName && r.accountName.toLowerCase().includes(trimmedNameFilter));
     }
-    
+
     return baseRows;
   }, [accounts, trimmedValueFilter, trimmedNameFilter]);
 
@@ -487,7 +487,6 @@ export function AccountList({
 
         {accounts.length > 0 && rows.length > 0 ? (
           <div className="account-table-wrapper">
-            {isLoading ? <p className="muted-state">Refreshing account table...</p> : null}
             <table className="account-table">
               <thead>
                 <tr>

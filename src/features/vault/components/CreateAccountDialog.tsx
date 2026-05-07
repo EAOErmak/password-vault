@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { CreateAccountRequest, PlatformDto } from "../types";
+import { DialogBackdrop } from "./DialogBackdrop";
 import { PlatformSelect } from "./PlatformSelect";
 
 type CreateAccountDialogProps = {
@@ -54,7 +55,7 @@ export function CreateAccountDialog({
   const hasPlatforms = platforms.length > 0;
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div aria-modal="true" className="dialog-card create-account-dialog" role="dialog">
         {!hasPlatforms ? (
           <div className="empty-state">
@@ -130,6 +131,6 @@ export function CreateAccountDialog({
           </form>
         )}
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }

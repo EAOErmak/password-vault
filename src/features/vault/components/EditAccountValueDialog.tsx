@@ -6,6 +6,7 @@ import {
   normalizeAccountValueLabel,
 } from "../utils/accountValueHelpers";
 import { formatEnumLabel } from "../utils/formatters";
+import { DialogBackdrop } from "./DialogBackdrop";
 
 type EditAccountValueDialogProps = {
   errorMessage: string | null;
@@ -61,7 +62,7 @@ export function EditAccountValueDialog({
   };
 
   return (
-    <div className="dialog-backdrop" role="presentation">
+    <DialogBackdrop onClose={onClose}>
       <div aria-modal="true" className="dialog-card edit-value-dialog" role="dialog">
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">
@@ -126,6 +127,6 @@ export function EditAccountValueDialog({
           </div>
         </form>
       </div>
-    </div>
+    </DialogBackdrop>
   );
 }
