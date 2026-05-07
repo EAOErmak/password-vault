@@ -32,7 +32,6 @@ export function DeleteValueConfirmDialog({
         style={{
           background: "var(--surface-danger-dialog)",
           boxShadow: "var(--shadow-dialog-danger)",
-          border: "1px solid var(--dialog-danger-border)",
           borderRadius: "24px",
         }}
       >

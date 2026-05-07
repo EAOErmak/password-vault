@@ -237,7 +237,7 @@ textarea {
 
 .dialog-card .vault-form {
   padding: 18px;
-  border: 1px solid var(--color-border-subtle);
+  border: 0;
   border-radius: 20px;
   background: var(--surface-form);
 }
@@ -576,6 +576,36 @@ textarea {
   border: 0;
 }
 
+.edit-value-dialog .field input,
+.edit-value-dialog .field select,
+.edit-value-dialog .field textarea,
+.edit-value-dialog .select-input {
+  border: 0;
+}
+
+.add-value-dialog .field input,
+.add-value-dialog .field select,
+.add-value-dialog .field textarea,
+.add-value-dialog .select-input {
+  border: 0;
+}
+
+.add-secret-dialog .field input,
+.add-secret-dialog .field select,
+.add-secret-dialog .field textarea,
+.add-secret-dialog .select-input,
+.add-secret-dialog .generator-panel {
+  border: 0;
+}
+
+.edit-secret-dialog .field input,
+.edit-secret-dialog .field select,
+.edit-secret-dialog .field textarea,
+.edit-secret-dialog .select-input,
+.edit-secret-dialog .generator-panel {
+  border: 0;
+}
+
 .platform-filter-list {
   display: flex;
   flex-wrap: wrap;
@@ -734,6 +764,18 @@ textarea {
   gap: 6px;
 }
 
+.details-card {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--surface-muted-alt);
+}
+
+.details-card--summary h3 {
+  margin: 0;
+}
+
 .details-inline-note {
   display: grid;
   gap: 6px;
@@ -758,6 +800,7 @@ textarea {
 }
 
 .account-details-dialog .dialog-header {
+  align-items: center;
   margin-bottom: 6px;
 }
 

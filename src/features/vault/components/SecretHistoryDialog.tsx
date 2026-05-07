@@ -45,7 +45,6 @@ export function SecretHistoryDialog({
         style={{
           background: "var(--dialog-tonal-bg)",
           boxShadow: "var(--shadow-dialog-tonal)",
-          border: "1px solid var(--dialog-tonal-border)",
           borderRadius: "24px",
         }}
       >

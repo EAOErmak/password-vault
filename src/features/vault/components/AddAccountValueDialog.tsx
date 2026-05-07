@@ -62,14 +62,7 @@ export function AddAccountValueDialog({
 
   return (
     <div className="dialog-backdrop" role="presentation">
-      <div aria-modal="true" className="dialog-card" role="dialog">
-        <div className="dialog-header">
-          <div>
-            <h3>Add value</h3>
-            <p>Add a non-secret account identifier.</p>
-          </div>
-        </div>
-
+      <div aria-modal="true" className="dialog-card add-value-dialog" role="dialog">
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

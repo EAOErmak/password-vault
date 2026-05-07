@@ -98,7 +98,6 @@ export function AccountDetailsDialog({
         style={{
           background: "var(--dialog-tonal-bg)",
           boxShadow: "var(--shadow-dialog-tonal)",
-          border: "1px solid var(--dialog-tonal-border)",
           borderRadius: "24px",
         }}
       >
@@ -125,7 +124,7 @@ export function AccountDetailsDialog({
           <div className="details-panel">
             <section className="details-section">
               <div className="account-details-summary">
-                <div>
+                <div className="details-card details-card--summary">
                   <h3>{formatOptionalName(account.name)}</h3>
                   <p>{account.platform.name}</p>
                 </div>
@@ -135,16 +134,16 @@ export function AccountDetailsDialog({
                 </div>
               </div>
               <dl className="details-grid details-grid--compact">
-                <div>
+                <div className="details-card">
                   <dt>Created</dt>
                   <dd>{formatDateTime(account.created_at)}</dd>
                 </div>
-                <div>
+                <div className="details-card">
                   <dt>Updated</dt>
                   <dd>{formatDateTime(account.updated_at)}</dd>
                 </div>
               </dl>
-              <div className="details-block">
+              <div className="details-block details-card">
                 <span className="summary-label">Notes</span>
                 <p>{formatOptionalText(account.notes, "No notes.")}</p>
               </div>
