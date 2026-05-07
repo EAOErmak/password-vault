@@ -613,11 +613,23 @@ textarea {
 
 .metadata-item {
   display: grid;
-  gap: 8px;
-  padding: 14px 16px;
-  border: 1px solid #d7e0e7;
-  border-radius: 18px;
-  background: #fbfcfd;
+  gap: 12px;
+  padding: 16px 20px;
+  border: 1px solid rgba(215, 224, 231, 0.6);
+  border-radius: 22px;
+  background: linear-gradient(145deg, #ffffff 0%, #fbfcfd 100%);
+  box-shadow: 
+    0 4px 6px rgba(25, 33, 38, 0.02),
+    0 1px 3px rgba(25, 33, 38, 0.04);
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+
+.metadata-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 12px rgba(25, 33, 38, 0.04),
+    0 2px 4px rgba(25, 33, 38, 0.06);
+  border-color: #d7e0e7;
 }
 
 .value-row__title {
@@ -632,8 +644,14 @@ textarea {
 
 .value-row__content {
   margin: 0;
+  padding: 10px 14px;
+  background: #f4f7f8;
+  border-radius: 12px;
   color: #192126;
-  word-break: break-word;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.95rem;
+  word-break: break-all;
+  border: 1px solid rgba(25, 33, 38, 0.03);
 }
 
 .secret-row__masked {
@@ -831,7 +849,17 @@ textarea {
   color: #192126;
   word-break: break-word;
 }
-
+.account-table__value {
+  display: inline-block;
+  padding: 6px 12px;
+  background: #f4f7f8;
+  border-radius: 10px;
+  color: #192126;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.9rem;
+  border: 1px solid rgba(25, 33, 38, 0.03);
+  word-break: break-all;
+}
 .account-table__actions {
   display: flex;
   flex-wrap: wrap;

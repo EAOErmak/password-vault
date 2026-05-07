@@ -20,13 +20,13 @@ export function AccountValueRow({
     <article className="metadata-item value-row">
       <div className="metadata-item__header">
         <div className="value-row__title">
-          <strong>{value.label}</strong>
+          <strong>{value.value}</strong>
           <span className="value-row__type">{formatEnumLabel(value.value_type)}</span>
         </div>
         {value.is_primary ? <span className="pill">Primary</span> : null}
       </div>
 
-      <p className="value-row__content">{value.value}</p>
+      <p className="value-row__content">{value.label}</p>
 
       <div className="value-row__footer">
         <small>Updated {formatDateTime(value.updated_at)}</small>
