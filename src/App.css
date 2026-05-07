@@ -783,11 +783,63 @@ textarea {
   background: var(--surface-elevated);
 }
 
+.platform-select__trigger {
+  padding: 0;
+  overflow: hidden;
+}
+
+.platform-select__input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-primary);
+}
+
+.platform-select__input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.create-account-dialog .platform-select__input:focus,
+.create-account-dialog .platform-select__input:focus-visible {
+  border-color: transparent;
+  outline: none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+
 .platform-select__value {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.platform-select__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  padding: 0 14px;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.create-account-dialog .platform-select__toggle:focus,
+.create-account-dialog .platform-select__toggle:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.create-account-dialog .platform-select__trigger:focus-within {
+  outline: none;
+  box-shadow: none;
 }
 
 .platform-select .custom-select-trigger svg {
@@ -825,6 +877,11 @@ textarea {
   color: var(--color-text-primary);
   font-weight: 600;
   box-shadow: none;
+}
+
+.platform-select__empty {
+  cursor: default;
+  color: var(--color-text-muted);
 }
 
 .edit-value-dialog .field input,
