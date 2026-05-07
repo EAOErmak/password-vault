@@ -20,15 +20,16 @@ export function AccountFiltersBar({
   platforms,
 }: AccountFiltersBarProps) {
   return (
-    <div className="vault-platform-filter" style={{ marginBottom: "24px" }}>
+    <div className="vault-platform-filter">
       <div className="vault-platform-filter__header">
-        <div>
+        <div className="page-copy">
           <h2>Filters</h2>
+          <p>Narrow the account table by platform, value, or account name.</p>
         </div>
       </div>
 
-      <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", alignItems: "flex-end" }}>
-        <label className="field" style={{ flex: "1 1 200px" }}>
+      <div className="account-filters-grid">
+        <label className="field account-filters-grid__field">
           <span>Filter by Platform</span>
           <select
             className="select-input"
@@ -47,7 +48,7 @@ export function AccountFiltersBar({
           </select>
         </label>
 
-        <label className="field" style={{ flex: "1 1 200px" }}>
+        <label className="field account-filters-grid__field">
           <span>Filter by Value</span>
           <input
             autoComplete="off"
@@ -59,7 +60,7 @@ export function AccountFiltersBar({
           />
         </label>
 
-        <label className="field" style={{ flex: "1 1 200px" }}>
+        <label className="field account-filters-grid__field">
           <span>Search by Name</span>
           <input
             autoComplete="off"

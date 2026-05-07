@@ -40,7 +40,6 @@ type AccountListProps = {
   selectedAccountId: string | null;
   selectedPlatformName: string | null;
   platforms: PlatformDto[];
-  onOpenCreatePlatform: () => void;
 };
 
 type AccountTableDisplayRow = AccountTableRow & {
@@ -139,7 +138,6 @@ export function AccountList({
   selectedAccountId,
   selectedPlatformName,
   platforms,
-  onOpenCreatePlatform,
 }: AccountListProps) {
   const clipboardClearAfterSeconds = 30;
   const feedbackTimerRef = useRef<number | null>(null);
@@ -179,6 +177,11 @@ export function AccountList({
     
     return baseRows;
   }, [accounts, clientPlatformFilter, trimmedValueFilter, trimmedNameFilter]);
+
+  const visibleAccountCount = rows.length;
+  const accountsSubtitle = selectedPlatformName
+    ? `Showing accounts for ${selectedPlatformName}.`
+    : "Showing accounts across all platforms.";
 
   useEffect(() => {
     return () => {
@@ -359,190 +362,204 @@ export function AccountList({
   };
 
   return (
-    <section className="vault-card panel-card">
-      <AccountFiltersBar 
-        clientNameFilter={clientNameFilter}
-        clientPlatformFilter={clientPlatformFilter}
-        clientValueFilter={clientValueFilter}
-        onNameFilterChange={setClientNameFilter}
-        onPlatformFilterChange={setClientPlatformFilter}
-        onValueFilterChange={setClientValueFilter}
-        platforms={platforms}
-      />
+    <div className="account-list-stack">
+      <section className="vault-card panel-card account-filters-card">
+        <AccountFiltersBar
+          clientNameFilter={clientNameFilter}
+          clientPlatformFilter={clientPlatformFilter}
+          clientValueFilter={clientValueFilter}
+          onNameFilterChange={setClientNameFilter}
+          onPlatformFilterChange={setClientPlatformFilter}
+          onValueFilterChange={setClientValueFilter}
+          platforms={platforms}
+        />
+      </section>
 
-      {errorMessage && accounts.length === 0 ? <p className="error-banner">{errorMessage}</p> : null}
-      {actionError ? <p className="error-banner">{actionError}</p> : null}
-      {statusMessage ? (
-        <div aria-live="polite" className="status-toast" role="status">
-          {statusMessage}
+      <section className="vault-card panel-card account-list-card">
+        <div className="panel-header account-list-card__header">
+          <div className="page-copy">
+            <h2>Accounts</h2>
+            <p>{accountsSubtitle}</p>
+          </div>
+          <span className="status-pill">{visibleAccountCount} shown</span>
         </div>
-      ) : null}
 
-      {isLoading && accounts.length === 0 ? <p className="muted-state">Loading accounts...</p> : null}
+        {errorMessage && accounts.length === 0 ? <p className="error-banner">{errorMessage}</p> : null}
+        {actionError ? <p className="error-banner">{actionError}</p> : null}
+        {statusMessage ? (
+          <div aria-live="polite" className="status-toast" role="status">
+            {statusMessage}
+          </div>
+        ) : null}
 
-      {!isLoading && accounts.length === 0 ? (
-        <div className="empty-state">
-          <p>
-            {hasSearchQuery && selectedPlatformName
-              ? `No accounts match "${trimmedSearchQuery}" in ${selectedPlatformName}.`
-              : hasSearchQuery
-                ? `No accounts match "${trimmedSearchQuery}".`
-                : selectedPlatformName
-                  ? `No accounts yet for ${selectedPlatformName}.`
-                  : "No accounts yet."}
-          </p>
-          <div className="actions">
-            {hasSearchQuery ? (
-              <button className="button-secondary" onClick={onClearSearch} type="button">
-                Clear search
+        {isLoading && accounts.length === 0 ? <p className="muted-state">Loading accounts...</p> : null}
+
+        {!isLoading && accounts.length === 0 ? (
+          <div className="empty-state">
+            <p>
+              {hasSearchQuery && selectedPlatformName
+                ? `No accounts match "${trimmedSearchQuery}" in ${selectedPlatformName}.`
+                : hasSearchQuery
+                  ? `No accounts match "${trimmedSearchQuery}".`
+                  : selectedPlatformName
+                    ? `No accounts yet for ${selectedPlatformName}.`
+                    : "No accounts yet."}
+            </p>
+            <div className="actions">
+              {hasSearchQuery ? (
+                <button className="button-secondary" onClick={onClearSearch} type="button">
+                  Clear search
+                </button>
+              ) : null}
+              <button className="button-primary" onClick={onOpenCreateAccount} type="button">
+                Create account
               </button>
-            ) : null}
-            <button className="button-primary" onClick={onOpenCreateAccount} type="button">
-              Create account
-            </button>
+            </div>
           </div>
-        </div>
-      ) : !isLoading && accounts.length > 0 && rows.length === 0 && hasClientFilters ? (
-        <div className="empty-state">
-          <p>No accounts match the current filters.</p>
-          <div className="actions">
-            <button className="button-secondary" onClick={() => {
-              setClientNameFilter("");
-              setClientPlatformFilter(null);
-              setClientValueFilter("");
-            }} type="button">
-              Clear filters
-            </button>
+        ) : !isLoading && accounts.length > 0 && rows.length === 0 && hasClientFilters ? (
+          <div className="empty-state">
+            <p>No accounts match the current filters.</p>
+            <div className="actions">
+              <button className="button-secondary" onClick={() => {
+                setClientNameFilter("");
+                setClientPlatformFilter(null);
+                setClientValueFilter("");
+              }} type="button">
+                Clear filters
+              </button>
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
 
-      {accounts.length > 0 && rows.length > 0 ? (
-        <div className="account-table-wrapper">
-          {isLoading ? <p className="muted-state">Refreshing account table...</p> : null}
-          <table className="account-table">
-            <thead>
-              <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Platform</th>
-                <th scope="col">Value</th>
-                <th scope="col">Type</th>
-                <th scope="col">Value actions</th>
-                <th scope="col">Secret actions</th>
-                <th scope="col">Additional Details</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((row) => (
-                <tr
-                  className={
-                    row.accountId === selectedAccountId
-                      ? "account-table__row account-table__row--selected"
-                      : "account-table__row"
-                  }
-                  key={row.rowId}
-                  onClick={() => onSelectAccount(row.accountId)}
-                >
-                  <td>{renderAccountName(row.accountName)}</td>
-                  <td>{row.platformName}</td>
-                  <td>
-                    {row.valueEntry ? (
-                      <span className="account-table__value">{row.valueEntry.value}</span>
-                    ) : (
-                      <span className="table-empty">No values for this account</span>
-                    )}
-                  </td>
-                  <td>{row.valueType ? getValueTypeLabel(row.valueType) : <span className="table-dash">-</span>}</td>
-                  <td>
-                    {row.valueEntry ? (
+        {accounts.length > 0 && rows.length > 0 ? (
+          <div className="account-table-wrapper">
+            {isLoading ? <p className="muted-state">Refreshing account table...</p> : null}
+            <table className="account-table">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Platform</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Value actions</th>
+                  <th scope="col">Secret actions</th>
+                  <th scope="col">Additional Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((row) => (
+                  <tr
+                    className={
+                      row.accountId === selectedAccountId
+                        ? "account-table__row account-table__row--selected"
+                        : "account-table__row"
+                    }
+                    key={row.rowId}
+                    onClick={() => onSelectAccount(row.accountId)}
+                  >
+                    <td>{renderAccountName(row.accountName)}</td>
+                    <td>{row.platformName}</td>
+                    <td>
+                      {row.valueEntry ? (
+                        <span className="account-table__value">{row.valueEntry.value}</span>
+                      ) : (
+                        <span className="table-empty">No values for this account</span>
+                      )}
+                    </td>
+                    <td>{row.valueType ? getValueTypeLabel(row.valueType) : <span className="table-dash">-</span>}</td>
+                    <td>
+                      {row.valueEntry ? (
+                        <div className="account-table__actions">
+                          <button
+                            className="button-secondary button-small"
+                            onClick={(event) => {
+                              void handleCopyValue(event, row);
+                            }}
+                            type="button"
+                          >
+                            Copy value
+                          </button>
+                          <button
+                            className="button-secondary button-small"
+                            disabled={isSubmitting}
+                            onClick={(event) => handleOpenEditValue(event, row)}
+                            type="button"
+                          >
+                            Edit value
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="account-table__actions">
+                          <button
+                            className="button-secondary button-small"
+                            onClick={(event) => handleOpenDetails(event, row.accountId)}
+                            type="button"
+                          >
+                            Add value
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                    <td>
                       <div className="account-table__actions">
-                        <button
-                          className="button-secondary button-small"
-                          onClick={(event) => {
-                            void handleCopyValue(event, row);
-                          }}
-                          type="button"
-                        >
-                          Copy value
-                        </button>
-                        <button
-                          className="button-secondary button-small"
-                          disabled={isSubmitting}
-                          onClick={(event) => handleOpenEditValue(event, row)}
-                          type="button"
-                        >
-                          Edit value
-                        </button>
+                        {row.primaryPasswordSecret ? (
+                          <>
+                            <button
+                              className="button-secondary button-small"
+                              disabled={isCopyingSecretId !== null || isSubmitting}
+                              onClick={(event) => {
+                                void handleCopySecret(event, row);
+                              }}
+                              type="button"
+                            >
+                              {isCopyingSecretId === row.primaryPasswordSecret.id
+                                ? "Copying..."
+                                : "Copy secret"}
+                            </button>
+                            <button
+                              className="button-secondary button-small"
+                              disabled={isSubmitting}
+                              onClick={(event) => handleOpenEditSecret(event, row)}
+                              type="button"
+                            >
+                              Edit secret
+                            </button>
+                          </>
+                        ) : row.hasAnyPasswordSecret ? (
+                          <span className="table-empty">No primary password</span>
+                        ) : (
+                          <>
+                            <span className="table-empty">No password</span>
+                            <button
+                              className="button-secondary button-small"
+                              disabled={isSubmitting}
+                              onClick={(event) => handleOpenAddSecret(event, row)}
+                              type="button"
+                            >
+                              Add secret
+                            </button>
+                          </>
+                        )}
                       </div>
-                    ) : (
+                    </td>
+                    <td>
                       <div className="account-table__actions">
                         <button
                           className="button-secondary button-small"
                           onClick={(event) => handleOpenDetails(event, row.accountId)}
                           type="button"
                         >
-                          Add value
+                          Details
                         </button>
                       </div>
-                    )}
-                  </td>
-                  <td>
-                    <div className="account-table__actions">
-                      {row.primaryPasswordSecret ? (
-                        <>
-                          <button
-                            className="button-secondary button-small"
-                            disabled={isCopyingSecretId !== null || isSubmitting}
-                            onClick={(event) => {
-                              void handleCopySecret(event, row);
-                            }}
-                            type="button"
-                          >
-                            {isCopyingSecretId === row.primaryPasswordSecret.id
-                              ? "Copying..."
-                              : "Copy secret"}
-                          </button>
-                          <button
-                            className="button-secondary button-small"
-                            disabled={isSubmitting}
-                            onClick={(event) => handleOpenEditSecret(event, row)}
-                            type="button"
-                          >
-                            Edit secret
-                          </button>
-                        </>
-                      ) : row.hasAnyPasswordSecret ? (
-                        <span className="table-empty">No primary password</span>
-                      ) : (
-                        <>
-                          <span className="table-empty">No password</span>
-                          <button
-                            className="button-secondary button-small"
-                            disabled={isSubmitting}
-                            onClick={(event) => handleOpenAddSecret(event, row)}
-                            type="button"
-                          >
-                            Add secret
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </td>
-                  <td>
-                    <button
-                      className="button-secondary button-small"
-                      onClick={(event) => handleOpenDetails(event, row.accountId)}
-                      type="button"
-                    >
-                      Details
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : null}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : null}
+      </section>
 
       <AddSecretDialog
         errorMessage={dialogError}
@@ -578,6 +595,6 @@ export function AccountList({
         onSubmit={handleSubmitEditSecret}
         secret={editingSecret?.secret ?? null}
       />
-    </section>
+    </div>
   );
 }

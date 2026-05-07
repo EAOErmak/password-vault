@@ -521,7 +521,6 @@ export function VaultHomePage({
             selectedAccountId={selectedAccountId}
             selectedPlatformName={selectedPlatformName}
             platforms={platforms}
-            onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
           />
         }
       />
