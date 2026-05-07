@@ -260,6 +260,13 @@ export function VaultHomePage({
     });
   };
 
+  const handlePlatformFilterChange = (platformId: string | null) => {
+    void loadSnapshot(platformId, searchQuery, {
+      preferredAccountId: selectedAccountId,
+      seedDetails: selectedAccount,
+    });
+  };
+
   const handleSelectAccount = (accountId: string) => {
     if (selectedAccountId === accountId && selectedAccount) {
       return;
@@ -501,11 +508,13 @@ export function VaultHomePage({
             onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
             onOpenDetails={handleOpenAccountDetails}
+            onPlatformFilterChange={handlePlatformFilterChange}
             onSelectAccount={handleSelectAccount}
             onUpdateSecret={handleUpdateSecretForAccount}
             onUpdateValue={handleUpdateAccountValueForAccount}
             searchQuery={searchQuery}
             selectedAccountId={selectedAccountId}
+            selectedPlatformId={selectedPlatformId}
             selectedPlatformName={selectedPlatformName}
             platforms={platforms}
           />

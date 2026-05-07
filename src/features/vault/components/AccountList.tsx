@@ -28,6 +28,7 @@ type AccountListProps = {
   onClearSearch: () => void;
   onOpenCreateAccount: () => void;
   onOpenDetails: (accountId: string) => void;
+  onPlatformFilterChange: (platformId: string | null) => void;
   onSelectAccount: (accountId: string) => void;
   onUpdateSecret: (
     accountId: string,
@@ -41,6 +42,7 @@ type AccountListProps = {
   ) => Promise<void>;
   searchQuery: string;
   selectedAccountId: string | null;
+  selectedPlatformId: string | null;
   selectedPlatformName: string | null;
   platforms: PlatformDto[];
 };
@@ -137,11 +139,13 @@ export function AccountList({
   onClearSearch,
   onOpenCreateAccount,
   onOpenDetails,
+  onPlatformFilterChange,
   onSelectAccount,
   onUpdateSecret,
   onUpdateValue,
   searchQuery,
   selectedAccountId,
+  selectedPlatformId,
   selectedPlatformName,
   platforms,
 }: AccountListProps) {
@@ -160,7 +164,6 @@ export function AccountList({
   const [addingValueAccount, setAddingValueAccount] = useState<AccountSummary | null>(null);
   const [addingSecretAccount, setAddingSecretAccount] = useState<AccountSummary | null>(null);
 
-  const [clientPlatformFilter, setClientPlatformFilter] = useState<string | null>(null);
   const [clientValueFilter, setClientValueFilter] = useState("");
   const [clientNameFilter, setClientNameFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -170,14 +173,14 @@ export function AccountList({
 
   const trimmedValueFilter = clientValueFilter.trim().toLowerCase();
   const trimmedNameFilter = clientNameFilter.trim().toLowerCase();
-  const hasClientFilters = clientPlatformFilter !== null || trimmedValueFilter.length > 0 || trimmedNameFilter.length > 0;
+  const hasClientFilters =
+    selectedPlatformId !== null ||
+    trimmedValueFilter.length > 0 ||
+    trimmedNameFilter.length > 0;
 
   const rows = useMemo(() => {
     let baseRows = buildTableRows(accounts);
-    
-    if (clientPlatformFilter !== null) {
-      baseRows = baseRows.filter((r) => r.account.platform.id === clientPlatformFilter);
-    }
+
     if (trimmedValueFilter) {
       baseRows = baseRows.filter((r) => r.value && r.value.toLowerCase().includes(trimmedValueFilter));
     }
@@ -186,7 +189,7 @@ export function AccountList({
     }
     
     return baseRows;
-  }, [accounts, clientPlatformFilter, trimmedValueFilter, trimmedNameFilter]);
+  }, [accounts, trimmedValueFilter, trimmedNameFilter]);
 
   const visibleAccountCount = rows.length;
   const totalPages = Math.max(1, Math.ceil(visibleAccountCount / ACCOUNTS_PER_PAGE));
@@ -201,7 +204,7 @@ export function AccountList({
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [clientPlatformFilter, trimmedValueFilter, trimmedNameFilter, searchQuery, selectedPlatformName]);
+  }, [selectedPlatformId, trimmedValueFilter, trimmedNameFilter, searchQuery, selectedPlatformName]);
 
   useEffect(() => {
     setCurrentPage((page) => Math.min(page, totalPages));
@@ -415,10 +418,10 @@ export function AccountList({
       <section className="vault-card panel-card account-filters-card">
         <AccountFiltersBar
           clientNameFilter={clientNameFilter}
-          clientPlatformFilter={clientPlatformFilter}
+          clientPlatformFilter={selectedPlatformId}
           clientValueFilter={clientValueFilter}
           onNameFilterChange={setClientNameFilter}
-          onPlatformFilterChange={setClientPlatformFilter}
+          onPlatformFilterChange={onPlatformFilterChange}
           onValueFilterChange={setClientValueFilter}
           platforms={platforms}
         />
@@ -468,11 +471,15 @@ export function AccountList({
           <div className="empty-state">
             <p>No accounts match the current filters.</p>
             <div className="actions">
-              <button className="button-secondary" onClick={() => {
-                setClientNameFilter("");
-                setClientPlatformFilter(null);
-                setClientValueFilter("");
-              }} type="button">
+              <button
+                className="button-secondary"
+                onClick={() => {
+                  setClientNameFilter("");
+                  setClientValueFilter("");
+                  onPlatformFilterChange(null);
+                }}
+                type="button"
+              >
                 Clear filters
               </button>
             </div>
