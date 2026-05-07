@@ -3,7 +3,7 @@ use zeroize::Zeroize;
 
 use crate::app_state::AppState;
 use crate::clipboard_service::{ClipboardService, SystemClipboardBackend};
-use crate::vault::domain::SecretHistory;
+use crate::vault::domain::{SecretHistory, SecretType};
 use crate::vault::dto::history_dto::{RevealedSecretHistoryDto, SecretHistoryDto};
 use crate::vault::dto::secret_dto::{
     AddSecretRequest, RevealedSecretDto, SecretMetadataDto, UpdateSecretRequest,
@@ -27,6 +27,15 @@ impl SecretService {
 
         state.with_connection_mut(|connection| {
             Self::ensure_account_exists(connection, account_id)?;
+
+            if request.secret_type != SecretType::CustomSecret {
+                if let Some(_existing) = SecretRepository::find_by_type(connection, account_id, &request.secret_type)? {
+                    return Err(VaultError::Validation(format!(
+                        "this account already has a secret of type: {}",
+                        request.secret_type.as_str()
+                    )));
+                }
+            }
 
             let now = now_utc();
             let transaction = connection.transaction()?;
@@ -63,6 +72,18 @@ impl SecretService {
         state.with_connection_mut(|connection| {
             let current = SecretRepository::find_active_by_id(connection, secret_id)?
                 .ok_or_else(|| VaultError::NotFound(format!("secret not found: {secret_id}")))?;
+
+            if request.secret_type != SecretType::CustomSecret && current.secret_type != request.secret_type {
+                if let Some(existing) = SecretRepository::find_by_type(connection, current.account_id, &request.secret_type)? {
+                    if existing.id != secret_id {
+                        return Err(VaultError::Validation(format!(
+                            "this account already has a secret of type: {}",
+                            request.secret_type.as_str()
+                        )));
+                    }
+                }
+            }
+
             let now = now_utc();
 
             {

@@ -1,7 +1,7 @@
 use uuid::Uuid;
 
 use crate::app_state::AppState;
-use crate::vault::domain::AccountValueHistory;
+use crate::vault::domain::{AccountValueHistory, AccountValueType};
 use crate::vault::dto::history_dto::AccountValueHistoryDto;
 use crate::vault::dto::value_dto::{
     AccountValueDto, AddAccountValueRequest, UpdateAccountValueRequest,
@@ -25,6 +25,15 @@ impl ValueService {
 
         state.with_connection_mut(|connection| {
             Self::ensure_account_exists(connection, account_id)?;
+
+            if request.value_type != AccountValueType::Custom {
+                if let Some(_existing) = ValueRepository::find_by_type(connection, account_id, &request.value_type)? {
+                    return Err(VaultError::Validation(format!(
+                        "this account already has a value of type: {}",
+                        request.value_type.as_str()
+                    )));
+                }
+            }
 
             let now = now_utc();
             let transaction = connection.transaction()?;
@@ -63,6 +72,18 @@ impl ValueService {
                 ValueRepository::find_active_by_id(connection, value_id)?.ok_or_else(|| {
                     VaultError::NotFound(format!("account value not found: {value_id}"))
                 })?;
+
+            if request.value_type != AccountValueType::Custom && current.value_type != request.value_type {
+                if let Some(existing) = ValueRepository::find_by_type(connection, current.account_id, &request.value_type)? {
+                    if existing.id != value_id {
+                        return Err(VaultError::Validation(format!(
+                            "this account already has a value of type: {}",
+                            request.value_type.as_str()
+                        )));
+                    }
+                }
+            }
+
             let now = now_utc();
 
             {

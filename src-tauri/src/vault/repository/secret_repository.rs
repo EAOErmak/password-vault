@@ -112,6 +112,25 @@ impl SecretRepository {
         rows.into_iter().map(Self::build_secret_metadata).collect()
     }
 
+    pub fn find_by_type(
+        executor: &impl SqlExecutor,
+        account_id: Uuid,
+        secret_type: &SecretType,
+    ) -> Result<Option<SecretMetadataRecord>, VaultError> {
+        let row = executor
+            .connection()
+            .query_row(
+                "SELECT id, account_id, secret_type, label, is_primary, created_at, updated_at
+                 FROM secrets
+                 WHERE account_id = ?1 AND secret_type = ?2 AND deleted_at IS NULL",
+                params![account_id.to_string(), secret_type.as_str()],
+                Self::map_metadata_row,
+            )
+            .optional()?;
+
+        row.map(Self::build_secret_metadata).transpose()
+    }
+
     pub fn find_active_by_id(
         executor: &impl SqlExecutor,
         secret_id: Uuid,

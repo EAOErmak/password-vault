@@ -118,7 +118,36 @@ impl ImportService {
                 )?;
                 result.accounts_imported += 1;
 
+                let mut seen_value_types = Vec::new();
+                let mut seen_secret_types = Vec::new();
+
                 for (field_index, field) in draft.fields.iter().enumerate() {
+                    if let Some(vt) = &field.value_type {
+                        if vt != &AccountValueType::Custom {
+                            if seen_value_types.contains(vt) {
+                                return Err(VaultError::Validation(format!(
+                                    "entry {} contains more than one field of type: {}",
+                                    entry_index + 1,
+                                    vt.as_str()
+                                )));
+                            }
+                            seen_value_types.push(vt.clone());
+                        }
+                    }
+
+                    if let Some(st) = &field.secret_type {
+                        if st != &SecretType::CustomSecret {
+                            if seen_secret_types.contains(st) {
+                                return Err(VaultError::Validation(format!(
+                                    "entry {} contains more than one secret of type: {}",
+                                    entry_index + 1,
+                                    st.as_str()
+                                )));
+                            }
+                            seen_secret_types.push(st.clone());
+                        }
+                    }
+
                     Self::import_field(
                         &transaction,
                         account.id,

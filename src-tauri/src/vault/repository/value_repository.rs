@@ -93,6 +93,25 @@ impl ValueRepository {
         rows.into_iter().map(Self::build_account_value).collect()
     }
 
+    pub fn find_by_type(
+        executor: &impl SqlExecutor,
+        account_id: Uuid,
+        value_type: &AccountValueType,
+    ) -> Result<Option<AccountValue>, VaultError> {
+        let row = executor
+            .connection()
+            .query_row(
+                "SELECT id, account_id, value_type, label, value, is_primary, created_at, updated_at, deleted_at
+                 FROM account_values
+                 WHERE account_id = ?1 AND value_type = ?2 AND deleted_at IS NULL",
+                params![account_id.to_string(), value_type.as_str()],
+                Self::map_row,
+            )
+            .optional()?;
+
+        row.map(Self::build_account_value).transpose()
+    }
+
     pub fn find_active_by_id(
         executor: &impl SqlExecutor,
         value_id: Uuid,
