@@ -136,6 +136,7 @@ textarea {
 
 .field input,
 .field textarea,
+.field select,
 .select-input {
   width: 100%;
   padding: 12px 14px;
@@ -152,6 +153,7 @@ textarea {
 
 .field input:focus,
 .field textarea:focus,
+.field select:focus,
 .select-input:focus {
   border-color: #a66f17;
   outline: 2px solid rgba(166, 111, 23, 0.16);
@@ -160,6 +162,7 @@ textarea {
 
 .field input:disabled,
 .field textarea:disabled,
+.field select:disabled,
 .select-input:disabled {
   background: #f3f5f7;
   color: #6f7a85;

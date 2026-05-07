@@ -48,7 +48,7 @@ impl KeychainService {
         let entry = Entry::new(KEYCHAIN_SERVICE_NAME, KEYCHAIN_ACCOUNT_NAME)
             .map_err(|e| VaultError::Internal(format!("Failed to access OS Keychain: {}", e)))?;
             
-        match entry.delete_password() {
+        match entry.delete_credential() {
             Ok(_) => Ok(()),
             Err(keyring::Error::NoEntry) => Ok(()),
             Err(e) => Err(VaultError::Internal(format!("Failed to delete from OS Keychain: {}", e))),
