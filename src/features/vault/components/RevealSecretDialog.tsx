@@ -24,10 +24,6 @@ export function RevealSecretDialog({
     <div className="dialog-backdrop" role="presentation">
       <div aria-modal="true" className="dialog-card" role="dialog">
         <div className="dialog-header">
-          <div>
-            <h3>Reveal secret</h3>
-            <p>Close this dialog to remove the revealed value from React state.</p>
-          </div>
         </div>
 
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
@@ -52,11 +48,7 @@ export function RevealSecretDialog({
           </div>
         ) : null}
 
-        <div className="actions">
-          <button className="button-primary" onClick={onClose} type="button">
-            Close
-          </button>
-        </div>
+
       </div>
     </div>
   );

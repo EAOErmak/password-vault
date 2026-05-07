@@ -101,27 +101,18 @@ function buildTableRows(accounts: AccountSummary[]): AccountTableDisplayRow[] {
       updatedAt: account.updated_at,
     };
 
-    if (account.values.length === 0) {
-      return [
-        {
-          ...sharedFields,
-          rowId: `${account.id}:empty`,
-          value: null,
-          valueEntry: null,
-          valueId: null,
-          valueType: null,
-        },
-      ];
-    }
+    const primaryValue = account.values.find((v) => v.is_primary) || account.values[0] || null;
 
-    return account.values.map((value) => ({
-      ...sharedFields,
-      rowId: value.id,
-      value: value.value,
-      valueEntry: value,
-      valueId: value.id,
-      valueType: value.value_type,
-    }));
+    return [
+      {
+        ...sharedFields,
+        rowId: account.id,
+        value: primaryValue?.value ?? null,
+        valueEntry: primaryValue,
+        valueId: primaryValue?.id ?? null,
+        valueType: primaryValue?.value_type ?? null,
+      },
+    ];
   });
 }
 
@@ -484,7 +475,15 @@ export function AccountList({
                         </button>
                       </div>
                     ) : (
-                      <span className="table-empty">No values for this account</span>
+                      <div className="account-table__actions">
+                        <button
+                          className="button-secondary button-small"
+                          onClick={(event) => handleOpenDetails(event, row.accountId)}
+                          type="button"
+                        >
+                          Add value
+                        </button>
+                      </div>
                     )}
                   </td>
                   <td>
@@ -527,15 +526,6 @@ export function AccountList({
                           </button>
                         </>
                       )}
-                      {row.hasMoreSecrets ? (
-                        <button
-                          className="button-secondary button-small"
-                          onClick={(event) => handleOpenDetails(event, row.accountId)}
-                          type="button"
-                        >
-                          More
-                        </button>
-                      ) : null}
                     </div>
                   </td>
                   <td>
