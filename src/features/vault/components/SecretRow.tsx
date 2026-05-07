@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Eye, EyeOff, Copy, Check } from "lucide-react";
 import type { SecretMetadataDto } from "../types";
 import { formatDateTime, formatEnumLabel } from "../utils/formatters";
@@ -23,6 +23,14 @@ export function SecretRow({
   const [isRevealing, setIsRevealing] = useState(false);
   const [copied, setCopied] = useState(false);
   const copyFeedbackTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyFeedbackTimerRef.current !== null) {
+        window.clearTimeout(copyFeedbackTimerRef.current);
+      }
+    };
+  }, []);
 
   const handleToggleReveal = async () => {
     if (revealedValue !== null) {
@@ -74,23 +82,29 @@ export function SecretRow({
         <div style={{ display: "flex", gap: "8px", marginLeft: "12px", flexShrink: 0 }}>
           <button 
             type="button" 
-            className="button-ghost" 
-            style={{ padding: "4px", minWidth: "unset", height: "auto" }}
+            className="button-ghost value-row__copy-button"
             onClick={handleToggleReveal}
             disabled={isBusy || isRevealing}
             title={revealedValue !== null ? "Hide secret" : "Reveal secret"}
           >
-            {revealedValue !== null ? <EyeOff size={16} /> : <Eye size={16} />}
+            {revealedValue !== null ? (
+              <EyeOff className="value-row__copy-icon" size={16} />
+            ) : (
+              <Eye className="value-row__copy-icon" size={16} />
+            )}
           </button>
           <button 
             type="button" 
-            className="button-ghost" 
-            style={{ padding: "4px", minWidth: "unset", height: "auto" }}
+            className="button-ghost value-row__copy-button"
             onClick={handleCopy}
             disabled={isBusy}
             title="Copy secret"
           >
-            {copied ? <Check size={16} className="text-green-600" style={{ color: "var(--color-accent)" }} /> : <Copy size={16} />}
+            {copied ? (
+              <Check className="value-row__copy-icon value-row__copy-icon--copied" size={16} />
+            ) : (
+              <Copy className="value-row__copy-icon" size={16} />
+            )}
           </button>
         </div>
       </div>

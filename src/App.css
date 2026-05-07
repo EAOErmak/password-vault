@@ -1393,6 +1393,9 @@ textarea {
 
 .value-row__copy-button {
   min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 4px;
   flex: 0 0 auto;
   height: auto;
