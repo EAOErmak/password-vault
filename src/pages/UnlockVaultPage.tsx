@@ -76,7 +76,7 @@ export function UnlockVaultPage({
 
   return (
     <section className="page">
-      <form className="vault-form" onSubmit={handleSubmit}>
+      <form className="vault-form unlock-vault-form" onSubmit={handleSubmit}>
         <label className="field">
           <span>Vault path</span>
           <div style={{ display: "flex", gap: "8px" }}>

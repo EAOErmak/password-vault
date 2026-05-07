@@ -242,6 +242,14 @@ textarea {
   background: var(--surface-form);
 }
 
+.unlock-vault-form input,
+.unlock-vault-form textarea,
+.unlock-vault-form select,
+.unlock-vault-form .select-input,
+.unlock-vault-form .custom-select-trigger {
+  border: 0;
+}
+
 .field {
   display: grid;
   gap: 8px;
@@ -618,6 +626,10 @@ textarea {
   outline: none;
 }
 
+.account-filters-select__input:focus-visible {
+  outline: none;
+}
+
 .account-filters-select__value {
   min-width: 0;
   overflow: hidden;
@@ -635,6 +647,20 @@ textarea {
   background: transparent;
   color: var(--color-text-muted);
   cursor: pointer;
+  outline: none;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.account-filters-select__toggle:focus,
+.account-filters-select__toggle:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.account-filters-select__trigger:focus-within {
+  outline: none;
+  box-shadow: none;
 }
 
 .account-filters-card .custom-select-trigger svg {
@@ -673,6 +699,55 @@ textarea {
 .account-filters-select__empty {
   cursor: default;
   color: var(--color-text-muted);
+}
+
+.secret-type-select .custom-select-trigger {
+  min-height: 48px;
+  background: var(--surface-elevated);
+}
+
+.secret-type-select__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.secret-type-select .custom-select-trigger svg {
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
+}
+
+.secret-type-select__menu {
+  margin-top: 6px;
+  padding: 8px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-panel);
+}
+
+.secret-type-select .custom-select-option {
+  margin-bottom: 6px;
+  border-radius: 12px;
+  background: var(--surface-muted);
+}
+
+.secret-type-select .custom-select-option:last-child {
+  margin-bottom: 0;
+}
+
+.secret-type-select .custom-select-option:hover {
+  transform: none;
+  background: var(--surface-muted-alt);
+  color: var(--color-text-primary);
+}
+
+.secret-type-select .custom-select-option.selected {
+  background: var(--surface-muted);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  box-shadow: none;
 }
 
 .edit-value-dialog .field input,

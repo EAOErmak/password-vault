@@ -3,10 +3,10 @@ import type { AddSecretRequest, SecretType } from "../types";
 import {
   getDefaultSecretLabel,
   normalizeSecretLabel,
-  SECRET_TYPE_OPTIONS,
   usesMultilineSecretValue,
 } from "../utils/secretHelpers";
 import { PasswordGeneratorControls } from "./PasswordGeneratorControls";
+import { SecretTypeSelect } from "./SecretTypeSelect";
 
 type AddSecretDialogProps = {
   errorMessage: string | null;
@@ -72,18 +72,11 @@ export function AddSecretDialog({
                 Close
               </button>
             </div>
-            <select
-              className="select-input"
+            <SecretTypeSelect
               disabled={isSubmitting}
-              onChange={(event) => setSecretType(event.currentTarget.value as SecretType)}
+              onChange={setSecretType}
               value={secretType}
-            >
-              {SECRET_TYPE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <label className="field">

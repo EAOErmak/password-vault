@@ -7,8 +7,8 @@ import {
   normalizeSecretLabel,
   usesMultilineSecretValue,
 } from "../utils/secretHelpers";
-import { formatEnumLabel } from "../utils/formatters";
 import { PasswordGeneratorControls } from "./PasswordGeneratorControls";
+import { SecretTypeSelect } from "./SecretTypeSelect";
 
 type EditSecretDialogProps = {
   errorMessage: string | null;
@@ -28,6 +28,7 @@ export function EditSecretDialog({
   secret,
 }: EditSecretDialogProps) {
   const revealRequestRef = useRef(0);
+  const [secretType, setSecretType] = useState(secret?.secret_type ?? "PASSWORD");
   const [label, setLabel] = useState("");
   const [secretValue, setSecretValue] = useState("");
   const [isPrimary, setIsPrimary] = useState(false);
@@ -37,6 +38,7 @@ export function EditSecretDialog({
   useEffect(() => {
     if (!isOpen || !secret) {
       revealRequestRef.current += 1;
+      setSecretType("PASSWORD");
       setLabel("");
       setSecretValue("");
       setIsPrimary(false);
@@ -46,6 +48,7 @@ export function EditSecretDialog({
     }
 
     revealRequestRef.current += 1;
+    setSecretType(secret.secret_type);
     setLabel(secret.label);
     setSecretValue("");
     setIsPrimary(secret.is_primary);
@@ -57,15 +60,15 @@ export function EditSecretDialog({
     return null;
   }
 
-  const multiline = usesMultilineSecretValue(secret.secret_type);
-  const normalizedLabel = normalizeSecretLabel(secret.secret_type, label);
+  const multiline = usesMultilineSecretValue(secretType);
+  const normalizedLabel = normalizeSecretLabel(secretType, label);
   const isSubmitDisabled = isSubmitting || isLoadingCurrentValue || secretValue.length === 0;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     await onSubmit({
-      secret_type: secret.secret_type,
+      secret_type: secretType,
       label: normalizedLabel,
       secret_value: secretValue,
       is_primary: isPrimary,
@@ -111,7 +114,11 @@ export function EditSecretDialog({
                 Close
               </button>
             </div>
-            <input disabled type="text" value={formatEnumLabel(secret.secret_type)} />
+            <SecretTypeSelect
+              disabled={isSubmitting || isLoadingCurrentValue}
+              onChange={setSecretType}
+              value={secretType}
+            />
           </div>
 
           <label className="field">
@@ -120,7 +127,7 @@ export function EditSecretDialog({
               autoComplete="off"
               disabled={isSubmitting || isLoadingCurrentValue}
               onChange={(event) => setLabel(event.currentTarget.value)}
-              placeholder={getDefaultSecretLabel(secret.secret_type)}
+              placeholder={getDefaultSecretLabel(secretType)}
               type="text"
               value={label}
             />
@@ -137,7 +144,7 @@ export function EditSecretDialog({
             </button>
           </div>
 
-          {secret.secret_type === "PASSWORD" ? (
+          {secretType === "PASSWORD" ? (
             <PasswordGeneratorControls
               disabled={isSubmitting || isLoadingCurrentValue}
               onChangeValue={setSecretValue}
