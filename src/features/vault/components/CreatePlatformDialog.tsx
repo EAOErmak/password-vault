@@ -35,7 +35,7 @@ export function CreatePlatformDialog({
 
   return (
     <div className="dialog-backdrop" role="presentation">
-      <div aria-modal="true" className="dialog-card" role="dialog">
+      <div aria-modal="true" className="dialog-card create-platform-dialog" role="dialog">
 
 
         <form className="vault-form" onSubmit={handleSubmit}>

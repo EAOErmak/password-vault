@@ -591,6 +591,42 @@ textarea {
   border: 0;
 }
 
+.account-filters-card .custom-select-trigger {
+  min-height: 48px;
+  background: var(--surface-elevated);
+}
+
+.account-filters-select__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-filters-card .custom-select-trigger svg {
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
+}
+
+.account-filters-card .custom-select-menu {
+  margin-top: 6px;
+  padding: 8px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-panel);
+}
+
+.account-filters-card .custom-select-option {
+  margin-bottom: 6px;
+  border-radius: 12px;
+  background: transparent;
+}
+
+.account-filters-card .custom-select-option:hover {
+  transform: none;
+}
+
 .edit-value-dialog .field input,
 .edit-value-dialog .field select,
 .edit-value-dialog .field textarea,
@@ -619,6 +655,80 @@ textarea {
 .edit-secret-dialog .select-input,
 .edit-secret-dialog .generator-panel {
   border: 0;
+}
+
+.create-account-dialog .field input,
+.create-account-dialog .field select,
+.create-account-dialog .field textarea,
+.create-account-dialog .select-input {
+  border: 0;
+}
+
+.create-platform-dialog .field input,
+.create-platform-dialog .field select,
+.create-platform-dialog .field textarea,
+.create-platform-dialog .select-input {
+  border: 0;
+}
+
+.import-txt-dialog .field input,
+.import-txt-dialog .field select,
+.import-txt-dialog .field textarea,
+.import-txt-dialog .select-input {
+  border: 0;
+}
+
+.import-file-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.import-file-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-height: 52px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: var(--surface-muted);
+}
+
+.import-file-picker__name {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+  word-break: break-word;
+}
+
+.backup-restore-dialog .field input,
+.backup-restore-dialog .field select,
+.backup-restore-dialog .field textarea,
+.backup-restore-dialog .select-input {
+  border: 0;
+}
+
+.backup-restore-dialog .backup-section,
+.backup-restore-dialog .warning-banner {
+  border: 0;
+}
+
+.backup-restore-dialog .checkbox-field,
+.backup-restore-dialog .checkbox-field:hover,
+.backup-restore-dialog .checkbox-field:has(input:checked),
+.backup-restore-dialog .button-ghost {
+  box-shadow: none;
+}
+
+.backup-restore-dialog .checkbox-field input,
+.backup-restore-dialog .checkbox-field:hover input:not(:disabled) {
+  box-shadow: none;
 }
 
 .platform-filter-list {
@@ -1359,6 +1469,13 @@ textarea {
 .backup-section__header {
   display: grid;
   gap: 6px;
+}
+
+.backup-section__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .backup-section__header h4 {

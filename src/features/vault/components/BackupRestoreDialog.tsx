@@ -104,21 +104,22 @@ export function BackupRestoreDialog({
 
   return (
     <div className="dialog-backdrop" role="presentation">
-      <div aria-modal="true" className="dialog-card dialog-card--wide" role="dialog">
-        <div className="dialog-header">
-          <div>
-            <h3>Backup and restore</h3>
-            <p>
-              Export or restore only encrypted SQLCipher vault files. Plaintext export is not
-              available here.
-            </p>
-          </div>
-        </div>
-
+      <div aria-modal="true" className="dialog-card dialog-card--wide backup-restore-dialog" role="dialog">
         <div className="backup-sections">
           <section className="backup-section">
             <div className="backup-section__header">
-              <h4>Export encrypted backup</h4>
+              <div className="backup-section__title-row">
+                <h4>Export encrypted backup</h4>
+                <button
+                  className="button-ghost button-small"
+                  disabled={isBusy}
+                  onClick={onClose}
+                  type="button"
+                  style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}
+                >
+                  Close
+                </button>
+              </div>
               <p className="field-helper">
                 Leave the path blank to create a timestamped backup next to the current vault as
                 <code> vault-backup-YYYY-MM-DD-HH-mm.db</code>.
@@ -126,12 +127,7 @@ export function BackupRestoreDialog({
             </div>
 
             <div className="field">
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <span className="summary-label">Destination path or folder</span>
-                <button className="button-ghost button-small" disabled={isBusy} onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
-                  Close
-                </button>
-              </div>
+              <span className="summary-label">Destination path or folder</span>
               <input
                 autoComplete="off"
                 disabled={isBusy}

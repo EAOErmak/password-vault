@@ -54,7 +54,7 @@ export function CreateAccountDialog({
 
   return (
     <div className="dialog-backdrop" role="presentation">
-      <div aria-modal="true" className="dialog-card" role="dialog">
+      <div aria-modal="true" className="dialog-card create-account-dialog" role="dialog">
         {!hasPlatforms ? (
           <div className="empty-state">
             <p>Create a platform before adding an account.</p>

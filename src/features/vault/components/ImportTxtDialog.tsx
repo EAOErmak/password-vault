@@ -115,16 +115,7 @@ export function ImportTxtDialog({
 
   return (
     <div className="dialog-backdrop" role="presentation">
-      <div aria-modal="true" className="dialog-card dialog-card--wide" role="dialog">
-        <div className="dialog-header">
-          <div>
-            <h3>Import plaintext TXT</h3>
-            <p>
-              Preview and confirm every mapping before anything is written into the encrypted vault.
-            </p>
-          </div>
-        </div>
-
+      <div aria-modal="true" className="dialog-card dialog-card--wide import-txt-dialog" role="dialog">
         {step === "select" ? (
           <div className="vault-form">
             <div className="field">
@@ -136,6 +127,7 @@ export function ImportTxtDialog({
               </div>
               <input
                 accept=".txt,text/plain"
+                className="import-file-input"
                 disabled={isBusy}
                 onChange={(event) => {
                   const nextFile = event.currentTarget.files?.[0] ?? null;
@@ -146,11 +138,20 @@ export function ImportTxtDialog({
                 ref={fileInputRef}
                 type="file"
               />
+              <div className="import-file-picker">
+                <button
+                  className="button-secondary button-small"
+                  disabled={isBusy}
+                  onClick={() => fileInputRef.current?.click()}
+                  type="button"
+                >
+                  Choose TXT file
+                </button>
+                <span className="import-file-picker__name">
+                  {fileName || "No file selected"}
+                </span>
+              </div>
             </div>
-
-            <p className="field-helper">
-              The original plaintext file will not be deleted automatically.
-            </p>
 
             {fileName ? <p className="field-helper">Selected file: {fileName}</p> : null}
             {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
