@@ -1154,6 +1154,10 @@ textarea {
   background: var(--surface-muted-alt);
 }
 
+:root:not([data-theme="dark"]) .account-details-dialog .details-card {
+  background: #dde8f0;
+}
+
 .details-card--summary h3 {
   margin: 0;
 }
