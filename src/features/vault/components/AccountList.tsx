@@ -146,9 +146,12 @@ export function AccountList({
   platforms,
 }: AccountListProps) {
   const clipboardClearAfterSeconds = 30;
-  const feedbackTimerRef = useRef<number | null>(null);
+  const valueCopyFeedbackTimerRef = useRef<number | null>(null);
+  const secretCopyFeedbackTimerRef = useRef<number | null>(null);
 
   const [actionError, setActionError] = useState<string | null>(null);
+  const [copiedSecretId, setCopiedSecretId] = useState<string | null>(null);
+  const [copiedValueId, setCopiedValueId] = useState<string | null>(null);
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [editingSecret, setEditingSecret] = useState<EditingSecretState | null>(null);
   const [editingValue, setEditingValue] = useState<EditingValueState | null>(null);
@@ -156,7 +159,6 @@ export function AccountList({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addingValueAccount, setAddingValueAccount] = useState<AccountSummary | null>(null);
   const [addingSecretAccount, setAddingSecretAccount] = useState<AccountSummary | null>(null);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
   const [clientPlatformFilter, setClientPlatformFilter] = useState<string | null>(null);
   const [clientValueFilter, setClientValueFilter] = useState("");
@@ -207,29 +209,14 @@ export function AccountList({
 
   useEffect(() => {
     return () => {
-      if (feedbackTimerRef.current !== null) {
-        window.clearTimeout(feedbackTimerRef.current);
+      if (valueCopyFeedbackTimerRef.current !== null) {
+        window.clearTimeout(valueCopyFeedbackTimerRef.current);
+      }
+      if (secretCopyFeedbackTimerRef.current !== null) {
+        window.clearTimeout(secretCopyFeedbackTimerRef.current);
       }
     };
   }, []);
-
-  const clearStatusMessage = () => {
-    if (feedbackTimerRef.current !== null) {
-      window.clearTimeout(feedbackTimerRef.current);
-      feedbackTimerRef.current = null;
-    }
-
-    setStatusMessage(null);
-  };
-
-  const showStatusMessage = (message: string) => {
-    clearStatusMessage();
-    setStatusMessage(message);
-    feedbackTimerRef.current = window.setTimeout(() => {
-      setStatusMessage(null);
-      feedbackTimerRef.current = null;
-    }, 2000);
-  };
 
   const handleCopyValue = async (event: MouseEvent<HTMLButtonElement>, row: AccountTableDisplayRow) => {
     event.stopPropagation();
@@ -247,9 +234,17 @@ export function AccountList({
 
       await navigator.clipboard.writeText(row.valueEntry.value);
       onSelectAccount(row.accountId);
-      showStatusMessage("Value copied to clipboard.");
+      setCopiedValueId(row.valueEntry.id);
+      if (valueCopyFeedbackTimerRef.current !== null) {
+        window.clearTimeout(valueCopyFeedbackTimerRef.current);
+      }
+      valueCopyFeedbackTimerRef.current = window.setTimeout(() => {
+        setCopiedValueId((currentValueId) =>
+          currentValueId === row.valueEntry?.id ? null : currentValueId,
+        );
+        valueCopyFeedbackTimerRef.current = null;
+      }, 2000);
     } catch (error) {
-      clearStatusMessage();
       setActionError(getVaultErrorMessage(error));
     }
   };
@@ -270,11 +265,17 @@ export function AccountList({
     try {
       await copySecretToClipboard(row.primaryPasswordSecret.id, clipboardClearAfterSeconds);
       onSelectAccount(row.accountId);
-      showStatusMessage(
-        `Secret copied. Clipboard will clear in ${clipboardClearAfterSeconds} seconds.`,
-      );
+      setCopiedSecretId(row.primaryPasswordSecret.id);
+      if (secretCopyFeedbackTimerRef.current !== null) {
+        window.clearTimeout(secretCopyFeedbackTimerRef.current);
+      }
+      secretCopyFeedbackTimerRef.current = window.setTimeout(() => {
+        setCopiedSecretId((currentSecretId) =>
+          currentSecretId === row.primaryPasswordSecret?.id ? null : currentSecretId,
+        );
+        secretCopyFeedbackTimerRef.current = null;
+      }, 2000);
     } catch (error) {
-      clearStatusMessage();
       setActionError(getVaultErrorMessage(error));
     } finally {
       setIsCopyingSecretId(null);
@@ -438,11 +439,6 @@ export function AccountList({
 
         {errorMessage && accounts.length === 0 ? <p className="error-banner">{errorMessage}</p> : null}
         {actionError ? <p className="error-banner">{actionError}</p> : null}
-        {statusMessage ? (
-          <div aria-live="polite" className="status-toast" role="status">
-            {statusMessage}
-          </div>
-        ) : null}
 
         {isLoading && accounts.length === 0 ? <p className="muted-state">Loading accounts...</p> : null}
 
@@ -537,13 +533,17 @@ export function AccountList({
                       {row.valueEntry ? (
                         <div className="account-table__actions">
                           <button
-                            className="button-secondary button-small"
+                            className={
+                              row.valueEntry.id === copiedValueId
+                                ? "button-secondary button-small account-table__copy-button account-table__copy-button--copied"
+                                : "button-secondary button-small account-table__copy-button"
+                            }
                             onClick={(event) => {
                               void handleCopyValue(event, row);
                             }}
                             type="button"
                           >
-                            Copy value
+                            {row.valueEntry.id === copiedValueId ? "Copied" : "Copy value"}
                           </button>
                           <button
                             className="button-secondary button-small"
@@ -571,7 +571,11 @@ export function AccountList({
                         {row.primaryPasswordSecret ? (
                           <>
                             <button
-                              className="button-secondary button-small"
+                              className={
+                                row.primaryPasswordSecret.id === copiedSecretId
+                                  ? "button-secondary button-small account-table__copy-button account-table__copy-button--copied"
+                                  : "button-secondary button-small account-table__copy-button"
+                              }
                               disabled={isCopyingSecretId !== null || isSubmitting}
                               onClick={(event) => {
                                 void handleCopySecret(event, row);
@@ -580,7 +584,9 @@ export function AccountList({
                             >
                               {isCopyingSecretId === row.primaryPasswordSecret.id
                                 ? "Copying..."
-                                : "Copy secret"}
+                                : row.primaryPasswordSecret.id === copiedSecretId
+                                  ? "Copied"
+                                  : "Copy secret"}
                             </button>
                             <button
                               className="button-secondary button-small"
