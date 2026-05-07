@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { copySecretToClipboard, listSecretHistory, revealSecret } from "../api/secretApi";
+import { listSecretHistory } from "../api/secretApi";
 import type {
   AccountDetails,
   AddSecretRequest,
-  RevealedSecretDto,
   SecretHistoryDto,
   SecretMetadataDto,
   UpdateSecretRequest,
@@ -11,7 +10,7 @@ import type {
 import { getVaultErrorMessage } from "../../../lib/vault";
 import { AddSecretDialog } from "./AddSecretDialog";
 import { EditSecretDialog } from "./EditSecretDialog";
-import { RevealSecretDialog } from "./RevealSecretDialog";
+
 import { SecretHistoryDialog } from "./SecretHistoryDialog";
 import { SecretRow } from "./SecretRow";
 import { DeleteSecretConfirmDialog } from "./DeleteSecretConfirmDialog";
@@ -29,9 +28,6 @@ export function SecretsSection({
   onDeleteSecret,
   onUpdateSecret,
 }: SecretsSectionProps) {
-  const clipboardClearAfterSeconds = 30;
-  const copyFeedbackTimerRef = useRef<number | null>(null);
-  const revealRequestRef = useRef(0);
   const historyRequestRef = useRef(0);
 
   const [dialogError, setDialogError] = useState<string | null>(null);
@@ -39,10 +35,6 @@ export function SecretsSection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingSecret, setEditingSecret] = useState<SecretMetadataDto | null>(null);
-  const [revealedSecret, setRevealedSecret] = useState<RevealedSecretDto | null>(null);
-  const [isRevealOpen, setIsRevealOpen] = useState(false);
-  const [isRevealing, setIsRevealing] = useState(false);
-  const [revealError, setRevealError] = useState<string | null>(null);
   const [historySecret, setHistorySecret] = useState<SecretMetadataDto | null>(null);
   const [secretHistory, setSecretHistory] = useState<SecretHistoryDto[]>([]);
   const [historyError, setHistoryError] = useState<string | null>(null);
@@ -50,12 +42,9 @@ export function SecretsSection({
   
   const [deletingSecret, setDeletingSecret] = useState<SecretMetadataDto | null>(null);
 
-  useEffect(() => {
-    if (copyFeedbackTimerRef.current !== null) {
-      window.clearTimeout(copyFeedbackTimerRef.current);
-      copyFeedbackTimerRef.current = null;
-    }
 
+
+  useEffect(() => {
     historyRequestRef.current += 1;
     setDialogError(null);
     setActionError(null);
@@ -69,13 +58,7 @@ export function SecretsSection({
     setDeletingSecret(null);
   }, [account.id]);
 
-  useEffect(() => {
-    return () => {
-      if (copyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(copyFeedbackTimerRef.current);
-      }
-    };
-  }, []);
+
 
   const handleOpenAdd = () => {
     setDialogError(null);

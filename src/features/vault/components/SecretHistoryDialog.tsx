@@ -1,5 +1,5 @@
 import type { SecretHistoryDto, SecretMetadataDto } from "../types";
-import { formatDateTime, formatEnumLabel } from "../utils/formatters";
+import { formatDateTime } from "../utils/formatters";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { SecretRow } from "./SecretRow";
 
@@ -16,9 +16,7 @@ type SecretHistoryDialogProps = {
   onHistory?: (secret: SecretMetadataDto) => Promise<void>;
 };
 
-function renderMaskedValue(hasValue: boolean): string {
-  return hasValue ? "********" : "--";
-}
+
 
 export function SecretHistoryDialog({
   errorMessage,
@@ -65,7 +63,26 @@ export function SecretHistoryDialog({
         </div>
 
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
-        {isLoading ? <p className="muted-state">Loading history...</p> : null}
+        {isLoading ? <p className="muted-state">Loading history...</p> : (
+          <div style={{ maxHeight: "300px", overflowY: "auto", padding: "12px", background: "var(--surface-subtle)", borderRadius: "18px", marginBottom: "16px" }}>
+            <HistoryTimeline
+              columns={[
+                { key: "date", label: "Date" },
+                { key: "old", label: "Old Value" },
+                { key: "new", label: "New Value" },
+              ]}
+              emptyMessage="No history records found for this secret."
+              rows={history.map((h) => ({
+                id: h.id,
+                cells: [
+                  formatDateTime(h.changed_at),
+                  h.has_old_value ? "********" : <span className="table-dash">-</span>,
+                  h.has_new_value ? "********" : <span className="table-dash">-</span>,
+                ],
+              }))}
+            />
+          </div>
+        )}
 
         {otherSecrets && otherSecrets.length > 0 && onDelete && onEdit && onHistory && (
           <div style={{ marginTop: "16px" }}>

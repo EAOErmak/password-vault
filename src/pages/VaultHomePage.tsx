@@ -248,17 +248,9 @@ export function VaultHomePage({
     });
   };
 
-  const handleSelectPlatform = (platformId: string | null) => {
-    void loadSnapshot(platformId, searchQuery);
-  };
 
-  const handleSearchChange = (nextSearchQuery: string) => {
-    setSearchQuery(nextSearchQuery);
-    void loadSnapshot(selectedPlatformId, nextSearchQuery, {
-      preferredAccountId: selectedAccountId,
-      seedDetails: selectedAccount,
-    });
-  };
+
+
 
   const handleClearSearch = () => {
     setSearchQuery("");
@@ -491,17 +483,11 @@ export function VaultHomePage({
             isLocking={isLocking}
             onLock={onLock}
             onOpenBackupRestore={handleOpenBackupRestore}
-            onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
             onOpenImport={handleOpenImport}
             onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
             onRefresh={handleRefresh}
-            onSearchChange={handleSearchChange}
-            onSelectPlatform={handleSelectPlatform}
             platformCount={platforms.length}
-            platforms={platforms}
-            searchQuery={searchQuery}
-            selectedPlatformId={selectedPlatformId}
             vaultPath={vaultPath}
           />
         }

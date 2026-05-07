@@ -1,5 +1,3 @@
-import type { PlatformDto } from "../types";
-
 type VaultHeaderProps = {
   accountCount: number;
   canCreateAccount: boolean;
@@ -7,18 +5,12 @@ type VaultHeaderProps = {
   isLoading: boolean;
   isLocking: boolean;
   onLock: () => Promise<void>;
-  onClearSearch: () => void;
   onOpenBackupRestore: () => void;
   onOpenCreateAccount: () => void;
   onOpenImport: () => void;
   onOpenCreatePlatform: () => void;
   onRefresh: () => Promise<void>;
-  onSearchChange: (searchQuery: string) => void;
-  onSelectPlatform: (platformId: string | null) => void;
   platformCount: number;
-  platforms: PlatformDto[];
-  searchQuery: string;
-  selectedPlatformId: string | null;
   vaultPath: string | null;
 };
 
@@ -29,21 +21,14 @@ export function VaultHeader({
   isLoading,
   isLocking,
   onLock,
-  onClearSearch,
   onOpenBackupRestore,
   onOpenCreateAccount,
   onOpenImport,
   onOpenCreatePlatform,
   onRefresh,
-  onSearchChange,
-  onSelectPlatform,
   platformCount,
-  platforms,
-  searchQuery,
-  selectedPlatformId,
   vaultPath,
 }: VaultHeaderProps) {
-  const hasSearchQuery = searchQuery.trim().length > 0;
 
   return (
     <section className="vault-card vault-header-card">

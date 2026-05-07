@@ -1,5 +1,5 @@
 import type { AccountValueDto, AccountValueHistoryDto } from "../types";
-import { formatDateTime, formatEnumLabel } from "../utils/formatters";
+import { formatDateTime } from "../utils/formatters";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { AccountValueRow } from "./AccountValueRow";
 
@@ -61,7 +61,26 @@ export function ValueHistoryDialog({
         </div>
 
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
-        {isLoading ? <p className="muted-state">Loading history...</p> : null}
+        {isLoading ? <p className="muted-state">Loading history...</p> : (
+          <div style={{ maxHeight: "300px", overflowY: "auto", padding: "12px", background: "var(--surface-subtle)", borderRadius: "18px", marginBottom: "16px" }}>
+            <HistoryTimeline
+              columns={[
+                { key: "date", label: "Date" },
+                { key: "old", label: "Old Value" },
+                { key: "new", label: "New Value" },
+              ]}
+              emptyMessage="No history records found for this value."
+              rows={history.map((h) => ({
+                id: h.id,
+                cells: [
+                  formatDateTime(h.changed_at),
+                  h.old_value ? h.old_value : <span className="table-dash">-</span>,
+                  h.new_value ? h.new_value : <span className="table-dash">-</span>,
+                ],
+              }))}
+            />
+          </div>
+        )}
 
 
 
