@@ -3,6 +3,7 @@ import type {
   AddSecretRequest,
   GeneratePasswordOptions,
   RevealedSecretDto,
+  RevealedSecretHistoryDto,
   SecretHistoryDto,
   SecretMetadataDto,
   UpdateSecretRequest,
@@ -116,4 +117,12 @@ export async function listSecretHistory(secretId: string): Promise<SecretHistory
   });
 
   return history.map(sanitizeSecretHistory);
+}
+
+export async function revealSecretHistory(
+  historyId: string,
+): Promise<RevealedSecretHistoryDto> {
+  return invoke<RevealedSecretHistoryDto>("reveal_secret_history", {
+    historyId,
+  });
 }

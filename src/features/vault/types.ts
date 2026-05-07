@@ -71,6 +71,15 @@ export type SecretHistoryDto = {
   has_new_value: boolean;
 };
 
+export type RevealedSecretHistoryDto = {
+  id: string;
+  secret_id: string;
+  account_id: string;
+  old_secret_value: string;
+  new_secret_value: string;
+  changed_at: string;
+};
+
 export type AccountSummaryDto = {
   id: string;
   name: string | null;

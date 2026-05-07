@@ -273,6 +273,24 @@ impl SecretRepository {
         rows.into_iter().map(Self::build_history).collect()
     }
 
+    pub fn find_history_by_id(
+        executor: &impl SqlExecutor,
+        history_id: Uuid,
+    ) -> Result<Option<SecretHistory>, VaultError> {
+        let row = executor
+            .connection()
+            .query_row(
+                "SELECT id, secret_id, account_id, old_secret_value, new_secret_value, changed_at
+                 FROM secret_history
+                 WHERE id = ?1",
+                params![history_id.to_string()],
+                Self::map_history_row,
+            )
+            .optional()?;
+
+        row.map(Self::build_history).transpose()
+    }
+
     fn map_row(row: &Row<'_>) -> rusqlite::Result<SecretRow> {
         Ok(SecretRow {
             id: row.get(0)?,

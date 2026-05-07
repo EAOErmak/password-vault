@@ -5,7 +5,7 @@ use zeroize::Zeroize;
 use crate::app_state::AppState;
 use crate::clipboard_service::DEFAULT_CLIPBOARD_CLEAR_AFTER_SECONDS;
 use crate::commands::{into_command_result, CommandResult};
-use crate::vault::dto::history_dto::SecretHistoryDto;
+use crate::vault::dto::history_dto::{RevealedSecretHistoryDto, SecretHistoryDto};
 use crate::vault::dto::secret_dto::{
     AddSecretRequest, GeneratePasswordOptions, RevealedSecretDto, SecretMetadataDto,
     UpdateSecretRequest,
@@ -79,4 +79,13 @@ pub fn list_secret_history(
 ) -> CommandResult<Vec<SecretHistoryDto>> {
     let service = SecretService;
     into_command_result(service.list_secret_history(state.inner(), secret_id))
+}
+
+#[tauri::command]
+pub fn reveal_secret_history(
+    state: State<'_, AppState>,
+    history_id: Uuid,
+) -> CommandResult<RevealedSecretHistoryDto> {
+    let service = SecretService;
+    into_command_result(service.reveal_secret_history(state.inner(), history_id))
 }

@@ -39,7 +39,8 @@ pub fn run() {
             commands::secret_commands::generate_password,
             commands::secret_commands::copy_secret_to_clipboard,
             commands::secret_commands::soft_delete_secret,
-            commands::secret_commands::list_secret_history
+            commands::secret_commands::list_secret_history,
+            commands::secret_commands::reveal_secret_history
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

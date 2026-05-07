@@ -4,7 +4,7 @@ use zeroize::Zeroize;
 use crate::app_state::AppState;
 use crate::clipboard_service::{ClipboardService, SystemClipboardBackend};
 use crate::vault::domain::SecretHistory;
-use crate::vault::dto::history_dto::SecretHistoryDto;
+use crate::vault::dto::history_dto::{RevealedSecretHistoryDto, SecretHistoryDto};
 use crate::vault::dto::secret_dto::{
     AddSecretRequest, RevealedSecretDto, SecretMetadataDto, UpdateSecretRequest,
 };
@@ -163,6 +163,28 @@ impl SecretService {
 
             let history = SecretRepository::list_history_by_secret(connection, secret_id)?;
             Ok(history.into_iter().map(Self::to_history_dto).collect())
+        })
+    }
+
+    pub fn reveal_secret_history(
+        &self,
+        state: &AppState,
+        history_id: Uuid,
+    ) -> Result<RevealedSecretHistoryDto, VaultError> {
+        state.with_connection(|connection| {
+            let history = SecretRepository::find_history_by_id(connection, history_id)?
+                .ok_or_else(|| {
+                    VaultError::NotFound(format!("secret history not found: {history_id}"))
+                })?;
+
+            Ok(RevealedSecretHistoryDto {
+                id: history.id,
+                secret_id: history.secret_id,
+                account_id: history.account_id,
+                old_secret_value: history.old_secret_value,
+                new_secret_value: history.new_secret_value,
+                changed_at: history.changed_at,
+            })
         })
     }
 

@@ -21,3 +21,13 @@ pub struct SecretHistoryDto {
     pub has_old_value: bool,
     pub has_new_value: bool,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct RevealedSecretHistoryDto {
+    pub id: Uuid,
+    pub secret_id: Uuid,
+    pub account_id: Uuid,
+    pub old_secret_value: String,
+    pub new_secret_value: String,
+    pub changed_at: DateTime<Utc>,
+}

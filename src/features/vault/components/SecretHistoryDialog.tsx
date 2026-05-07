@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import type { SecretHistoryDto, SecretMetadataDto } from "../types";
+import { Eye, EyeOff, Copy, Check } from "lucide-react";
+import type { SecretHistoryDto, SecretMetadataDto, RevealedSecretHistoryDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
 import { DialogBackdrop } from "./DialogBackdrop";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { SecretRow } from "./SecretRow";
+import { revealSecretHistory } from "../api/secretApi";
 
 const HISTORY_PAGE_SIZE = 4;
 const OTHER_PAGE_SIZE = 3;
@@ -38,6 +40,9 @@ export function SecretHistoryDialog({
   const [historyPage, setHistoryPage] = useState(1);
   const [otherSecretsPage, setOtherSecretsPage] = useState(1);
   const [activeTab, setActiveTab] = useState<"history" | "other">("history");
+  const [revealedHistory, setRevealedHistory] = useState<Record<string, { old?: string; new?: string }>>({});
+  const [isRevealingHistory, setIsRevealingHistory] = useState<Record<string, boolean>>({});
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen || !secret) {
@@ -47,7 +52,47 @@ export function SecretHistoryDialog({
     setHistoryPage(1);
     setOtherSecretsPage(1);
     setActiveTab("history");
+    setRevealedHistory({});
+    setIsRevealingHistory({});
+    setCopiedField(null);
   }, [isOpen, secret?.id]);
+
+  const handleToggleRevealHistory = async (historyId: string) => {
+    if (revealedHistory[historyId]) {
+      setRevealedHistory((prev) => {
+        const next = { ...prev };
+        delete next[historyId];
+        return next;
+      });
+      return;
+    }
+
+    setIsRevealingHistory((prev) => ({ ...prev, [historyId]: true }));
+    try {
+      const revealed = await revealSecretHistory(historyId);
+      setRevealedHistory((prev) => ({
+        ...prev,
+        [historyId]: {
+          old: revealed.old_secret_value,
+          new: revealed.new_secret_value,
+        },
+      }));
+    } catch (error) {
+      console.error("Failed to reveal history", error);
+    } finally {
+      setIsRevealingHistory((prev) => ({ ...prev, [historyId]: false }));
+    }
+  };
+
+  const handleCopyValue = async (value: string, fieldId: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedField(fieldId);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (error) {
+      console.error("Failed to copy", error);
+    }
+  };
 
   const hasHistory = history.length > 0;
   const hasOtherSecrets = Boolean(otherSecrets && otherSecrets.length > 0 && onDelete && onEdit && onHistory);
@@ -137,30 +182,85 @@ export function SecretHistoryDialog({
             {hasHistory ? (
               <>
                 <div className="metadata-list">
-                  {paginatedHistory.map((h) => (
-                    <article className="metadata-item history-card" key={h.id}>
-                      <div className="metadata-item__header">
-                        <div className="value-row__title">
-                          <strong>{formatDateTime(h.changed_at)}</strong>
-                        </div>
-                      </div>
+                  {paginatedHistory.map((h) => {
+                    const isRevealed = Boolean(revealedHistory[h.id]);
+                    const isRevealing = Boolean(isRevealingHistory[h.id]);
+                    const revealedData = revealedHistory[h.id];
 
-                      <div className="history-card__comparison">
-                        <div className="history-card__field">
-                          <span className="summary-label">Old Value</span>
-                          <p className="value-row__content">
-                            {h.has_old_value ? "********" : <span className="table-dash">-</span>}
-                          </p>
+                    return (
+                      <article className="metadata-item history-card" key={h.id}>
+                        <div className="metadata-item__header">
+                          <div className="value-row__title">
+                            <strong>{formatDateTime(h.changed_at)}</strong>
+                          </div>
+                          <button
+                            className="button-ghost button-small"
+                            onClick={() => handleToggleRevealHistory(h.id)}
+                            disabled={isRevealing}
+                            title={isRevealed ? "Hide secrets" : "Reveal secrets"}
+                            type="button"
+                          >
+                            {isRevealed ? <EyeOff size={16} /> : <Eye size={16} />}
+                          </button>
                         </div>
-                        <div className="history-card__field">
-                          <span className="summary-label">New Value</span>
-                          <p className="value-row__content">
-                            {h.has_new_value ? "********" : <span className="table-dash">-</span>}
-                          </p>
+
+                        <div className="history-card__comparison">
+                          <div className="history-card__field">
+                            <span className="summary-label">Old Value</span>
+                            <div className="secret-row__masked" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span className={!isRevealed && h.has_old_value ? "secret-row__masked--value" : ""} style={{ wordBreak: "break-all" }}>
+                                {h.has_old_value
+                                  ? isRevealed
+                                    ? revealedData?.old || "********"
+                                    : "********"
+                                  : <span className="table-dash">-</span>}
+                              </span>
+                              {h.has_old_value && isRevealed && (
+                                <button
+                                  className="button-ghost value-row__copy-button"
+                                  onClick={() => handleCopyValue(revealedData?.old || "", `${h.id}-old`)}
+                                  type="button"
+                                  title="Copy old value"
+                                >
+                                  {copiedField === `${h.id}-old` ? (
+                                    <Check className="value-row__copy-icon value-row__copy-icon--copied" size={16} />
+                                  ) : (
+                                    <Copy className="value-row__copy-icon" size={16} />
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                          <div className="history-card__field">
+                            <span className="summary-label">New Value</span>
+                            <div className="secret-row__masked" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                              <span className={!isRevealed && h.has_new_value ? "secret-row__masked--value" : ""} style={{ wordBreak: "break-all" }}>
+                                {h.has_new_value
+                                  ? isRevealed
+                                    ? revealedData?.new || "********"
+                                    : "********"
+                                  : <span className="table-dash">-</span>}
+                              </span>
+                              {h.has_new_value && isRevealed && (
+                                <button
+                                  className="button-ghost value-row__copy-button"
+                                  onClick={() => handleCopyValue(revealedData?.new || "", `${h.id}-new`)}
+                                  type="button"
+                                  title="Copy new value"
+                                >
+                                  {copiedField === `${h.id}-new` ? (
+                                    <Check className="value-row__copy-icon value-row__copy-icon--copied" size={16} />
+                                  ) : (
+                                    <Copy className="value-row__copy-icon" size={16} />
+                                  )}
+                                </button>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </article>
-                  ))}
+                      </article>
+                    );
+                  })}
                 </div>
                 {history.length > HISTORY_PAGE_SIZE ? (
                   <div className="pagination-bar history-dialog-pagination">
