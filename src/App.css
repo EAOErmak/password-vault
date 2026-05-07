@@ -1018,7 +1018,8 @@ textarea {
   font-weight: 600;
   white-space: nowrap;
   vertical-align: middle;
-  padding-bottom: 2px;
+  padding: 14px 0 2px;
+  border-bottom: 0;
 }
 
 .account-table td {
@@ -1058,6 +1059,19 @@ textarea {
   color: inherit;
   word-break: break-word;
 }
+
+.account-table__heading-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: var(--surface-muted);
+  color: var(--color-text-muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 .account-table__actions {
   display: flex;
   flex-wrap: wrap;

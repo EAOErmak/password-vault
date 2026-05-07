@@ -458,13 +458,27 @@ export function AccountList({
             <table className="account-table">
               <thead>
                 <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Platform</th>
-                  <th scope="col">Value</th>
-                  <th scope="col">Type</th>
-                  <th scope="col">Value actions</th>
-                  <th scope="col">Secret actions</th>
-                  <th scope="col">Additional Details</th>
+                  <th scope="col">
+                    <span className="account-table__heading-chip">Name</span>
+                  </th>
+                  <th scope="col">
+                    <span className="account-table__heading-chip">Platform</span>
+                  </th>
+                  <th scope="col">
+                    <span className="account-table__heading-chip">Value</span>
+                  </th>
+                  <th scope="col">
+                    <span className="account-table__heading-chip">Type</span>
+                  </th>
+                  <th scope="col">
+                    <span className="account-table__heading-chip">Value actions</span>
+                  </th>
+                  <th scope="col">
+                    <span className="account-table__heading-chip">Secret actions</span>
+                  </th>
+                  <th scope="col">
+                    <span className="account-table__heading-chip">Additional Details</span>
+                  </th>
                 </tr>
               </thead>
               <tbody>
