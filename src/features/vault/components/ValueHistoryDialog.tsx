@@ -32,6 +32,9 @@ export function ValueHistoryDialog({
     return null;
   }
 
+  const hasHistory = history.length > 0;
+  const hasOtherValues = Boolean(otherValues && otherValues.length > 0 && onDelete && onEdit && onHistory);
+
   return (
     <div className="dialog-backdrop" role="presentation">
       <div
@@ -61,33 +64,49 @@ export function ValueHistoryDialog({
         </div>
 
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
-        {isLoading ? <p className="muted-state">Loading history...</p> : (
-          <div style={{ maxHeight: "300px", overflowY: "auto", padding: "12px", background: "var(--surface-subtle)", borderRadius: "18px", marginBottom: "16px" }}>
-            <HistoryTimeline
-              columns={[
-                { key: "date", label: "Date" },
-                { key: "old", label: "Old Value" },
-                { key: "new", label: "New Value" },
-              ]}
-              emptyMessage="No history records found for this value."
-              rows={history.map((h) => ({
-                id: h.id,
-                cells: [
-                  formatDateTime(h.changed_at),
-                  h.old_value ? h.old_value : <span className="table-dash">-</span>,
-                  h.new_value ? h.new_value : <span className="table-dash">-</span>,
-                ],
-              }))}
-            />
+        {isLoading ? <p className="muted-state">Loading history...</p> : null}
+
+        {!isLoading && hasHistory ? (
+          <section className="history-dialog-section">
+            <div className="history-dialog-section__header">
+              <h4>Change history</h4>
+            </div>
+            <div className="history-dialog-panel">
+              <HistoryTimeline
+                columns={[
+                  { key: "date", label: "Date" },
+                  { key: "old", label: "Old Value" },
+                  { key: "new", label: "New Value" },
+                ]}
+                emptyMessage="No history records found for this value."
+                rows={history.map((h) => ({
+                  id: h.id,
+                  cells: [
+                    formatDateTime(h.changed_at),
+                    h.old_value ? h.old_value : <span className="table-dash">-</span>,
+                    h.new_value ? h.new_value : <span className="table-dash">-</span>,
+                  ],
+                }))}
+              />
+            </div>
+          </section>
+        ) : null}
+
+        {!isLoading && !hasHistory && !hasOtherValues ? (
+          <div className="history-dialog-panel">
+            <div className="empty-state empty-state--compact">
+              <p>No history records found for this value.</p>
+            </div>
           </div>
-        )}
+        ) : null}
 
-
-
-        {otherValues && otherValues.length > 0 && onDelete && onEdit && onHistory && (
-          <div style={{ marginTop: "16px" }}>
+        {hasOtherValues ? (
+          <section className="history-dialog-section">
+            <div className="history-dialog-section__header">
+              <h4>Other values</h4>
+            </div>
             <div className="metadata-list">
-              {otherValues.map((v) => (
+              {otherValues!.map((v) => (
                 <AccountValueRow
                   isBusy={isLoading}
                   key={v.id}
@@ -98,8 +117,8 @@ export function ValueHistoryDialog({
                 />
               ))}
             </div>
-          </div>
-        )}
+          </section>
+        ) : null}
 
       </div>
     </div>
