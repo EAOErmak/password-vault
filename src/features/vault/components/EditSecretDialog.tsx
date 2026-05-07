@@ -126,10 +126,6 @@ export function EditSecretDialog({
             />
           </label>
 
-          <p className="field-helper">
-            Optional. If empty, "{getDefaultSecretLabel(secret.secret_type)}" will be used.
-          </p>
-
           <div className="secret-dialog-toolbar">
             <span className="field-helper">Current secret value is not prefilled.</span>
             <button

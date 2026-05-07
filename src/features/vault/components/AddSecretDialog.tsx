@@ -98,10 +98,6 @@ export function AddSecretDialog({
             />
           </label>
 
-          <p className="field-helper">
-            Optional. If empty, "{getDefaultSecretLabel(secretType)}" will be used.
-          </p>
-
           {secretType === "PASSWORD" ? (
             <PasswordGeneratorControls
               disabled={isSubmitting}
