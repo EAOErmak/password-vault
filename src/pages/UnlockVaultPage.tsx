@@ -76,11 +76,6 @@ export function UnlockVaultPage({
 
   return (
     <section className="page">
-      <div className="page-copy">
-        <h2>Unlock Vault</h2>
-        <p>Unlock an existing vault for the current desktop session.</p>
-      </div>
-
       <form className="vault-form" onSubmit={handleSubmit}>
         <label className="field">
           <span>Vault path</span>

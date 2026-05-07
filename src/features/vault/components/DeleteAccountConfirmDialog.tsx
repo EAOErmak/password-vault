@@ -28,17 +28,16 @@ export function DeleteAccountConfirmDialog({
         className="dialog-card"
         role="dialog"
         style={{
-          background: "linear-gradient(180deg, #fffafa 0%, #fff5f5 100%)",
-          boxShadow: "0 20px 40px rgba(220, 38, 38, 0.12)",
-          border: "1px solid rgba(220, 38, 38, 0.15)",
+          background: "var(--surface-danger-dialog)",
+          boxShadow: "var(--shadow-dialog-danger)",
+          border: "1px solid var(--dialog-danger-border)",
           borderRadius: "24px",
-          padding: "24px",
         }}
       >
         <div className="dialog-header">
           <div style={{ width: "100%" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-              <h3 style={{ color: "#991b1b", margin: 0 }}>Delete Account</h3>
+              <h3 style={{ color: "var(--color-danger-strong)", margin: 0 }}>Delete Account</h3>
               <button
                 className="button-ghost button-small"
                 onClick={onClose}
@@ -48,10 +47,10 @@ export function DeleteAccountConfirmDialog({
                 Close
               </button>
             </div>
-            <p style={{ color: "#7f1d1d", fontSize: "0.95rem", margin: "16px 0" }}>
+            <p style={{ color: "var(--color-danger-muted)", fontSize: "0.95rem", margin: "16px 0" }}>
               Are you sure you want to soft-delete <strong>"{accountLabel}"</strong>?
             </p>
-            <p style={{ color: "#991b1b", fontSize: "0.85rem", opacity: 0.8 }}>
+            <p style={{ color: "var(--color-danger-strong)", fontSize: "0.85rem", opacity: 0.8 }}>
               This will hide the account and all its values/secrets from the active vault view.
             </p>
           </div>
@@ -62,7 +61,7 @@ export function DeleteAccountConfirmDialog({
             className="button-primary"
             disabled={isDeleting}
             onClick={() => void onConfirm()}
-            style={{ backgroundColor: "#dc2626" }}
+            style={{ backgroundColor: "var(--color-danger-button)" }}
             type="button"
           >
             {isDeleting ? "Deleting..." : "Yes, delete account"}

@@ -39,10 +39,10 @@ export function ValueHistoryDialog({
         className="dialog-card dialog-card--wide"
         role="dialog"
         style={{
-          background: "linear-gradient(180deg, #f4f7f9 0%, #eef3f6 100%)",
-          boxShadow: "0 20px 40px rgba(25, 33, 38, 0.12)",
-          border: "1px solid rgba(25, 33, 38, 0.08)",
-          borderRadius: "24px"
+          background: "var(--dialog-tonal-bg)",
+          boxShadow: "var(--shadow-dialog-tonal)",
+          border: "1px solid var(--dialog-tonal-border)",
+          borderRadius: "24px",
         }}
       >
         <div className="dialog-header">

@@ -90,7 +90,7 @@ export function SecretRow({
             disabled={isBusy}
             title="Copy secret"
           >
-            {copied ? <Check size={16} className="text-green-600" style={{ color: "#1f4d39" }} /> : <Copy size={16} />}
+            {copied ? <Check size={16} className="text-green-600" style={{ color: "var(--color-accent)" }} /> : <Copy size={16} />}
           </button>
         </div>
       </div>

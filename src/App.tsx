@@ -14,6 +14,12 @@ import {
   type VaultStatus,
   unlockVault,
 } from "./lib/vault";
+import {
+  applyTheme,
+  resolveInitialTheme,
+  storeTheme,
+  type AppTheme,
+} from "./lib/theme";
 import { CreateVaultPage } from "./pages/CreateVaultPage";
 import { UnlockVaultPage } from "./pages/UnlockVaultPage";
 import { VaultHomePage } from "./pages/VaultHomePage";
@@ -34,10 +40,16 @@ function App() {
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [isBusy, setIsBusy] = useState(false);
   const [sessionResetToken, setSessionResetToken] = useState(0);
+  const [theme, setTheme] = useState<AppTheme>(() => resolveInitialTheme());
 
   useEffect(() => {
     void syncVaultStatus();
   }, []);
+
+  useEffect(() => {
+    applyTheme(theme);
+    storeTheme(theme);
+  }, [theme]);
 
   useEffect(() => {
     isLockingRef.current = isBusy;
@@ -252,63 +264,79 @@ function App() {
   const currentVaultPath =
     normalizeVaultPath(vaultStatus?.path) ?? knownVaultPath ?? null;
 
+  const nextThemeLabel = theme === "dark" ? "Light theme" : "Dark theme";
+
+  const themeToggle = (
+    <button
+      aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
+      aria-pressed={theme === "dark"}
+      className="button-secondary theme-toggle"
+      onClick={() => {
+        setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+      }}
+      type="button"
+    >
+      {nextThemeLabel}
+    </button>
+  );
+
   if (view === "home") {
     return (
-      <VaultHomePage
-        errorMessage={errorMessage}
-        isLocking={isBusy}
-        onLock={handleLockVault}
-        onRestoreComplete={handleRestoreComplete}
-        onRestoreInterrupted={handleRestoreInterrupted}
-        sessionResetToken={sessionResetToken}
-        vaultPath={currentVaultPath}
-      />
+      <>
+        {themeToggle}
+        <VaultHomePage
+          errorMessage={errorMessage}
+          isLocking={isBusy}
+          onLock={handleLockVault}
+          onRestoreComplete={handleRestoreComplete}
+          onRestoreInterrupted={handleRestoreInterrupted}
+          sessionResetToken={sessionResetToken}
+          vaultPath={currentVaultPath}
+        />
+      </>
     );
   }
 
   return (
-    <main className="app-shell">
-      <section className="app-panel">
-        <header className="app-header">
-          <p className="eyebrow">Password Vault</p>
-          <h1>Vault Lifecycle</h1>
-          <p className="intro">
-            Create a vault, unlock an existing one, or lock the current session.
-            Account management comes next.
-          </p>
-        </header>
+    <>
+      {themeToggle}
+      <main className="app-shell">
+        <section className="app-panel">
+          <header className="app-header">
+            <h1 className="app-title">Password Vault</h1>
+          </header>
 
-        {view === "loading" ? (
-          <section className="loading-state">
-            <h2>Checking vault status</h2>
-            <p>Loading the current session state from Tauri.</p>
-          </section>
-        ) : null}
+          {view === "loading" ? (
+            <section className="loading-state">
+              <h2>Checking vault status</h2>
+              <p>Loading the current session state from Tauri.</p>
+            </section>
+          ) : null}
 
-        {view === "create" ? (
-          <CreateVaultPage
-            errorMessage={errorMessage}
-            initialPath={currentVaultPath}
-            isSubmitting={isBusy}
-            onSubmit={handleCreateVault}
-            onSwitchToUnlock={showUnlockPage}
-            statusMessage={statusMessage}
-          />
-        ) : null}
+          {view === "create" ? (
+            <CreateVaultPage
+              errorMessage={errorMessage}
+              initialPath={currentVaultPath}
+              isSubmitting={isBusy}
+              onSubmit={handleCreateVault}
+              onSwitchToUnlock={showUnlockPage}
+              statusMessage={statusMessage}
+            />
+          ) : null}
 
-        {view === "unlock" ? (
-          <UnlockVaultPage
-            errorMessage={errorMessage}
-            initialPath={currentVaultPath}
-            isSubmitting={isBusy}
-            onSubmit={handleUnlockVault}
-            onSwitchToCreate={showCreatePage}
-            statusMessage={statusMessage}
-          />
-        ) : null}
-
-      </section>
-    </main>
+          {view === "unlock" ? (
+            <UnlockVaultPage
+              errorMessage={errorMessage}
+              initialPath={currentVaultPath}
+              isSubmitting={isBusy}
+              onSubmit={handleUnlockVault}
+              onSwitchToCreate={showCreatePage}
+              statusMessage={statusMessage}
+            />
+          ) : null}
+        </section>
+      </main>
+    </>
   );
 }
 
