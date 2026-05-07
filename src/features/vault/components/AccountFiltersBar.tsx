@@ -22,6 +22,7 @@ export function AccountFiltersBar({
 }: AccountFiltersBarProps) {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isPlatformDropdownOpen, setIsPlatformDropdownOpen] = useState(false);
+  const [platformSearchQuery, setPlatformSearchQuery] = useState("");
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -38,6 +39,10 @@ export function AccountFiltersBar({
 
   const selectedPlatformLabel =
     platforms.find((platform) => platform.id === clientPlatformFilter)?.name ?? "All platforms";
+  const normalizedPlatformQuery = platformSearchQuery.trim().toLowerCase();
+  const filteredPlatforms = platforms.filter((platform) =>
+    platform.name.toLowerCase().includes(normalizedPlatformQuery),
+  );
 
   return (
     <div className="vault-platform-filter">
@@ -52,12 +57,25 @@ export function AccountFiltersBar({
         <label className="field account-filters-grid__field">
           <span>Filter by Platform</span>
           <div className="custom-select-container account-filters-select" ref={dropdownRef}>
-            <button
-              className="select-input custom-select-trigger"
-              onClick={() => setIsPlatformDropdownOpen((currentValue) => !currentValue)}
-              type="button"
-            >
-              <span className="account-filters-select__value">{selectedPlatformLabel}</span>
+            <div className="select-input custom-select-trigger account-filters-select__trigger">
+              <input
+                autoComplete="off"
+                className="account-filters-select__input"
+                onChange={(event) => {
+                  setPlatformSearchQuery(event.currentTarget.value);
+                  setIsPlatformDropdownOpen(true);
+                }}
+                onFocus={() => setIsPlatformDropdownOpen(true)}
+                placeholder={selectedPlatformLabel}
+                spellCheck={false}
+                type="text"
+                value={platformSearchQuery}
+              />
+              <button
+                className="account-filters-select__toggle"
+                onClick={() => setIsPlatformDropdownOpen((currentValue) => !currentValue)}
+                type="button"
+              >
               <svg
                 width="12"
                 height="12"
@@ -70,30 +88,38 @@ export function AccountFiltersBar({
               >
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
-            </button>
+              </button>
+            </div>
             {isPlatformDropdownOpen ? (
               <ul className="custom-select-menu account-filters-select__menu">
                 <li
                   className={`custom-select-option ${clientPlatformFilter === null ? "selected" : ""}`}
                   onClick={() => {
                     onPlatformFilterChange(null);
+                    setPlatformSearchQuery("");
                     setIsPlatformDropdownOpen(false);
                   }}
                 >
                   All platforms
                 </li>
-                {platforms.map((platform) => (
+                {filteredPlatforms.map((platform) => (
                   <li
                     key={platform.id}
                     className={`custom-select-option ${clientPlatformFilter === platform.id ? "selected" : ""}`}
                     onClick={() => {
                       onPlatformFilterChange(platform.id);
+                      setPlatformSearchQuery("");
                       setIsPlatformDropdownOpen(false);
                     }}
                   >
                     {platform.name}
                   </li>
                 ))}
+                {filteredPlatforms.length === 0 ? (
+                  <li className="custom-select-option account-filters-select__empty">
+                    No matching platforms
+                  </li>
+                ) : null}
               </ul>
             ) : null}
           </div>

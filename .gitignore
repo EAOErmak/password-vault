@@ -1,24 +1,76 @@
-# Logs
-logs
+# JavaScript / TypeScript dependencies and frontend build output
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Rust / Cargo / Tauri build output
+target/
+src-tauri/target/
+
+# Tauri generated bundles, installers, and packaged apps
+src-tauri/target/release/bundle/
+*.msi
+*-setup.exe
+*.app
+*.dmg
+*.AppImage
+*.deb
+*.rpm
+
+# Local vault databases, SQLCipher files, and user data
+*.db
+*.sqlite
+*.sqlite3
+*.db-wal
+*.db-shm
+*.sqlite-wal
+*.sqlite-shm
+local-data/
+vaults/
+backups/
+
+# Environment files and local secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Logs, caches, and temporary files
 *.log
+logs/
+tmp/
+temp/
+.cache/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# OS-generated files
 .DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor and IDE files
+.idea/
+.vscode/
+*.swp
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Keep important lock/config/source files tracked
+# Do not ignore:
+# - package.json
+# - pnpm-lock.yaml
+# - Cargo.toml
+# - Cargo.lock
+# - tauri.conf.json
+# - application source files
