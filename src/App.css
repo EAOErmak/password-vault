@@ -1536,7 +1536,7 @@ textarea {
   padding: 16px;
   border: 1px solid var(--color-border-strong);
   border-radius: 18px;
-  background: var(--surface-subtle);
+  background: var(--surface-muted);
 }
 
 .generator-panel h4 {
