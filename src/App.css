@@ -656,8 +656,15 @@ textarea {
 
 .secret-row__masked {
   margin: 0;
+  padding: 10px 14px;
+  background: #f4f7f8;
+  border-radius: 12px;
   color: #55606c;
-  letter-spacing: 0.18em;
+  font-size: 0.95rem;
+  letter-spacing: 0.25em;
+  border: 1px solid rgba(25, 33, 38, 0.03);
+  display: block;
+  width: 100%;
 }
 
 .value-row__footer,
