@@ -469,6 +469,12 @@ textarea {
   padding: 24px;
 }
 
+.vault-header-card,
+.account-filters-card,
+.account-list-card {
+  border: 0;
+}
+
 .vault-header-card .vault-header-row {
   display: grid;
   gap: 18px;
@@ -546,6 +552,7 @@ textarea {
 
 .account-list-card .account-table-wrapper {
   margin-inline: -24px;
+  padding-inline: clamp(24px, 4vw, 40px);
 }
 
 .account-list-card__header {
@@ -995,14 +1002,14 @@ textarea {
 
 .account-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0 12px;
 }
 
 .account-table th,
 .account-table td {
   padding: 14px 12px;
   text-align: left;
-  border-bottom: 1px solid var(--color-border-strong);
 }
 
 .account-table th {
@@ -1011,26 +1018,39 @@ textarea {
   font-weight: 600;
   white-space: nowrap;
   vertical-align: middle;
+  padding-bottom: 2px;
 }
 
 .account-table td {
   vertical-align: middle;
+  background: var(--surface-subtle);
+  transition:
+    background-color 120ms ease;
+}
+
+.account-table td:first-child {
+  border-top-left-radius: 18px;
+  border-bottom-left-radius: 18px;
+}
+
+.account-table td:last-child {
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
 }
 
 .account-table__row {
   cursor: pointer;
-  transition: background-color 120ms ease;
 }
 
-.account-table__row:hover {
+.account-table__row:hover td {
   background: var(--surface-selected);
 }
 
-.account-table__row--selected {
+.account-table__row--selected td {
   background: var(--surface-muted-alt);
 }
 
-.account-table__row--selected:hover {
+.account-table__row--selected:hover td {
   background: var(--surface-selected-hover);
 }
 
@@ -1294,6 +1314,7 @@ textarea {
 
   .account-list-card .account-table-wrapper {
     margin-inline: -20px;
+    padding-inline: 14px;
   }
 
   .vault-header-actions > * {
