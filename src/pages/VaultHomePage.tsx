@@ -4,6 +4,7 @@ import {
   getAccountDetails,
   listAccounts,
   softDeleteAccount,
+  updateAccount,
 } from "../features/vault/api/accountApi";
 import { createPlatform, listPlatforms } from "../features/vault/api/platformApi";
 import { addSecret, softDeleteSecret, updateSecret } from "../features/vault/api/secretApi";
@@ -29,6 +30,7 @@ import type {
   CreatePlatformRequest,
   PlatformDto,
   RestoreEncryptedBackupDto,
+  UpdateAccountRequest,
   UpdateAccountValueRequest,
   UpdateSecretRequest,
 } from "../features/vault/types";
@@ -471,6 +473,19 @@ export function VaultHomePage({
     });
   };
 
+  const handleUpdateAccount = async (
+    accountId: string,
+    request: UpdateAccountRequest,
+  ) => {
+    const updatedAccount = await updateAccount(accountId, request);
+    const nextPlatformId = selectedPlatformId === null ? null : updatedAccount.platform.id;
+
+    await loadSnapshot(nextPlatformId, searchQuery, {
+      preferredAccountId: updatedAccount.id,
+      seedDetails: updatedAccount,
+    });
+  };
+
   const selectedPlatformName =
     selectedPlatformId === null
       ? null
@@ -565,8 +580,10 @@ export function VaultHomePage({
         onDeleteAccount={handleDeleteAccount}
         onDeleteSecret={handleDeleteSecret}
         onDeleteValue={handleDeleteAccountValue}
+        onUpdateAccount={handleUpdateAccount}
         onUpdateSecret={handleUpdateSecret}
         onUpdateValue={handleUpdateAccountValue}
+        platforms={platforms}
       />
     </>
   );

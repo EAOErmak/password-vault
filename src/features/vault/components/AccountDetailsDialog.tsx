@@ -3,6 +3,8 @@ import type {
   AccountDetails,
   AddAccountValueRequest,
   AddSecretRequest,
+  PlatformDto,
+  UpdateAccountRequest,
   UpdateAccountValueRequest,
   UpdateSecretRequest,
 } from "../types";
@@ -15,6 +17,7 @@ import {
 import { AccountValuesSection } from "./AccountValuesSection";
 import { SecretsSection } from "./SecretsSection";
 import { DeleteAccountConfirmDialog } from "./DeleteAccountConfirmDialog";
+import { EditAccountDialog } from "./EditAccountDialog";
 
 type AccountDetailsDialogProps = {
   account: AccountDetails | null;
@@ -27,8 +30,10 @@ type AccountDetailsDialogProps = {
   onDeleteAccount: (accountId: string) => Promise<void>;
   onDeleteSecret: (secretId: string) => Promise<void>;
   onDeleteValue: (valueId: string) => Promise<void>;
+  onUpdateAccount: (accountId: string, request: UpdateAccountRequest) => Promise<void>;
   onUpdateSecret: (secretId: string, request: UpdateSecretRequest) => Promise<void>;
   onUpdateValue: (valueId: string, request: UpdateAccountValueRequest) => Promise<void>;
+  platforms: PlatformDto[];
 };
 
 export function AccountDetailsDialog({
@@ -42,24 +47,35 @@ export function AccountDetailsDialog({
   onDeleteAccount,
   onDeleteSecret,
   onDeleteValue,
+  onUpdateAccount,
   onUpdateSecret,
   onUpdateValue,
+  platforms,
 }: AccountDetailsDialogProps) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [editError, setEditError] = useState<string | null>(null);
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (!isOpen) {
       setDeleteError(null);
+      setEditError(null);
+      setIsEditOpen(false);
       setIsDeleting(false);
+      setIsEditing(false);
       setIsConfirmDeleteOpen(false);
     }
   }, [isOpen]);
 
   useEffect(() => {
     setDeleteError(null);
+    setEditError(null);
+    setIsEditOpen(false);
     setIsDeleting(false);
+    setIsEditing(false);
     setIsConfirmDeleteOpen(false);
   }, [account?.id]);
 
@@ -86,6 +102,24 @@ export function AccountDetailsDialog({
     } catch (error) {
       setDeleteError(getVaultErrorMessage(error));
       setIsDeleting(false);
+    }
+  };
+
+  const handleSubmitEdit = async (request: UpdateAccountRequest) => {
+    if (!account) {
+      return;
+    }
+
+    setEditError(null);
+    setIsEditing(true);
+
+    try {
+      await onUpdateAccount(account.id, request);
+      setIsEditOpen(false);
+    } catch (error) {
+      setEditError(getVaultErrorMessage(error));
+    } finally {
+      setIsEditing(false);
     }
   };
 
@@ -168,8 +202,19 @@ export function AccountDetailsDialog({
 
               <div className="actions">
                 <button
+                  className="button-secondary"
+                  disabled={isDeleting || isEditing}
+                  onClick={() => {
+                    setEditError(null);
+                    setIsEditOpen(true);
+                  }}
+                  type="button"
+                >
+                  {isEditing ? "Saving..." : "Edit account"}
+                </button>
+                <button
                   className="button-secondary button-danger"
-                  disabled={isDeleting}
+                  disabled={isDeleting || isEditing}
                   onClick={() => {
                     void handleDelete();
                   }}
@@ -191,6 +236,19 @@ export function AccountDetailsDialog({
             onConfirm={handleConfirmDelete}
           />
         )}
+
+        <EditAccountDialog
+          account={account}
+          errorMessage={editError}
+          isOpen={isEditOpen}
+          isSubmitting={isEditing}
+          onClose={() => {
+            setEditError(null);
+            setIsEditOpen(false);
+          }}
+          onSubmit={handleSubmitEdit}
+          platforms={platforms}
+        />
       </div>
     </div>
   );

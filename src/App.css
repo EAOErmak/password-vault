@@ -856,7 +856,9 @@ textarea {
 }
 
 .create-account-dialog .platform-select__input:focus,
-.create-account-dialog .platform-select__input:focus-visible {
+.create-account-dialog .platform-select__input:focus-visible,
+.edit-account-dialog .platform-select__input:focus,
+.edit-account-dialog .platform-select__input:focus-visible {
   border-color: transparent;
   outline: none;
   outline-offset: 0;
@@ -886,12 +888,15 @@ textarea {
 }
 
 .create-account-dialog .platform-select__toggle:focus,
-.create-account-dialog .platform-select__toggle:focus-visible {
+.create-account-dialog .platform-select__toggle:focus-visible,
+.edit-account-dialog .platform-select__toggle:focus,
+.edit-account-dialog .platform-select__toggle:focus-visible {
   outline: none;
   box-shadow: none;
 }
 
-.create-account-dialog .platform-select__trigger:focus-within {
+.create-account-dialog .platform-select__trigger:focus-within,
+.edit-account-dialog .platform-select__trigger:focus-within {
   outline: none;
   box-shadow: none;
 }
@@ -1010,6 +1015,13 @@ textarea {
 .create-account-dialog .field select,
 .create-account-dialog .field textarea,
 .create-account-dialog .select-input {
+  border: 0;
+}
+
+.edit-account-dialog .field input,
+.edit-account-dialog .field select,
+.edit-account-dialog .field textarea,
+.edit-account-dialog .select-input {
   border: 0;
 }
 
