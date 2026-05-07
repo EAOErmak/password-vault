@@ -620,11 +620,20 @@ textarea {
 .account-filters-card .custom-select-option {
   margin-bottom: 6px;
   border-radius: 12px;
-  background: transparent;
+  background: var(--surface-muted);
 }
 
 .account-filters-card .custom-select-option:hover {
   transform: none;
+  background: var(--surface-muted-alt);
+  color: var(--color-text-primary);
+}
+
+.account-filters-card .custom-select-option.selected {
+  background: var(--surface-muted);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  box-shadow: none;
 }
 
 .edit-value-dialog .field input,
