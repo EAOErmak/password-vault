@@ -1,11 +1,10 @@
 import { useEffect, useState, type FormEvent } from "react";
-import type { AccountValueDto, UpdateAccountValueRequest } from "../types";
+import type { AccountValueDto, AccountValueType, UpdateAccountValueRequest } from "../types";
 import {
   getDefaultAccountValueLabel,
   isCustomAccountValueType,
   normalizeAccountValueLabel,
 } from "../utils/accountValueHelpers";
-import { formatEnumLabel } from "../utils/formatters";
 import { AccountValueTypeSelect } from "./AccountValueTypeSelect";
 import { DialogBackdrop } from "./DialogBackdrop";
 

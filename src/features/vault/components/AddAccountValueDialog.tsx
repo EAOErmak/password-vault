@@ -1,7 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { AddAccountValueRequest, AccountValueType } from "../types";
 import {
-  ACCOUNT_VALUE_TYPE_OPTIONS,
   getDefaultAccountValueLabel,
   isCustomAccountValueType,
   normalizeAccountValueLabel,

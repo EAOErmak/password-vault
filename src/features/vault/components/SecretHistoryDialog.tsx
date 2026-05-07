@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { Eye, EyeOff, Copy, Check } from "lucide-react";
-import type { SecretHistoryDto, SecretMetadataDto, RevealedSecretHistoryDto } from "../types";
+import type { SecretHistoryDto, SecretMetadataDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
 import { DialogBackdrop } from "./DialogBackdrop";
-import { HistoryTimeline } from "./HistoryTimeline";
 import { SecretRow } from "./SecretRow";
 import { revealSecretHistory } from "../api/secretApi";
 
@@ -311,9 +310,9 @@ export function SecretHistoryDialog({
                 <SecretRow
                   isBusy={isLoading}
                   key={s.id}
-                  onDelete={onDelete}
-                  onEdit={onEdit}
-                  onHistory={onHistory}
+                  onDelete={onDelete!}
+                  onEdit={onEdit!}
+                  onHistory={onHistory as any}
                   secret={s}
                 />
               ))}
