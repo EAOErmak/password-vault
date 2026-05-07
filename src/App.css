@@ -361,6 +361,12 @@ textarea {
   z-index: 10;
 }
 
+.custom-select-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .custom-select-option {
   padding: 10px 14px;
   border-radius: 10px;
@@ -386,6 +392,44 @@ textarea {
   color: var(--color-text-inverse);
   font-weight: 600;
   box-shadow: var(--shadow-accent);
+}
+
+.custom-select-pagination {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+}
+
+.custom-select-pagination__button {
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--surface-menu-option);
+  color: var(--text-menu-option);
+  font: inherit;
+  cursor: pointer;
+  transition: background 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-select-pagination__button:hover:not(:disabled) {
+  background: var(--surface-menu-option-hover);
+  color: var(--text-menu-option-hover);
+}
+
+.custom-select-pagination__button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.custom-select-pagination__summary {
+  text-align: center;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
 }
 
 .actions,
@@ -724,6 +768,16 @@ textarea {
   box-shadow: none;
 }
 
+.account-filters-card .custom-select-pagination__button {
+  background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
+  color: var(--color-text-primary);
+}
+
+.account-filters-card .custom-select-pagination__button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--surface-muted-alt) 66%, var(--color-border) 34%);
+  color: var(--color-text-primary);
+}
+
 .account-filters-select__empty {
   cursor: default;
   color: var(--color-text-muted);
@@ -879,6 +933,16 @@ textarea {
   box-shadow: none;
 }
 
+.platform-select .custom-select-pagination__button {
+  background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
+  color: var(--color-text-primary);
+}
+
+.platform-select .custom-select-pagination__button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--surface-muted-alt) 66%, var(--color-border) 34%);
+  color: var(--color-text-primary);
+}
+
 .platform-select__empty {
   cursor: default;
   color: var(--color-text-muted);
@@ -900,6 +964,16 @@ textarea {
 :root[data-theme="dark"] .secret-type-select .custom-select-option.selected,
 :root[data-theme="dark"] .platform-select .custom-select-option.selected {
   background: color-mix(in srgb, var(--surface-muted) 35%, var(--color-border-subtle) 65%);
+}
+
+:root[data-theme="dark"] .account-filters-card .custom-select-pagination__button,
+:root[data-theme="dark"] .platform-select .custom-select-pagination__button {
+  background: color-mix(in srgb, var(--surface-muted) 35%, var(--color-border-subtle) 65%);
+}
+
+:root[data-theme="dark"] .account-filters-card .custom-select-pagination__button:hover:not(:disabled),
+:root[data-theme="dark"] .platform-select .custom-select-pagination__button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--surface-muted-alt) 28%, var(--color-border-subtle) 72%);
 }
 
 .edit-value-dialog .field input,

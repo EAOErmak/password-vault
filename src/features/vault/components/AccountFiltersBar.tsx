@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import type { PlatformDto } from "../types";
 
+const PLATFORM_MENU_PAGE_SIZE = 6;
+
 type AccountFiltersBarProps = {
   clientNameFilter: string;
   clientPlatformFilter: string | null;
@@ -23,6 +25,7 @@ export function AccountFiltersBar({
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isPlatformDropdownOpen, setIsPlatformDropdownOpen] = useState(false);
   const [platformSearchQuery, setPlatformSearchQuery] = useState("");
+  const [platformPage, setPlatformPage] = useState(1);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -43,6 +46,27 @@ export function AccountFiltersBar({
   const filteredPlatforms = platforms.filter((platform) =>
     platform.name.toLowerCase().includes(normalizedPlatformQuery),
   );
+  const platformOptions =
+    normalizedPlatformQuery.length === 0
+      ? [{ id: null, name: "All platforms" }, ...filteredPlatforms]
+      : filteredPlatforms;
+  const totalPlatformPages = Math.max(
+    1,
+    Math.ceil(platformOptions.length / PLATFORM_MENU_PAGE_SIZE),
+  );
+  const paginatedPlatformOptions = platformOptions.slice(
+    (platformPage - 1) * PLATFORM_MENU_PAGE_SIZE,
+    platformPage * PLATFORM_MENU_PAGE_SIZE,
+  );
+  const hasPlatformPagination = platformOptions.length > PLATFORM_MENU_PAGE_SIZE;
+
+  useEffect(() => {
+    setPlatformPage(1);
+  }, [platformSearchQuery, isPlatformDropdownOpen]);
+
+  useEffect(() => {
+    setPlatformPage((currentPage) => Math.min(currentPage, totalPlatformPages));
+  }, [totalPlatformPages]);
 
   return (
     <div className="vault-platform-filter">
@@ -91,36 +115,55 @@ export function AccountFiltersBar({
               </button>
             </div>
             {isPlatformDropdownOpen ? (
-              <ul className="custom-select-menu account-filters-select__menu">
-                <li
-                  className={`custom-select-option ${clientPlatformFilter === null ? "selected" : ""}`}
-                  onClick={() => {
-                    onPlatformFilterChange(null);
-                    setPlatformSearchQuery("");
-                    setIsPlatformDropdownOpen(false);
-                  }}
-                >
-                  All platforms
-                </li>
-                {filteredPlatforms.map((platform) => (
-                  <li
-                    key={platform.id}
-                    className={`custom-select-option ${clientPlatformFilter === platform.id ? "selected" : ""}`}
-                    onClick={() => {
-                      onPlatformFilterChange(platform.id);
-                      setPlatformSearchQuery("");
-                      setIsPlatformDropdownOpen(false);
-                    }}
-                  >
-                    {platform.name}
-                  </li>
-                ))}
-                {filteredPlatforms.length === 0 ? (
-                  <li className="custom-select-option account-filters-select__empty">
-                    No matching platforms
-                  </li>
+              <div className="custom-select-menu account-filters-select__menu">
+                <ul className="custom-select-list">
+                  {paginatedPlatformOptions.map((platform) => (
+                    <li
+                      key={platform.id ?? "all-platforms"}
+                      className={`custom-select-option ${clientPlatformFilter === platform.id ? "selected" : ""}`}
+                      onClick={() => {
+                        onPlatformFilterChange(platform.id);
+                        setPlatformSearchQuery("");
+                        setIsPlatformDropdownOpen(false);
+                      }}
+                    >
+                      {platform.name}
+                    </li>
+                  ))}
+                  {platformOptions.length === 0 ? (
+                    <li className="custom-select-option account-filters-select__empty">
+                      No matching platforms
+                    </li>
+                  ) : null}
+                </ul>
+                {hasPlatformPagination ? (
+                  <div className="custom-select-pagination">
+                    <button
+                      className="custom-select-pagination__button"
+                      disabled={platformPage === 1}
+                      onClick={() => setPlatformPage((currentPage) => Math.max(1, currentPage - 1))}
+                      type="button"
+                    >
+                      Previous
+                    </button>
+                    <span className="custom-select-pagination__summary">
+                      {platformPage} / {totalPlatformPages}
+                    </span>
+                    <button
+                      className="custom-select-pagination__button"
+                      disabled={platformPage === totalPlatformPages}
+                      onClick={() =>
+                        setPlatformPage((currentPage) =>
+                          Math.min(totalPlatformPages, currentPage + 1),
+                        )
+                      }
+                      type="button"
+                    >
+                      Next
+                    </button>
+                  </div>
                 ) : null}
-              </ul>
+              </div>
             ) : null}
           </div>
         </label>

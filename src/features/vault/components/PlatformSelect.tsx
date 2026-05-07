@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PlatformDto } from "../types";
 
+const PLATFORM_MENU_PAGE_SIZE = 6;
+
 type PlatformSelectProps = {
   disabled?: boolean;
   onChange: (value: string) => void;
@@ -17,6 +19,7 @@ export function PlatformSelect({
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [platformSearchQuery, setPlatformSearchQuery] = useState("");
+  const [platformPage, setPlatformPage] = useState(1);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -43,6 +46,27 @@ export function PlatformSelect({
       ),
     [normalizedPlatformQuery, platforms],
   );
+  const totalPlatformPages = Math.max(
+    1,
+    Math.ceil(filteredPlatforms.length / PLATFORM_MENU_PAGE_SIZE),
+  );
+  const paginatedPlatforms = useMemo(
+    () =>
+      filteredPlatforms.slice(
+        (platformPage - 1) * PLATFORM_MENU_PAGE_SIZE,
+        platformPage * PLATFORM_MENU_PAGE_SIZE,
+      ),
+    [filteredPlatforms, platformPage],
+  );
+  const hasPlatformPagination = filteredPlatforms.length > PLATFORM_MENU_PAGE_SIZE;
+
+  useEffect(() => {
+    setPlatformPage(1);
+  }, [platformSearchQuery, isOpen]);
+
+  useEffect(() => {
+    setPlatformPage((currentPage) => Math.min(currentPage, totalPlatformPages));
+  }, [totalPlatformPages]);
 
   return (
     <div className="custom-select-container platform-select" ref={dropdownRef}>
@@ -82,24 +106,51 @@ export function PlatformSelect({
         </button>
       </div>
       {isOpen && !disabled ? (
-        <ul className="custom-select-menu platform-select__menu">
-          {filteredPlatforms.map((platform) => (
-            <li
-              key={platform.id}
-              className={`custom-select-option ${value === platform.id ? "selected" : ""}`}
-              onClick={() => {
-                onChange(platform.id);
-                setPlatformSearchQuery("");
-                setIsOpen(false);
-              }}
-            >
-              {platform.name}
-            </li>
-          ))}
-          {filteredPlatforms.length === 0 ? (
-            <li className="custom-select-option platform-select__empty">No matching platforms</li>
+        <div className="custom-select-menu platform-select__menu">
+          <ul className="custom-select-list">
+            {paginatedPlatforms.map((platform) => (
+              <li
+                key={platform.id}
+                className={`custom-select-option ${value === platform.id ? "selected" : ""}`}
+                onClick={() => {
+                  onChange(platform.id);
+                  setPlatformSearchQuery("");
+                  setIsOpen(false);
+                }}
+              >
+                {platform.name}
+              </li>
+            ))}
+            {filteredPlatforms.length === 0 ? (
+              <li className="custom-select-option platform-select__empty">No matching platforms</li>
+            ) : null}
+          </ul>
+          {hasPlatformPagination ? (
+            <div className="custom-select-pagination">
+              <button
+                className="custom-select-pagination__button"
+                disabled={platformPage === 1}
+                onClick={() => setPlatformPage((currentPage) => Math.max(1, currentPage - 1))}
+                type="button"
+              >
+                Previous
+              </button>
+              <span className="custom-select-pagination__summary">
+                {platformPage} / {totalPlatformPages}
+              </span>
+              <button
+                className="custom-select-pagination__button"
+                disabled={platformPage === totalPlatformPages}
+                onClick={() =>
+                  setPlatformPage((currentPage) => Math.min(totalPlatformPages, currentPage + 1))
+                }
+                type="button"
+              >
+                Next
+              </button>
+            </div>
           ) : null}
-        </ul>
+        </div>
       ) : null}
     </div>
   );
