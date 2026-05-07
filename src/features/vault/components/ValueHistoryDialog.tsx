@@ -133,23 +133,31 @@ export function ValueHistoryDialog({
             </div>
             {hasHistory ? (
               <>
-                <div className="history-dialog-panel">
-                  <HistoryTimeline
-                    columns={[
-                      { key: "date", label: "Date" },
-                      { key: "old", label: "Old Value" },
-                      { key: "new", label: "New Value" },
-                    ]}
-                    emptyMessage="No history records found for this value."
-                    rows={paginatedHistory.map((h) => ({
-                      id: h.id,
-                      cells: [
-                        formatDateTime(h.changed_at),
-                        h.old_value ? h.old_value : <span className="table-dash">-</span>,
-                        h.new_value ? h.new_value : <span className="table-dash">-</span>,
-                      ],
-                    }))}
-                  />
+                <div className="metadata-list">
+                  {paginatedHistory.map((h) => (
+                    <article className="metadata-item history-card" key={h.id}>
+                      <div className="metadata-item__header">
+                        <div className="value-row__title">
+                          <strong>{formatDateTime(h.changed_at)}</strong>
+                        </div>
+                      </div>
+
+                      <div className="history-card__comparison">
+                        <div className="history-card__field">
+                          <span className="summary-label">Old Value</span>
+                          <p className="value-row__content">
+                            {h.old_value ? h.old_value : <span className="table-dash">-</span>}
+                          </p>
+                        </div>
+                        <div className="history-card__field">
+                          <span className="summary-label">New Value</span>
+                          <p className="value-row__content">
+                            {h.new_value ? h.new_value : <span className="table-dash">-</span>}
+                          </p>
+                        </div>
+                      </div>
+                    </article>
+                  ))}
                 </div>
                 {history.length > HISTORY_PAGE_SIZE ? (
                   <div className="pagination-bar history-dialog-pagination">
