@@ -403,10 +403,25 @@ textarea {
   color: var(--color-text-muted);
 }
 
+.dialog-card .button-ghost {
+  min-width: 0;
+  margin: 0 !important;
+  padding: 6px 12px;
+  background: var(--surface-warning);
+  color: var(--color-warning);
+  font-size: 1rem;
+  line-height: 1.2;
+  box-shadow: inset 0 0 0 1px var(--color-warning-border);
+}
+
 .button-primary:hover,
 .button-secondary:hover,
 .button-ghost:hover {
   transform: translateY(-1px);
+}
+
+.dialog-card .button-ghost:hover {
+  background: color-mix(in srgb, var(--surface-warning) 88%, var(--color-warning-border) 12%);
 }
 
 .button-primary:disabled,
