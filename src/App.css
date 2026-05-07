@@ -175,6 +175,10 @@ textarea {
   box-shadow: var(--shadow-panel);
 }
 
+.app-panel--auth {
+  border: 0;
+}
+
 .app-header,
 .vault-header-copy {
   display: grid;
@@ -242,12 +246,36 @@ textarea {
   background: var(--surface-form);
 }
 
-.unlock-vault-form input,
-.unlock-vault-form textarea,
-.unlock-vault-form select,
+.unlock-vault-form .field input,
+.unlock-vault-form .field textarea,
+.unlock-vault-form .field select,
 .unlock-vault-form .select-input,
 .unlock-vault-form .custom-select-trigger {
   border: 0;
+}
+
+.unlock-vault-form .field input:focus,
+.unlock-vault-form .field textarea:focus,
+.unlock-vault-form .field select:focus,
+.unlock-vault-form .select-input:focus,
+.unlock-vault-form .custom-select-trigger:focus {
+  border-color: transparent;
+}
+
+.create-vault-form .field input,
+.create-vault-form .field textarea,
+.create-vault-form .field select,
+.create-vault-form .select-input,
+.create-vault-form .custom-select-trigger {
+  border: 0;
+}
+
+.create-vault-form .field input:focus,
+.create-vault-form .field textarea:focus,
+.create-vault-form .field select:focus,
+.create-vault-form .select-input:focus,
+.create-vault-form .custom-select-trigger:focus {
+  border-color: transparent;
 }
 
 .field {
@@ -622,12 +650,12 @@ textarea {
   color: var(--color-text-muted);
 }
 
-.account-filters-select__input:focus {
+.account-filters-card .account-filters-select__input:focus,
+.account-filters-card .account-filters-select__input:focus-visible {
+  border-color: transparent;
   outline: none;
-}
-
-.account-filters-select__input:focus-visible {
-  outline: none;
+  outline-offset: 0;
+  box-shadow: none;
 }
 
 .account-filters-select__value {
@@ -652,13 +680,13 @@ textarea {
   -webkit-tap-highlight-color: transparent;
 }
 
-.account-filters-select__toggle:focus,
-.account-filters-select__toggle:focus-visible {
+.account-filters-card .account-filters-select__toggle:focus,
+.account-filters-card .account-filters-select__toggle:focus-visible {
   outline: none;
   box-shadow: none;
 }
 
-.account-filters-select__trigger:focus-within {
+.account-filters-card .account-filters-select__trigger:focus-within {
   outline: none;
   box-shadow: none;
 }
@@ -744,6 +772,55 @@ textarea {
 }
 
 .secret-type-select .custom-select-option.selected {
+  background: var(--surface-muted);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  box-shadow: none;
+}
+
+.platform-select .custom-select-trigger {
+  min-height: 48px;
+  background: var(--surface-elevated);
+}
+
+.platform-select__value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.platform-select .custom-select-trigger svg {
+  flex: 0 0 auto;
+  color: var(--color-text-muted);
+}
+
+.platform-select__menu {
+  margin-top: 6px;
+  padding: 8px;
+  border: 0;
+  border-radius: 18px;
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-panel);
+}
+
+.platform-select .custom-select-option {
+  margin-bottom: 6px;
+  border-radius: 12px;
+  background: var(--surface-muted);
+}
+
+.platform-select .custom-select-option:last-child {
+  margin-bottom: 0;
+}
+
+.platform-select .custom-select-option:hover {
+  transform: none;
+  background: var(--surface-muted-alt);
+  color: var(--color-text-primary);
+}
+
+.platform-select .custom-select-option.selected {
   background: var(--surface-muted);
   color: var(--color-text-primary);
   font-weight: 600;

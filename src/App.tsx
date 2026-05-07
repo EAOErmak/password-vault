@@ -297,11 +297,13 @@ function App() {
     );
   }
 
+  const isAuthView = view === "create" || view === "unlock";
+
   return (
     <>
       {themeToggle}
       <main className="app-shell">
-        <section className="app-panel">
+        <section className={`app-panel${isAuthView ? " app-panel--auth" : ""}`}>
           <header className="app-header">
             <h1 className="app-title">Password Vault</h1>
           </header>

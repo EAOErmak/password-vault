@@ -58,7 +58,7 @@ export function CreateVaultPage({
         <p>Create a new encrypted vault file and unlock it for this app session.</p>
       </div>
 
-      <form className="vault-form" onSubmit={handleSubmit}>
+      <form className="vault-form create-vault-form" onSubmit={handleSubmit}>
         <label className="field">
           <span>Vault path</span>
           <div style={{ display: "flex", gap: "8px" }}>

@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import type { CreateAccountRequest, PlatformDto } from "../types";
+import { PlatformSelect } from "./PlatformSelect";
 
 type CreateAccountDialogProps = {
   errorMessage: string | null;
@@ -76,18 +77,12 @@ export function CreateAccountDialog({
                   Close
                 </button>
               </div>
-              <select
-                className="select-input"
+              <PlatformSelect
                 disabled={isSubmitting}
-                onChange={(event) => setPlatformId(event.currentTarget.value)}
+                onChange={setPlatformId}
+                platforms={platforms}
                 value={platformId}
-              >
-                {platforms.map((platform) => (
-                  <option key={platform.id} value={platform.id}>
-                    {platform.name}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <label className="field">
