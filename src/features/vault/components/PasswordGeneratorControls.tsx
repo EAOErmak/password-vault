@@ -118,12 +118,7 @@ export function PasswordGeneratorControls({
   return (
     <section className="generator-panel">
       <div className="generator-panel__header">
-        <div>
-          <h4>Password generator</h4>
-          <p className="field-helper">
-            Generated passwords stay in this dialog only until you save or close it.
-          </p>
-        </div>
+        <h4>Password generator</h4>
 
         <div className="value-row__actions">
           <button
