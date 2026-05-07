@@ -62,10 +62,6 @@ export function SecretsSection({
     setIsSubmitting(false);
     setIsAddOpen(false);
     setEditingSecret(null);
-    setRevealedSecret(null);
-    setIsRevealOpen(false);
-    setIsRevealing(false);
-    setRevealError(null);
     setHistorySecret(null);
     setSecretHistory([]);
     setHistoryError(null);
@@ -103,13 +99,7 @@ export function SecretsSection({
     setEditingSecret(null);
   };
 
-  const handleCloseReveal = () => {
-    revealRequestRef.current += 1;
-    setRevealError(null);
-    setRevealedSecret(null);
-    setIsRevealOpen(false);
-    setIsRevealing(false);
-  };
+
 
   const handleOpenHistory = async (secret: SecretMetadataDto) => {
     const requestId = historyRequestRef.current + 1;
@@ -203,33 +193,7 @@ export function SecretsSection({
     }
   };
 
-  const handleReveal = async (secret: SecretMetadataDto) => {
-    const requestId = revealRequestRef.current + 1;
-    revealRequestRef.current = requestId;
-    setRevealError(null);
-    setIsRevealOpen(true);
-    setIsRevealing(true);
-    setRevealedSecret(null);
 
-    try {
-      const revealed = await revealSecret(secret.id);
-      if (revealRequestRef.current !== requestId) {
-        return;
-      }
-
-      setRevealedSecret(revealed);
-    } catch (error) {
-      if (revealRequestRef.current !== requestId) {
-        return;
-      }
-
-      setRevealError(getVaultErrorMessage(error));
-    } finally {
-      if (revealRequestRef.current === requestId) {
-        setIsRevealing(false);
-      }
-    }
-  };
 
 
 
@@ -259,14 +223,12 @@ export function SecretsSection({
             <SecretRow
               isBusy={
                 isSubmitting ||
-                isRevealing ||
                 isLoadingHistory
               }
               key={secret.id}
               onDelete={handleDeleteClick}
               onEdit={handleOpenEdit}
               onHistory={handleOpenHistory}
-              onReveal={handleReveal}
               secret={secret}
             />
           ))}
@@ -290,13 +252,7 @@ export function SecretsSection({
         secret={editingSecret}
       />
 
-      <RevealSecretDialog
-        errorMessage={revealError}
-        isLoading={isRevealing}
-        isOpen={isRevealOpen}
-        onClose={handleCloseReveal}
-        secret={revealedSecret}
-      />
+
 
       <SecretHistoryDialog
         errorMessage={historyError}
@@ -309,7 +265,6 @@ export function SecretsSection({
         onDelete={handleDeleteClick}
         onEdit={handleOpenEdit}
         onHistory={handleOpenHistory}
-        onReveal={handleReveal}
       />
 
       <DeleteSecretConfirmDialog

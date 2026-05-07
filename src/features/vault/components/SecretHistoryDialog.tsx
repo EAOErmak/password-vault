@@ -14,7 +14,6 @@ type SecretHistoryDialogProps = {
   onDelete?: (secret: SecretMetadataDto) => void;
   onEdit?: (secret: SecretMetadataDto) => void;
   onHistory?: (secret: SecretMetadataDto) => Promise<void>;
-  onReveal?: (secret: SecretMetadataDto) => Promise<void>;
 };
 
 function renderMaskedValue(hasValue: boolean): string {
@@ -32,7 +31,6 @@ export function SecretHistoryDialog({
   onDelete,
   onEdit,
   onHistory,
-  onReveal,
 }: SecretHistoryDialogProps) {
   if (!isOpen || !secret) {
     return null;
@@ -70,7 +68,7 @@ export function SecretHistoryDialog({
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 
-        {otherSecrets && otherSecrets.length > 0 && onDelete && onEdit && onHistory && onReveal && (
+        {otherSecrets && otherSecrets.length > 0 && onDelete && onEdit && onHistory && (
           <div style={{ marginTop: "16px" }}>
             <div className="metadata-list">
               {otherSecrets.map((s) => (
@@ -80,7 +78,6 @@ export function SecretHistoryDialog({
                   onDelete={onDelete}
                   onEdit={onEdit}
                   onHistory={onHistory}
-                  onReveal={onReveal}
                   secret={s}
                 />
               ))}
