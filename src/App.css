@@ -647,7 +647,7 @@ textarea {
 
 .account-list-card .account-table-wrapper {
   margin-inline: -24px;
-  padding-inline: clamp(24px, 4vw, 40px);
+  padding-inline: clamp(16px, 3vw, 28px);
 }
 
 .account-list-card__header {
@@ -2020,7 +2020,7 @@ textarea {
 
   .account-list-card .account-table-wrapper {
     margin-inline: -20px;
-    padding-inline: 14px;
+    padding-inline: 10px;
   }
 
   .vault-header-actions > * {

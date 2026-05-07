@@ -11,7 +11,6 @@ import type {
   UpdateSecretRequest,
 } from "../types";
 import { getVaultErrorMessage } from "../../../lib/vault";
-import { ACCOUNT_VALUE_TYPE_OPTIONS } from "../utils/accountValueHelpers";
 import { AddAccountValueDialog } from "./AddAccountValueDialog";
 import { AddSecretDialog } from "./AddSecretDialog";
 import { EditAccountValueDialog } from "./EditAccountValueDialog";
@@ -66,14 +65,6 @@ type EditingSecretState = {
 };
 
 const ACCOUNTS_PER_PAGE = 10;
-
-const VALUE_TYPE_LABELS = new Map(
-  ACCOUNT_VALUE_TYPE_OPTIONS.map((option) => [option.value, option.label]),
-);
-
-function getValueTypeLabel(valueType: AccountValueDto["value_type"]): string {
-  return VALUE_TYPE_LABELS.get(valueType) ?? valueType;
-}
 
 function getPrimaryPasswordSecret(account: AccountSummary): SecretMetadataDto | null {
   return (
@@ -510,9 +501,6 @@ export function AccountList({
                     <span className="account-table__heading-chip">Value</span>
                   </th>
                   <th scope="col">
-                    <span className="account-table__heading-chip">Type</span>
-                  </th>
-                  <th scope="col">
                     <span className="account-table__heading-chip">Value actions</span>
                   </th>
                   <th scope="col">
@@ -545,14 +533,6 @@ export function AccountList({
                       ) : (
                         <span className="table-empty">No values for this account</span>
                       )}
-                    </td>
-                    <td>
-                      {row.valueType
-                        ? renderStaticField(getValueTypeLabel(row.valueType))
-                        : renderStaticField(
-                            <span className="table-dash">-</span>,
-                            "account-table__static-field--empty",
-                          )}
                     </td>
                     <td>
                       {row.valueEntry ? (
