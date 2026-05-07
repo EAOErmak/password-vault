@@ -1640,7 +1640,7 @@ textarea {
   font-weight: 600;
   white-space: nowrap;
   vertical-align: middle;
-  padding: 14px 0 2px;
+  padding: 14px 12px 2px;
   border-bottom: 0;
 }
 
@@ -1682,6 +1682,25 @@ textarea {
   word-break: break-word;
 }
 
+.account-table__static-field {
+  display: inline-block;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-muted) 78%, var(--color-border) 22%);
+  color: var(--color-text-primary);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.account-table__static-field--value {
+  width: 100%;
+}
+
+.account-table__static-field--empty {
+  color: var(--color-text-muted);
+}
+
 .account-table__heading-chip {
   display: inline-flex;
   align-items: center;
@@ -1696,9 +1715,14 @@ textarea {
 
 .account-table__actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
   align-items: center;
+  white-space: nowrap;
+}
+
+.account-table__actions > * {
+  flex: 0 0 auto;
 }
 
 .account-table__copy-button--copied {

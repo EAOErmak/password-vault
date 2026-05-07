@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { copySecretToClipboard } from "../api/secretApi";
 import type {
   AccountSummary,
@@ -122,12 +122,20 @@ function buildTableRows(accounts: AccountSummary[]): AccountTableDisplayRow[] {
   });
 }
 
+function renderStaticField(content: ReactNode, className?: string) {
+  return (
+    <span className={className ? `account-table__static-field ${className}` : "account-table__static-field"}>
+      {content}
+    </span>
+  );
+}
+
 function renderAccountName(name: string | null) {
   if (name?.trim()) {
-    return name;
+    return renderStaticField(name);
   }
 
-  return <span className="table-dash">-</span>;
+  return renderStaticField(<span className="table-dash">-</span>, "account-table__static-field--empty");
 }
 
 export function AccountList({
@@ -527,15 +535,25 @@ export function AccountList({
                     onClick={() => onSelectAccount(row.accountId)}
                   >
                     <td>{renderAccountName(row.accountName)}</td>
-                    <td>{row.platformName}</td>
+                    <td>{renderStaticField(row.platformName)}</td>
                     <td>
                       {row.valueEntry ? (
-                        <span className="account-table__value">{row.valueEntry.value}</span>
+                        renderStaticField(
+                          row.valueEntry.value,
+                          "account-table__static-field--value",
+                        )
                       ) : (
                         <span className="table-empty">No values for this account</span>
                       )}
                     </td>
-                    <td>{row.valueType ? getValueTypeLabel(row.valueType) : <span className="table-dash">-</span>}</td>
+                    <td>
+                      {row.valueType
+                        ? renderStaticField(getValueTypeLabel(row.valueType))
+                        : renderStaticField(
+                            <span className="table-dash">-</span>,
+                            "account-table__static-field--empty",
+                          )}
+                    </td>
                     <td>
                       {row.valueEntry ? (
                         <div className="account-table__actions">
