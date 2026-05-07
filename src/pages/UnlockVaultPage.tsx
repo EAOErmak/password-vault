@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, type FormEvent } from "react";
+import { open } from "@tauri-apps/plugin-dialog";
 
 type UnlockVaultPageProps = {
   errorMessage: string | null;
@@ -56,6 +57,21 @@ export function UnlockVaultPage({
     }
   };
 
+  const handleBrowse = async () => {
+    try {
+      const selected = await open({
+        multiple: false,
+        directory: false,
+        filters: [{ name: "Vault Database", extensions: ["vault.db"] }],
+      });
+      if (typeof selected === "string") {
+        setPath(selected);
+      }
+    } catch (err) {
+      console.error("Failed to open dialog", err);
+    }
+  };
+
   const isSubmitDisabled =
     isSubmitting || path.trim().length === 0 || masterPassword.length === 0;
 
@@ -69,15 +85,25 @@ export function UnlockVaultPage({
       <form className="vault-form" onSubmit={handleSubmit}>
         <label className="field">
           <span>Vault path</span>
-          <input
-            autoComplete="off"
-            disabled={isSubmitting}
-            onChange={(event) => setPath(event.currentTarget.value)}
-            placeholder="C:\\Vaults\\personal.vault.db"
-            spellCheck={false}
-            type="text"
-            value={path}
-          />
+          <div style={{ display: "flex", gap: "8px" }}>
+            <input
+              autoComplete="off"
+              disabled={isSubmitting}
+              onChange={(event) => setPath(event.currentTarget.value)}
+              placeholder="C:\\Vaults\\personal.vault.db"
+              spellCheck={false}
+              type="text"
+              value={path}
+            />
+            <button
+              type="button"
+              className="button-secondary"
+              onClick={handleBrowse}
+              disabled={isSubmitting}
+            >
+              Browse
+            </button>
+          </div>
         </label>
 
         <label className="field">

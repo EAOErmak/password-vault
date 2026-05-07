@@ -25,7 +25,7 @@ impl ValueService {
 
         state.with_connection_mut(|connection| {
             Self::ensure_account_exists(connection, account_id)?;
-            
+
             let now = now_utc();
             let transaction = connection.transaction()?;
 
@@ -42,7 +42,7 @@ impl ValueService {
                 request.is_primary,
                 &now,
             )?;
-            
+
             transaction.commit()?;
 
             Ok(Self::to_dto(account_value))

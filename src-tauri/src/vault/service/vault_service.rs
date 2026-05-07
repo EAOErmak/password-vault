@@ -81,7 +81,7 @@ impl VaultService {
                 let result = self.unlock_vault(state, &payload.path, &payload.master_password);
                 use zeroize::Zeroize;
                 payload.master_password.zeroize();
-                
+
                 if result.is_err() {
                     let _ = KeychainService::clear_session();
                 }

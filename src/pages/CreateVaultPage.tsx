@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { save } from "@tauri-apps/plugin-dialog";
 
 type CreateVaultPageProps = {
   errorMessage: string | null;
@@ -34,6 +35,19 @@ export function CreateVaultPage({
     }
   };
 
+  const handleBrowse = async () => {
+    try {
+      const selected = await save({
+        filters: [{ name: "Vault Database", extensions: ["vault.db"] }],
+      });
+      if (typeof selected === "string") {
+        setPath(selected);
+      }
+    } catch (err) {
+      console.error("Failed to save dialog", err);
+    }
+  };
+
   const isSubmitDisabled =
     isSubmitting || path.trim().length === 0 || masterPassword.length === 0;
 
@@ -47,15 +61,25 @@ export function CreateVaultPage({
       <form className="vault-form" onSubmit={handleSubmit}>
         <label className="field">
           <span>Vault path</span>
-          <input
-            autoComplete="off"
-            disabled={isSubmitting}
-            onChange={(event) => setPath(event.currentTarget.value)}
-            placeholder="C:\\Vaults\\personal.vault.db"
-            spellCheck={false}
-            type="text"
-            value={path}
-          />
+          <div style={{ display: "flex", gap: "8px" }}>
+            <input
+              autoComplete="off"
+              disabled={isSubmitting}
+              onChange={(event) => setPath(event.currentTarget.value)}
+              placeholder="C:\\Vaults\\personal.vault.db"
+              spellCheck={false}
+              type="text"
+              value={path}
+            />
+            <button
+              type="button"
+              className="button-secondary"
+              onClick={handleBrowse}
+              disabled={isSubmitting}
+            >
+              Browse
+            </button>
+          </div>
         </label>
 
         <label className="field">
