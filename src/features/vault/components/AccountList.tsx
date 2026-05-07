@@ -4,6 +4,7 @@ import type {
   AccountSummary,
   AccountTableRow,
   AccountValueDto,
+  AddAccountValueRequest,
   AddSecretRequest,
   SecretMetadataDto,
   UpdateAccountValueRequest,
@@ -11,6 +12,7 @@ import type {
 } from "../types";
 import { getVaultErrorMessage } from "../../../lib/vault";
 import { ACCOUNT_VALUE_TYPE_OPTIONS } from "../utils/accountValueHelpers";
+import { AddAccountValueDialog } from "./AddAccountValueDialog";
 import { AddSecretDialog } from "./AddSecretDialog";
 import { EditAccountValueDialog } from "./EditAccountValueDialog";
 import { EditSecretDialog } from "./EditSecretDialog";
@@ -21,6 +23,7 @@ type AccountListProps = {
   accounts: AccountSummary[];
   errorMessage: string | null;
   isLoading: boolean;
+  onAddValue: (accountId: string, request: AddAccountValueRequest) => Promise<void>;
   onAddSecret: (accountId: string, request: AddSecretRequest) => Promise<void>;
   onClearSearch: () => void;
   onOpenCreateAccount: () => void;
@@ -129,6 +132,7 @@ export function AccountList({
   accounts,
   errorMessage,
   isLoading,
+  onAddValue,
   onAddSecret,
   onClearSearch,
   onOpenCreateAccount,
@@ -150,6 +154,7 @@ export function AccountList({
   const [editingValue, setEditingValue] = useState<EditingValueState | null>(null);
   const [isCopyingSecretId, setIsCopyingSecretId] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [addingValueAccount, setAddingValueAccount] = useState<AccountSummary | null>(null);
   const [addingSecretAccount, setAddingSecretAccount] = useState<AccountSummary | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
@@ -284,6 +289,14 @@ export function AccountList({
     onSelectAccount(row.accountId);
   };
 
+  const handleOpenAddValue = (event: MouseEvent<HTMLButtonElement>, row: AccountTableDisplayRow) => {
+    event.stopPropagation();
+    setActionError(null);
+    setDialogError(null);
+    setAddingValueAccount(row.account);
+    onSelectAccount(row.accountId);
+  };
+
   const handleOpenEditValue = (event: MouseEvent<HTMLButtonElement>, row: AccountTableDisplayRow) => {
     event.stopPropagation();
 
@@ -335,6 +348,24 @@ export function AccountList({
     try {
       await onAddSecret(addingSecretAccount.id, request);
       setAddingSecretAccount(null);
+    } catch (error) {
+      setDialogError(getVaultErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSubmitAddValue = async (request: AddAccountValueRequest) => {
+    if (!addingValueAccount) {
+      return;
+    }
+
+    setDialogError(null);
+    setIsSubmitting(true);
+
+    try {
+      await onAddValue(addingValueAccount.id, request);
+      setAddingValueAccount(null);
     } catch (error) {
       setDialogError(getVaultErrorMessage(error));
     } finally {
@@ -527,7 +558,7 @@ export function AccountList({
                         <div className="account-table__actions">
                           <button
                             className="button-secondary button-small"
-                            onClick={(event) => handleOpenDetails(event, row.accountId)}
+                            onClick={(event) => handleOpenAddValue(event, row)}
                             type="button"
                           >
                             Add value
@@ -640,6 +671,17 @@ export function AccountList({
           </div>
         ) : null}
       </section>
+
+      <AddAccountValueDialog
+        errorMessage={dialogError}
+        isOpen={addingValueAccount !== null}
+        isSubmitting={isSubmitting}
+        onClose={() => {
+          setDialogError(null);
+          setAddingValueAccount(null);
+        }}
+        onSubmit={handleSubmitAddValue}
+      />
 
       <AddSecretDialog
         errorMessage={dialogError}

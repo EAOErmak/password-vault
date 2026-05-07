@@ -570,6 +570,12 @@ textarea {
   min-width: 0;
 }
 
+.account-filters-card .field input,
+.account-filters-card .field select,
+.account-filters-card .select-input {
+  border: 0;
+}
+
 .platform-filter-list {
   display: flex;
   flex-wrap: wrap;

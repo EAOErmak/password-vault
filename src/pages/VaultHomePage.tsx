@@ -510,6 +510,7 @@ export function VaultHomePage({
             accounts={accounts}
             errorMessage={dataError}
             isLoading={isLoadingSnapshot}
+            onAddValue={handleAddAccountValue}
             onAddSecret={handleAddSecret}
             onClearSearch={handleClearSearch}
             onOpenCreateAccount={handleOpenCreateAccount}
