@@ -1034,6 +1034,10 @@ textarea {
   align-self: start;
 }
 
+.generator-grid .generator-grid__checkbox--top {
+  align-self: end;
+}
+
 .revealed-secret {
   display: grid;
   gap: 16px;

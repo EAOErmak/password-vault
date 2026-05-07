@@ -162,7 +162,7 @@ export function PasswordGeneratorControls({
           />
         </label>
 
-        <label className="checkbox-field">
+        <label className="checkbox-field generator-grid__checkbox--top">
           <input
             checked={options.include_uppercase}
             disabled={isBusy}
