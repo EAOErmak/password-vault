@@ -127,7 +127,6 @@ export function EditSecretDialog({
           </label>
 
           <div className="secret-dialog-toolbar">
-            <span className="field-helper">Current secret value is not prefilled.</span>
             <button
               className="button-secondary button-small"
               disabled={isSubmitting || isLoadingCurrentValue}

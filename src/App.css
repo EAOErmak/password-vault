@@ -1038,6 +1038,17 @@ textarea {
   align-self: end;
 }
 
+.generator-panel input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.generator-panel input[type="number"]::-webkit-inner-spin-button,
+.generator-panel input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .revealed-secret {
   display: grid;
   gap: 16px;

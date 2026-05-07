@@ -86,11 +86,7 @@ export function EditAccountValueDialog({
             />
           </label>
 
-          <p className="field-helper">
-            {isCustom
-              ? "Custom values need a label."
-              : `Optional. If empty, "${getDefaultAccountValueLabel(value.value_type)}" will be used.`}
-          </p>
+          {isCustom ? <p className="field-helper">Custom values need a label.</p> : null}
 
           <label className="field">
             <span>Value</span>
