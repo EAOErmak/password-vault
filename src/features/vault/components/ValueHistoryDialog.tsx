@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
+import { Copy, Check } from "lucide-react";
 import type { AccountValueDto, AccountValueHistoryDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
 import { DialogBackdrop } from "./DialogBackdrop";
-import { HistoryTimeline } from "./HistoryTimeline";
 import { AccountValueRow } from "./AccountValueRow";
 
 const HISTORY_PAGE_SIZE = 4;
@@ -36,6 +36,7 @@ export function ValueHistoryDialog({
   const [historyPage, setHistoryPage] = useState(1);
   const [otherValuesPage, setOtherValuesPage] = useState(1);
   const [activeTab, setActiveTab] = useState<"history" | "other">("history");
+  const [copiedField, setCopiedField] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isOpen || !value) {
@@ -45,7 +46,18 @@ export function ValueHistoryDialog({
     setHistoryPage(1);
     setOtherValuesPage(1);
     setActiveTab("history");
+    setCopiedField(null);
   }, [isOpen, value?.id]);
+ 
+  const handleCopyValue = async (value: string, fieldId: string) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedField(fieldId);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (error) {
+      console.error("Failed to copy", error);
+    }
+  };
 
   const hasHistory = history.length > 0;
   const hasOtherValues = Boolean(otherValues && otherValues.length > 0 && onDelete && onEdit && onHistory);
@@ -146,15 +158,47 @@ export function ValueHistoryDialog({
                       <div className="history-card__comparison">
                         <div className="history-card__field">
                           <span className="summary-label">Old Value</span>
-                          <p className="value-row__content">
-                            {h.old_value ? h.old_value : <span className="table-dash">-</span>}
-                          </p>
+                          <div className="value-row__content-shell" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span className="value-row__content" style={{ padding: 0, background: "transparent", border: 0 }}>
+                              {h.old_value ? h.old_value : <span className="table-dash">-</span>}
+                            </span>
+                            {h.old_value && (
+                              <button
+                                className="button-ghost value-row__copy-button"
+                                onClick={() => handleCopyValue(h.old_value, `${h.id}-old`)}
+                                type="button"
+                                title="Copy old value"
+                              >
+                                {copiedField === `${h.id}-old` ? (
+                                  <Check className="value-row__copy-icon value-row__copy-icon--copied" size={16} />
+                                ) : (
+                                  <Copy className="value-row__copy-icon" size={16} />
+                                )}
+                              </button>
+                            )}
+                          </div>
                         </div>
                         <div className="history-card__field">
                           <span className="summary-label">New Value</span>
-                          <p className="value-row__content">
-                            {h.new_value ? h.new_value : <span className="table-dash">-</span>}
-                          </p>
+                          <div className="value-row__content-shell" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                            <span className="value-row__content" style={{ padding: 0, background: "transparent", border: 0 }}>
+                              {h.new_value ? h.new_value : <span className="table-dash">-</span>}
+                            </span>
+                            {h.new_value && (
+                              <button
+                                className="button-ghost value-row__copy-button"
+                                onClick={() => handleCopyValue(h.new_value, `${h.id}-new`)}
+                                type="button"
+                                title="Copy new value"
+                              >
+                                {copiedField === `${h.id}-new` ? (
+                                  <Check className="value-row__copy-icon value-row__copy-icon--copied" size={16} />
+                                ) : (
+                                  <Copy className="value-row__copy-icon" size={16} />
+                                )}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </article>
@@ -209,9 +253,9 @@ export function ValueHistoryDialog({
                 <AccountValueRow
                   isBusy={isLoading}
                   key={v.id}
-                  onDelete={onDelete}
-                  onEdit={onEdit}
-                  onHistory={onHistory}
+                  onDelete={onDelete!}
+                  onEdit={onEdit!}
+                  onHistory={onHistory!}
                   value={v}
                 />
               ))}
