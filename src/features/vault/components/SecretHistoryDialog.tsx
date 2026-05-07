@@ -11,13 +11,10 @@ type SecretHistoryDialogProps = {
   onClose: () => void;
   secret: SecretMetadataDto | null;
   otherSecrets?: SecretMetadataDto[];
-  onCopy?: (secret: SecretMetadataDto) => Promise<void>;
   onDelete?: (secret: SecretMetadataDto) => void;
   onEdit?: (secret: SecretMetadataDto) => void;
   onHistory?: (secret: SecretMetadataDto) => Promise<void>;
   onReveal?: (secret: SecretMetadataDto) => Promise<void>;
-  copiedSecretId?: string | null;
-  isCopyingSecretId?: string | null;
 };
 
 function renderMaskedValue(hasValue: boolean): string {
@@ -32,13 +29,10 @@ export function SecretHistoryDialog({
   onClose,
   secret,
   otherSecrets,
-  onCopy,
   onDelete,
   onEdit,
   onHistory,
   onReveal,
-  copiedSecretId,
-  isCopyingSecretId,
 }: SecretHistoryDialogProps) {
   if (!isOpen || !secret) {
     return null;
@@ -76,16 +70,13 @@ export function SecretHistoryDialog({
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 
-        {otherSecrets && otherSecrets.length > 0 && onCopy && onDelete && onEdit && onHistory && onReveal && (
+        {otherSecrets && otherSecrets.length > 0 && onDelete && onEdit && onHistory && onReveal && (
           <div style={{ marginTop: "16px" }}>
             <div className="metadata-list">
               {otherSecrets.map((s) => (
                 <SecretRow
-                  copied={copiedSecretId === s.id}
                   isBusy={isLoading}
-                  isCopying={isCopyingSecretId === s.id}
                   key={s.id}
-                  onCopy={onCopy}
                   onDelete={onDelete}
                   onEdit={onEdit}
                   onHistory={onHistory}

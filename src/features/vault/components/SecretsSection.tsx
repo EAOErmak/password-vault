@@ -43,9 +43,6 @@ export function SecretsSection({
   const [isRevealOpen, setIsRevealOpen] = useState(false);
   const [isRevealing, setIsRevealing] = useState(false);
   const [revealError, setRevealError] = useState<string | null>(null);
-  const [copySuccessMessage, setCopySuccessMessage] = useState<string | null>(null);
-  const [copiedSecretId, setCopiedSecretId] = useState<string | null>(null);
-  const [isCopyingSecretId, setIsCopyingSecretId] = useState<string | null>(null);
   const [historySecret, setHistorySecret] = useState<SecretMetadataDto | null>(null);
   const [secretHistory, setSecretHistory] = useState<SecretHistoryDto[]>([]);
   const [historyError, setHistoryError] = useState<string | null>(null);
@@ -69,9 +66,6 @@ export function SecretsSection({
     setIsRevealOpen(false);
     setIsRevealing(false);
     setRevealError(null);
-    setCopySuccessMessage(null);
-    setCopiedSecretId(null);
-    setIsCopyingSecretId(null);
     setHistorySecret(null);
     setSecretHistory([]);
     setHistoryError(null);
@@ -237,38 +231,7 @@ export function SecretsSection({
     }
   };
 
-  const handleCopy = async (secret: SecretMetadataDto) => {
-    setActionError(null);
-    setCopySuccessMessage(null);
-    setIsCopyingSecretId(secret.id);
 
-    try {
-      await copySecretToClipboard(secret.id, clipboardClearAfterSeconds);
-
-      setCopiedSecretId(secret.id);
-      setCopySuccessMessage(
-        `Copied. Clipboard will be cleared in ${clipboardClearAfterSeconds} seconds.`,
-      );
-      if (copyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(copyFeedbackTimerRef.current);
-      }
-      copyFeedbackTimerRef.current = window.setTimeout(() => {
-        setCopySuccessMessage(null);
-        setCopiedSecretId(null);
-        copyFeedbackTimerRef.current = null;
-      }, 2000);
-    } catch (error) {
-      if (copyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(copyFeedbackTimerRef.current);
-        copyFeedbackTimerRef.current = null;
-      }
-      setCopiedSecretId(null);
-      setCopySuccessMessage(null);
-      setActionError(getVaultErrorMessage(error));
-    } finally {
-      setIsCopyingSecretId(null);
-    }
-  };
 
   return (
     <section className="details-section">
@@ -282,11 +245,6 @@ export function SecretsSection({
       </div>
 
       {actionError ? <p className="error-banner">{actionError}</p> : null}
-      {copySuccessMessage ? (
-        <div aria-live="polite" className="status-toast" role="status">
-          {copySuccessMessage}
-        </div>
-      ) : null}
 
       {account.secrets.length === 0 ? (
         <div className="empty-state">
@@ -299,16 +257,12 @@ export function SecretsSection({
         <div className="metadata-list">
           {[account.secrets.find(s => s.is_primary) || account.secrets[0]].filter(Boolean).map((secret) => (
             <SecretRow
-              copied={copiedSecretId === secret.id}
               isBusy={
                 isSubmitting ||
                 isRevealing ||
-                isCopyingSecretId !== null ||
                 isLoadingHistory
               }
-              isCopying={isCopyingSecretId === secret.id}
               key={secret.id}
-              onCopy={handleCopy}
               onDelete={handleDeleteClick}
               onEdit={handleOpenEdit}
               onHistory={handleOpenHistory}
@@ -352,13 +306,10 @@ export function SecretsSection({
         onClose={handleCloseHistory}
         secret={historySecret}
         otherSecrets={account.secrets.filter(s => s.id !== (historySecret?.id))}
-        onCopy={handleCopy}
         onDelete={handleDeleteClick}
         onEdit={handleOpenEdit}
         onHistory={handleOpenHistory}
         onReveal={handleReveal}
-        copiedSecretId={copiedSecretId}
-        isCopyingSecretId={isCopyingSecretId}
       />
 
       <DeleteSecretConfirmDialog

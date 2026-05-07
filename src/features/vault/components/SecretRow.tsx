@@ -2,10 +2,7 @@ import type { SecretMetadataDto } from "../types";
 import { formatDateTime, formatEnumLabel } from "../utils/formatters";
 
 type SecretRowProps = {
-  copied: boolean;
   isBusy: boolean;
-  isCopying: boolean;
-  onCopy: (secret: SecretMetadataDto) => void;
   onDelete: (secret: SecretMetadataDto) => void;
   onEdit: (secret: SecretMetadataDto) => void;
   onHistory: (secret: SecretMetadataDto) => void;
@@ -14,10 +11,7 @@ type SecretRowProps = {
 };
 
 export function SecretRow({
-  copied,
   isBusy,
-  isCopying,
-  onCopy,
   onDelete,
   onEdit,
   onHistory,
@@ -55,14 +49,7 @@ export function SecretRow({
           >
             Reveal
           </button>
-          <button
-            className="button-secondary button-small"
-            disabled={isBusy}
-            onClick={() => onCopy(secret)}
-            type="button"
-          >
-            {isCopying ? "Copying..." : copied ? "Copied" : "Copy"}
-          </button>
+
           <button
             className="button-secondary button-small"
             disabled={isBusy}
