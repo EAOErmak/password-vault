@@ -60,6 +60,8 @@ type EditingSecretState = {
   secret: SecretMetadataDto;
 };
 
+const ACCOUNTS_PER_PAGE = 10;
+
 const VALUE_TYPE_LABELS = new Map(
   ACCOUNT_VALUE_TYPE_OPTIONS.map((option) => [option.value, option.label]),
 );
@@ -154,6 +156,7 @@ export function AccountList({
   const [clientPlatformFilter, setClientPlatformFilter] = useState<string | null>(null);
   const [clientValueFilter, setClientValueFilter] = useState("");
   const [clientNameFilter, setClientNameFilter] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const trimmedSearchQuery = searchQuery.trim();
   const hasSearchQuery = trimmedSearchQuery.length > 0;
@@ -179,9 +182,23 @@ export function AccountList({
   }, [accounts, clientPlatformFilter, trimmedValueFilter, trimmedNameFilter]);
 
   const visibleAccountCount = rows.length;
+  const totalPages = Math.max(1, Math.ceil(visibleAccountCount / ACCOUNTS_PER_PAGE));
+  const resolvedCurrentPage = Math.min(currentPage, totalPages);
+  const pageStartIndex = (resolvedCurrentPage - 1) * ACCOUNTS_PER_PAGE;
+  const paginatedRows = rows.slice(pageStartIndex, pageStartIndex + ACCOUNTS_PER_PAGE);
+  const currentRangeStart = visibleAccountCount === 0 ? 0 : pageStartIndex + 1;
+  const currentRangeEnd = Math.min(pageStartIndex + ACCOUNTS_PER_PAGE, visibleAccountCount);
   const accountsSubtitle = selectedPlatformName
     ? `Showing accounts for ${selectedPlatformName}.`
     : "Showing accounts across all platforms.";
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [clientPlatformFilter, trimmedValueFilter, trimmedNameFilter, searchQuery, selectedPlatformName]);
+
+  useEffect(() => {
+    setCurrentPage((page) => Math.min(page, totalPages));
+  }, [totalPages]);
 
   useEffect(() => {
     return () => {
@@ -381,7 +398,11 @@ export function AccountList({
             <h2>Accounts</h2>
             <p>{accountsSubtitle}</p>
           </div>
-          <span className="status-pill">{visibleAccountCount} shown</span>
+          <span className="status-pill">
+            {visibleAccountCount === 0
+              ? "0 shown"
+              : `${currentRangeStart}-${currentRangeEnd} of ${visibleAccountCount}`}
+          </span>
         </div>
 
         {errorMessage && accounts.length === 0 ? <p className="error-banner">{errorMessage}</p> : null}
@@ -447,7 +468,7 @@ export function AccountList({
                 </tr>
               </thead>
               <tbody>
-                {rows.map((row) => (
+                {paginatedRows.map((row) => (
                   <tr
                     className={
                       row.accountId === selectedAccountId
@@ -557,6 +578,51 @@ export function AccountList({
                 ))}
               </tbody>
             </table>
+          </div>
+        ) : null}
+
+        {visibleAccountCount > ACCOUNTS_PER_PAGE ? (
+          <div className="pagination-bar">
+            <p className="pagination-summary">
+              Page {resolvedCurrentPage} of {totalPages}
+            </p>
+            <div className="pagination-controls">
+              <button
+                className="button-secondary button-small pagination-button"
+                disabled={resolvedCurrentPage === 1}
+                onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
+                type="button"
+              >
+                Previous
+              </button>
+
+              {Array.from({ length: totalPages }, (_, index) => {
+                const pageNumber = index + 1;
+                return (
+                  <button
+                    className={
+                      pageNumber === resolvedCurrentPage
+                        ? "button-secondary button-small pagination-button pagination-button--active"
+                        : "button-secondary button-small pagination-button"
+                    }
+                    key={pageNumber}
+                    onClick={() => setCurrentPage(pageNumber)}
+                    type="button"
+                  >
+                    {pageNumber}
+                  </button>
+                );
+              })}
+
+              <button
+                className="button-secondary button-small pagination-button"
+                disabled={resolvedCurrentPage === totalPages}
+                onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
+                type="button"
+              >
+                Next
+              </button>
+            </div>
           </div>
         ) : null}
       </section>

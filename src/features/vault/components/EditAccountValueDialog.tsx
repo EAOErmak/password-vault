@@ -63,13 +63,6 @@ export function EditAccountValueDialog({
   return (
     <div className="dialog-backdrop" role="presentation">
       <div aria-modal="true" className="dialog-card" role="dialog">
-        <div className="dialog-header">
-          <div>
-            <h3>Edit value</h3>
-            <p>Update the stored identifier. History stays in the Rust backend.</p>
-          </div>
-        </div>
-
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>

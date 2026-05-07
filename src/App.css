@@ -1041,6 +1041,36 @@ textarea {
   align-items: center;
 }
 
+.pagination-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding-top: 4px;
+}
+
+.pagination-summary {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.94rem;
+}
+
+.pagination-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.pagination-button {
+  min-width: 42px;
+}
+
+.pagination-button--active {
+  background: var(--color-accent);
+  color: var(--color-accent-contrast);
+}
+
 .table-empty,
 .table-dash {
   color: var(--color-text-subtle);
@@ -1227,6 +1257,15 @@ textarea {
   .account-details-summary__stats {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .pagination-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .pagination-controls {
+    justify-content: flex-start;
   }
 }
 

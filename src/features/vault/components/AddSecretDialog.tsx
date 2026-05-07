@@ -64,13 +64,6 @@ export function AddSecretDialog({
   return (
     <div className="dialog-backdrop" role="presentation">
       <div aria-modal="true" className="dialog-card" role="dialog">
-        <div className="dialog-header">
-          <div>
-            <h3>Add secret</h3>
-            <p>Add a sensitive field without exposing it in the account details view.</p>
-          </div>
-        </div>
-
         <form className="vault-form" onSubmit={handleSubmit}>
           <div className="field">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
