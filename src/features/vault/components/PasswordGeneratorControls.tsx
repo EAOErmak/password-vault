@@ -213,7 +213,6 @@ export function PasswordGeneratorControls({
         </label>
       </div>
 
-      {validationMessage ? <p className="field-helper">{validationMessage}</p> : null}
       {generatorError ? <p className="error-banner">{generatorError}</p> : null}
       {copyMessage ? (
         <div aria-live="polite" className="status-toast" role="status">

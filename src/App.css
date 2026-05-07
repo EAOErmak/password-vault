@@ -1544,6 +1544,11 @@ textarea {
   font-size: 1rem;
 }
 
+.generator-panel .button-secondary {
+  background: color-mix(in srgb, var(--surface-secondary-button) 88%, var(--color-accent) 12%);
+  font-weight: 600;
+}
+
 .generator-panel__header {
   display: flex;
   justify-content: space-between;
