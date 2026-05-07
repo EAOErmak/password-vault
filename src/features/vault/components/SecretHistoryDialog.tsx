@@ -1,8 +1,11 @@
+import { useEffect, useMemo, useState } from "react";
 import type { SecretHistoryDto, SecretMetadataDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
 import { DialogBackdrop } from "./DialogBackdrop";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { SecretRow } from "./SecretRow";
+
+const HISTORY_PAGE_SIZE = 4;
 
 type SecretHistoryDialogProps = {
   errorMessage: string | null;
@@ -31,12 +34,47 @@ export function SecretHistoryDialog({
   onEdit,
   onHistory,
 }: SecretHistoryDialogProps) {
-  if (!isOpen || !secret) {
-    return null;
-  }
+  const [historyPage, setHistoryPage] = useState(1);
+  const [otherSecretsPage, setOtherSecretsPage] = useState(1);
+
+  useEffect(() => {
+    if (!isOpen || !secret) {
+      return;
+    }
+
+    setHistoryPage(1);
+    setOtherSecretsPage(1);
+  }, [isOpen, secret?.id]);
 
   const hasHistory = history.length > 0;
   const hasOtherSecrets = Boolean(otherSecrets && otherSecrets.length > 0 && onDelete && onEdit && onHistory);
+  const historyPageCount = Math.max(1, Math.ceil(history.length / HISTORY_PAGE_SIZE));
+  const resolvedHistoryPage = Math.min(historyPage, historyPageCount);
+  const paginatedHistory = useMemo(
+    () =>
+      history.slice(
+        (resolvedHistoryPage - 1) * HISTORY_PAGE_SIZE,
+        resolvedHistoryPage * HISTORY_PAGE_SIZE,
+      ),
+    [history, resolvedHistoryPage],
+  );
+  const otherSecretsPageCount = Math.max(
+    1,
+    Math.ceil((otherSecrets?.length ?? 0) / HISTORY_PAGE_SIZE),
+  );
+  const resolvedOtherSecretsPage = Math.min(otherSecretsPage, otherSecretsPageCount);
+  const paginatedOtherSecrets = useMemo(
+    () =>
+      (otherSecrets ?? []).slice(
+        (resolvedOtherSecretsPage - 1) * HISTORY_PAGE_SIZE,
+        resolvedOtherSecretsPage * HISTORY_PAGE_SIZE,
+      ),
+    [otherSecrets, resolvedOtherSecretsPage],
+  );
+
+  if (!isOpen || !secret) {
+    return null;
+  }
 
   return (
     <DialogBackdrop onClose={onClose}>
@@ -82,7 +120,7 @@ export function SecretHistoryDialog({
                   { key: "new", label: "New Value" },
                 ]}
                 emptyMessage="No history records found for this secret."
-                rows={history.map((h) => ({
+                rows={paginatedHistory.map((h) => ({
                   id: h.id,
                   cells: [
                     formatDateTime(h.changed_at),
@@ -92,6 +130,33 @@ export function SecretHistoryDialog({
                 }))}
               />
             </div>
+            {history.length > HISTORY_PAGE_SIZE ? (
+              <div className="pagination-bar history-dialog-pagination">
+                <p className="pagination-summary">
+                  Page {resolvedHistoryPage} of {historyPageCount}
+                </p>
+                <div className="pagination-controls">
+                  <button
+                    className="button-secondary button-small pagination-button"
+                    disabled={resolvedHistoryPage === 1}
+                    onClick={() => setHistoryPage((page) => Math.max(1, page - 1))}
+                    type="button"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    className="button-secondary button-small pagination-button"
+                    disabled={resolvedHistoryPage === historyPageCount}
+                    onClick={() =>
+                      setHistoryPage((page) => Math.min(historyPageCount, page + 1))
+                    }
+                    type="button"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </section>
         ) : null}
 
@@ -109,7 +174,7 @@ export function SecretHistoryDialog({
               <h4>Other secrets</h4>
             </div>
             <div className="metadata-list">
-              {otherSecrets!.map((s) => (
+              {paginatedOtherSecrets.map((s) => (
                 <SecretRow
                   isBusy={isLoading}
                   key={s.id}
@@ -120,6 +185,35 @@ export function SecretHistoryDialog({
                 />
               ))}
             </div>
+            {otherSecrets!.length > HISTORY_PAGE_SIZE ? (
+              <div className="pagination-bar history-dialog-pagination">
+                <p className="pagination-summary">
+                  Page {resolvedOtherSecretsPage} of {otherSecretsPageCount}
+                </p>
+                <div className="pagination-controls">
+                  <button
+                    className="button-secondary button-small pagination-button"
+                    disabled={resolvedOtherSecretsPage === 1}
+                    onClick={() => setOtherSecretsPage((page) => Math.max(1, page - 1))}
+                    type="button"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    className="button-secondary button-small pagination-button"
+                    disabled={resolvedOtherSecretsPage === otherSecretsPageCount}
+                    onClick={() =>
+                      setOtherSecretsPage((page) =>
+                        Math.min(otherSecretsPageCount, page + 1),
+                      )
+                    }
+                    type="button"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </section>
         ) : null}
 

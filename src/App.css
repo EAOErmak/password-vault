@@ -1723,7 +1723,7 @@ textarea {
   max-width: 100%;
   padding: 8px 12px;
   border-radius: 14px;
-  background: color-mix(in srgb, var(--surface-muted) 78%, var(--color-border) 22%);
+  background: color-mix(in srgb, var(--surface-muted) 88%, #c7b88a 12%);
   color: var(--color-text-primary);
   line-height: 1.35;
   word-break: break-word;
@@ -1759,6 +1759,14 @@ textarea {
 
 .account-table__actions > * {
   flex: 0 0 auto;
+}
+
+.account-table__actions .button-secondary.button-small {
+  background: color-mix(in srgb, var(--surface-secondary-button) 78%, #6f93c6 22%);
+}
+
+.account-table__actions .button-secondary.button-small:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--surface-secondary-button) 68%, #7ea3da 32%);
 }
 
 .account-table__copy-button--copied {

@@ -1,8 +1,11 @@
+import { useEffect, useMemo, useState } from "react";
 import type { AccountValueDto, AccountValueHistoryDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
 import { DialogBackdrop } from "./DialogBackdrop";
 import { HistoryTimeline } from "./HistoryTimeline";
 import { AccountValueRow } from "./AccountValueRow";
+
+const HISTORY_PAGE_SIZE = 4;
 
 type ValueHistoryDialogProps = {
   errorMessage: string | null;
@@ -29,12 +32,47 @@ export function ValueHistoryDialog({
   onEdit,
   onHistory,
 }: ValueHistoryDialogProps) {
-  if (!isOpen || !value) {
-    return null;
-  }
+  const [historyPage, setHistoryPage] = useState(1);
+  const [otherValuesPage, setOtherValuesPage] = useState(1);
+
+  useEffect(() => {
+    if (!isOpen || !value) {
+      return;
+    }
+
+    setHistoryPage(1);
+    setOtherValuesPage(1);
+  }, [isOpen, value?.id]);
 
   const hasHistory = history.length > 0;
   const hasOtherValues = Boolean(otherValues && otherValues.length > 0 && onDelete && onEdit && onHistory);
+  const historyPageCount = Math.max(1, Math.ceil(history.length / HISTORY_PAGE_SIZE));
+  const resolvedHistoryPage = Math.min(historyPage, historyPageCount);
+  const paginatedHistory = useMemo(
+    () =>
+      history.slice(
+        (resolvedHistoryPage - 1) * HISTORY_PAGE_SIZE,
+        resolvedHistoryPage * HISTORY_PAGE_SIZE,
+      ),
+    [history, resolvedHistoryPage],
+  );
+  const otherValuesPageCount = Math.max(
+    1,
+    Math.ceil((otherValues?.length ?? 0) / HISTORY_PAGE_SIZE),
+  );
+  const resolvedOtherValuesPage = Math.min(otherValuesPage, otherValuesPageCount);
+  const paginatedOtherValues = useMemo(
+    () =>
+      (otherValues ?? []).slice(
+        (resolvedOtherValuesPage - 1) * HISTORY_PAGE_SIZE,
+        resolvedOtherValuesPage * HISTORY_PAGE_SIZE,
+      ),
+    [otherValues, resolvedOtherValuesPage],
+  );
+
+  if (!isOpen || !value) {
+    return null;
+  }
 
   return (
     <DialogBackdrop onClose={onClose}>
@@ -80,7 +118,7 @@ export function ValueHistoryDialog({
                   { key: "new", label: "New Value" },
                 ]}
                 emptyMessage="No history records found for this value."
-                rows={history.map((h) => ({
+                rows={paginatedHistory.map((h) => ({
                   id: h.id,
                   cells: [
                     formatDateTime(h.changed_at),
@@ -90,6 +128,33 @@ export function ValueHistoryDialog({
                 }))}
               />
             </div>
+            {history.length > HISTORY_PAGE_SIZE ? (
+              <div className="pagination-bar history-dialog-pagination">
+                <p className="pagination-summary">
+                  Page {resolvedHistoryPage} of {historyPageCount}
+                </p>
+                <div className="pagination-controls">
+                  <button
+                    className="button-secondary button-small pagination-button"
+                    disabled={resolvedHistoryPage === 1}
+                    onClick={() => setHistoryPage((page) => Math.max(1, page - 1))}
+                    type="button"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    className="button-secondary button-small pagination-button"
+                    disabled={resolvedHistoryPage === historyPageCount}
+                    onClick={() =>
+                      setHistoryPage((page) => Math.min(historyPageCount, page + 1))
+                    }
+                    type="button"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </section>
         ) : null}
 
@@ -107,7 +172,7 @@ export function ValueHistoryDialog({
               <h4>Other values</h4>
             </div>
             <div className="metadata-list">
-              {otherValues!.map((v) => (
+              {paginatedOtherValues.map((v) => (
                 <AccountValueRow
                   isBusy={isLoading}
                   key={v.id}
@@ -118,6 +183,35 @@ export function ValueHistoryDialog({
                 />
               ))}
             </div>
+            {otherValues!.length > HISTORY_PAGE_SIZE ? (
+              <div className="pagination-bar history-dialog-pagination">
+                <p className="pagination-summary">
+                  Page {resolvedOtherValuesPage} of {otherValuesPageCount}
+                </p>
+                <div className="pagination-controls">
+                  <button
+                    className="button-secondary button-small pagination-button"
+                    disabled={resolvedOtherValuesPage === 1}
+                    onClick={() => setOtherValuesPage((page) => Math.max(1, page - 1))}
+                    type="button"
+                  >
+                    Previous
+                  </button>
+                  <button
+                    className="button-secondary button-small pagination-button"
+                    disabled={resolvedOtherValuesPage === otherValuesPageCount}
+                    onClick={() =>
+                      setOtherValuesPage((page) =>
+                        Math.min(otherValuesPageCount, page + 1),
+                      )
+                    }
+                    type="button"
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </section>
         ) : null}
 
