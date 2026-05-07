@@ -6,6 +6,7 @@ import {
   isCustomAccountValueType,
   normalizeAccountValueLabel,
 } from "../utils/accountValueHelpers";
+import { AccountValueTypeSelect } from "./AccountValueTypeSelect";
 import { DialogBackdrop } from "./DialogBackdrop";
 
 type AddAccountValueDialogProps = {
@@ -72,18 +73,11 @@ export function AddAccountValueDialog({
                 Close
               </button>
             </div>
-            <select
-              className="select-input"
+            <AccountValueTypeSelect
               disabled={isSubmitting}
-              onChange={(event) => setValueType(event.currentTarget.value as AccountValueType)}
+              onChange={setValueType}
               value={valueType}
-            >
-              {ACCOUNT_VALUE_TYPE_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           <label className="field">

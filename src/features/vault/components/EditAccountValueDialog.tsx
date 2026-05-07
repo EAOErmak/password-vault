@@ -6,6 +6,7 @@ import {
   normalizeAccountValueLabel,
 } from "../utils/accountValueHelpers";
 import { formatEnumLabel } from "../utils/formatters";
+import { AccountValueTypeSelect } from "./AccountValueTypeSelect";
 import { DialogBackdrop } from "./DialogBackdrop";
 
 type EditAccountValueDialogProps = {
@@ -25,6 +26,7 @@ export function EditAccountValueDialog({
   onSubmit,
   value,
 }: EditAccountValueDialogProps) {
+  const [valueType, setValueType] = useState<AccountValueType>(value?.value_type ?? "EMAIL");
   const [label, setLabel] = useState("");
   const [fieldValue, setFieldValue] = useState("");
   const [isPrimary, setIsPrimary] = useState(false);
@@ -37,14 +39,15 @@ export function EditAccountValueDialog({
     setLabel(value.label);
     setFieldValue(value.value);
     setIsPrimary(value.is_primary);
+    setValueType(value.value_type);
   }, [isOpen, value]);
 
   if (!isOpen || !value) {
     return null;
   }
 
-  const isCustom = isCustomAccountValueType(value.value_type);
-  const normalizedLabel = normalizeAccountValueLabel(value.value_type, label);
+  const isCustom = isCustomAccountValueType(valueType);
+  const normalizedLabel = normalizeAccountValueLabel(valueType, label);
   const isSubmitDisabled =
     isSubmitting ||
     fieldValue.trim().length === 0 ||
@@ -54,7 +57,7 @@ export function EditAccountValueDialog({
     event.preventDefault();
 
     await onSubmit({
-      value_type: value.value_type,
+      value_type: valueType,
       label: normalizedLabel,
       value: fieldValue,
       is_primary: isPrimary,
@@ -72,7 +75,11 @@ export function EditAccountValueDialog({
                 Close
               </button>
             </div>
-            <input disabled type="text" value={formatEnumLabel(value.value_type)} />
+            <AccountValueTypeSelect
+              disabled={isSubmitting}
+              onChange={setValueType}
+              value={valueType}
+            />
           </div>
 
           <label className="field">
@@ -81,7 +88,7 @@ export function EditAccountValueDialog({
               autoComplete="off"
               disabled={isSubmitting}
               onChange={(event) => setLabel(event.currentTarget.value)}
-              placeholder={getDefaultAccountValueLabel(value.value_type)}
+              placeholder={getDefaultAccountValueLabel(valueType)}
               type="text"
               value={label}
             />
