@@ -243,17 +243,6 @@ export function SecretsSection({
         onSubmit={handleAdd}
       />
 
-      <EditSecretDialog
-        errorMessage={dialogError}
-        isOpen={editingSecret !== null}
-        isSubmitting={isSubmitting}
-        onClose={handleCloseEdit}
-        onSubmit={handleUpdate}
-        secret={editingSecret}
-      />
-
-
-
       <SecretHistoryDialog
         errorMessage={historyError}
         history={secretHistory}
@@ -265,6 +254,15 @@ export function SecretsSection({
         onDelete={handleDeleteClick}
         onEdit={handleOpenEdit}
         onHistory={handleOpenHistory}
+      />
+
+      <EditSecretDialog
+        errorMessage={dialogError}
+        isOpen={editingSecret !== null}
+        isSubmitting={isSubmitting}
+        onClose={handleCloseEdit}
+        onSubmit={handleUpdate}
+        secret={editingSecret}
       />
 
       <DeleteSecretConfirmDialog

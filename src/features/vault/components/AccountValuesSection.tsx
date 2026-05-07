@@ -212,15 +212,6 @@ export function AccountValuesSection({
         onSubmit={handleAdd}
       />
 
-      <EditAccountValueDialog
-        errorMessage={dialogError}
-        isOpen={editingValue !== null}
-        isSubmitting={isSubmitting}
-        onClose={handleCloseEdit}
-        onSubmit={handleUpdate}
-        value={editingValue}
-      />
-
       <ValueHistoryDialog
         errorMessage={historyError}
         history={valueHistory}
@@ -232,6 +223,15 @@ export function AccountValuesSection({
         onDelete={handleDeleteClick}
         onEdit={handleOpenEdit}
         onHistory={handleOpenHistory}
+      />
+
+      <EditAccountValueDialog
+        errorMessage={dialogError}
+        isOpen={editingValue !== null}
+        isSubmitting={isSubmitting}
+        onClose={handleCloseEdit}
+        onSubmit={handleUpdate}
+        value={editingValue}
       />
 
       <DeleteValueConfirmDialog

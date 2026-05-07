@@ -915,13 +915,76 @@ textarea {
 }
 
 .checkbox-field {
-  gap: 10px;
+  gap: 12px;
+  min-height: 48px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, var(--surface-muted-alt) 0%, var(--surface-subtle) 100%);
   color: var(--color-text-primary);
+  cursor: pointer;
+  transition: background 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
 
 .checkbox-field input {
-  width: 16px;
-  height: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  flex: 0 0 auto;
+  border-radius: 7px;
+  background: var(--surface-panel);
+  box-shadow: inset 0 0 0 1px var(--color-border);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px 12px;
+  transition: background-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
+}
+
+.checkbox-field span {
+  flex: 1;
+  min-width: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.checkbox-field:hover {
+  background: linear-gradient(180deg, var(--surface-muted) 0%, var(--surface-subtle) 100%);
+  box-shadow: inset 0 0 0 1px var(--color-border-soft);
+}
+
+.checkbox-field:hover input:not(:disabled) {
+  box-shadow: inset 0 0 0 1px var(--color-accent);
+}
+
+.checkbox-field:has(input:checked) {
+  background: linear-gradient(180deg, var(--surface-selected) 0%, var(--surface-selected-hover) 100%);
+  box-shadow: inset 0 0 0 1px rgba(31, 77, 57, 0.1);
+}
+
+.checkbox-field:has(input:checked) span {
+  color: var(--color-accent);
+}
+
+.checkbox-field input:checked {
+  background-color: var(--color-accent);
+  box-shadow: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.2 8.4 6.5 11.5 12.8 4.8' fill='none' stroke='%23f7fbf9' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.2'/%3E%3C/svg%3E");
+}
+
+.checkbox-field input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--color-focus-ring);
+}
+
+.checkbox-field input:disabled {
+  cursor: not-allowed;
+}
+
+.checkbox-field:has(input:disabled) {
+  opacity: 0.72;
+  cursor: not-allowed;
 }
 
 .secret-dialog-toolbar {
