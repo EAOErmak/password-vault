@@ -20,7 +20,7 @@ export function UnlockVaultPage({
 }: UnlockVaultPageProps) {
   const [path, setPath] = useState(initialPath ?? "");
   const [masterPassword, setMasterPassword] = useState("");
-  const [autoLockMs, setAutoLockMs] = useState<number | null>(5 * 60 * 1000); // Default to 5 mins
+  const [autoLockMs, setAutoLockMs] = useState<number | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -35,11 +35,10 @@ export function UnlockVaultPage({
   }, []);
 
   const autoLockOptions = [
-    { value: 300000, label: "5 minutes" },
-    { value: 900000, label: "15 minutes" },
-    { value: 1800000, label: "30 minutes" },
-    { value: 3600000, label: "1 hour" },
-    { value: 14400000, label: "4 hours" },
+    { value: 3600000, label: "One hour" },
+    { value: 86400000, label: "One day" },
+    { value: 604800000, label: "One week" },
+    { value: 2592000000, label: "One month" },
     { value: null, label: "Until app is closed" },
   ];
 
