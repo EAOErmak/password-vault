@@ -169,7 +169,12 @@ function App() {
     try {
       const status = await unlockVault(path, masterPassword);
       if (autoLockMs !== null) {
-        await storeAutoUnlock(path, masterPassword, autoLockMs).catch(console.error);
+        try {
+          await storeAutoUnlock(path, masterPassword, autoLockMs);
+        } catch (error) {
+          console.error("Failed to store auto-unlock session:", error);
+          setErrorMessage("Failed to store auto-unlock session in OS Keychain. You will need to enter password again next time.");
+        }
       }
       const fallbackPath = storeKnownVaultPath(path);
       applyVaultStatus(status, fallbackPath);

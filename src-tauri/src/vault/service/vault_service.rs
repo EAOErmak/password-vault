@@ -56,6 +56,7 @@ impl VaultService {
         master_password: &str,
         expires_in_ms: u64,
     ) -> Result<(), VaultError> {
+        println!("VaultService: store_auto_unlock called with expires_in_ms: {}", expires_in_ms);
         let now = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .map_err(|e| VaultError::Internal(e.to_string()))?
@@ -71,13 +72,17 @@ impl VaultService {
     }
 
     pub fn attempt_auto_unlock(&self, state: &AppState) -> Result<VaultStatusDto, VaultError> {
+        println!("VaultService: attempt_auto_unlock called");
         if let Some(mut payload) = KeychainService::get_session()? {
+            println!("VaultService: found session payload");
             let now = SystemTime::now()
                 .duration_since(UNIX_EPOCH)
                 .map_err(|e| VaultError::Internal(e.to_string()))?
                 .as_millis() as u64;
 
+            println!("VaultService: now={}, expires_at={}", now, payload.expires_at);
             if now < payload.expires_at {
+                println!("VaultService: session is valid, attempting unlock");
                 let result = self.unlock_vault(state, &payload.path, &payload.master_password);
                 use zeroize::Zeroize;
                 payload.master_password.zeroize();
