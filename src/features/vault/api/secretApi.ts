@@ -10,7 +10,7 @@ import type {
 } from "../types";
 
 function sanitizeSecretMetadata(secret: SecretMetadataDto): SecretMetadataDto {
-  const { id, account_id, secret_type, label, is_primary, created_at, updated_at } = secret;
+  const { id, account_id, secret_type, label, is_primary, created_at, updated_at, secret_length } = secret;
 
   return {
     id,
@@ -20,6 +20,7 @@ function sanitizeSecretMetadata(secret: SecretMetadataDto): SecretMetadataDto {
     is_primary,
     created_at,
     updated_at,
+    secret_length,
   };
 }
 

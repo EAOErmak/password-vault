@@ -1,5 +1,4 @@
-import { useEffect, useRef, useState } from "react";
-import { Check, Copy } from "lucide-react";
+
 import type { AccountValueDto } from "../types";
 import { formatDateTime, formatEnumLabel } from "../utils/formatters";
 

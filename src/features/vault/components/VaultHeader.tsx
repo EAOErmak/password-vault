@@ -1,32 +1,30 @@
+import React from "react";
+
 type VaultHeaderProps = {
   accountCount: number;
   canCreateAccount: boolean;
   errorMessage: string | null;
-  isLoading: boolean;
   isLocking: boolean;
   onLock: () => Promise<void>;
   onOpenBackupRestore: () => void;
   onOpenCreateAccount: () => void;
   onOpenImport: () => void;
   onOpenCreatePlatform: () => void;
-  onRefresh: () => Promise<void>;
   platformCount: number;
   vaultPath: string | null;
-  themeToggle: JSX.Element;
+  themeToggle: React.ReactElement;
 };
 
 export function VaultHeader({
   accountCount,
   canCreateAccount,
   errorMessage,
-  isLoading,
   isLocking,
   onLock,
   onOpenBackupRestore,
   onOpenCreateAccount,
   onOpenImport,
   onOpenCreatePlatform,
-  onRefresh,
   platformCount,
   vaultPath,
   themeToggle,

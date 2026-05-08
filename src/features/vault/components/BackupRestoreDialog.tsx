@@ -22,7 +22,6 @@ export function BackupRestoreDialog({
   onClose,
   onRestoreComplete,
   onRestoreInterrupted,
-  vaultPath,
 }: BackupRestoreDialogProps) {
   const [exportPath, setExportPath] = useState("");
   const [restorePath, setRestorePath] = useState("");

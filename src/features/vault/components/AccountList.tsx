@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type MouseEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { copySecretToClipboard } from "../api/secretApi";
 import type {
   AccountSummary,
@@ -157,7 +157,7 @@ export function AccountList({
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [editingSecret, setEditingSecret] = useState<EditingSecretState | null>(null);
   const [editingValue, setEditingValue] = useState<EditingValueState | null>(null);
-  const [isCopyingSecretId, setIsCopyingSecretId] = useState<string | null>(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addingValueAccount, setAddingValueAccount] = useState<AccountSummary | null>(null);
   const [addingSecretAccount, setAddingSecretAccount] = useState<AccountSummary | null>(null);
@@ -229,9 +229,7 @@ export function AccountList({
   const paginatedRows = rows.slice(pageStartIndex, pageStartIndex + ACCOUNTS_PER_PAGE);
   const currentRangeStart = visibleAccountCount === 0 ? 0 : pageStartIndex + 1;
   const currentRangeEnd = Math.min(pageStartIndex + ACCOUNTS_PER_PAGE, visibleAccountCount);
-  const accountsSubtitle = selectedPlatformName
-    ? `Showing accounts for ${selectedPlatformName}.`
-    : "Showing accounts across all platforms.";
+
 
   useEffect(() => {
     setCurrentPage(1);
@@ -285,7 +283,6 @@ export function AccountList({
     }
 
     setActionError(null);
-    setIsCopyingSecretId(row.primaryPasswordSecret.id);
 
     try {
       await copySecretToClipboard(row.primaryPasswordSecret.id, clipboardClearAfterSeconds);
@@ -300,8 +297,6 @@ export function AccountList({
       });
     } catch (error) {
       setActionError(getVaultErrorMessage(error));
-    } finally {
-      setIsCopyingSecretId(null);
     }
   };
 
@@ -321,45 +316,11 @@ export function AccountList({
     onSelectAccount(row.accountId);
   };
 
-  const handleOpenEditValue = (event: MouseEvent<HTMLButtonElement>, row: AccountTableDisplayRow) => {
-    event.stopPropagation();
 
-    if (!row.valueEntry) {
-      return;
-    }
 
-    setActionError(null);
-    setDialogError(null);
-    setEditingValue({
-      accountId: row.accountId,
-      value: row.valueEntry,
-    });
-    onSelectAccount(row.accountId);
-  };
 
-  const handleOpenEditSecret = (
-    event: MouseEvent<HTMLButtonElement>,
-    row: AccountTableDisplayRow,
-  ) => {
-    event.stopPropagation();
 
-    if (!row.primaryPasswordSecret) {
-      return;
-    }
 
-    setActionError(null);
-    setDialogError(null);
-    setEditingSecret({
-      accountId: row.accountId,
-      secret: row.primaryPasswordSecret,
-    });
-    onSelectAccount(row.accountId);
-  };
-
-  const handleOpenDetails = (event: MouseEvent<HTMLButtonElement>, accountId: string) => {
-    event.stopPropagation();
-    onOpenDetails(accountId);
-  };
 
   const handleSubmitAddSecret = async (request: AddSecretRequest) => {
     if (!addingSecretAccount) {

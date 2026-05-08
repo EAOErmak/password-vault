@@ -2,7 +2,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import { X } from "lucide-react";
 import type { AddAccountValueRequest, AccountValueType } from "../types";
 import {
-  getDefaultAccountValueLabel,
   isCustomAccountValueType,
   normalizeAccountValueLabel,
 } from "../utils/accountValueHelpers";

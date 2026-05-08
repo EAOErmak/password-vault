@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Eye, EyeOff, Copy, Check } from "lucide-react";
+import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import type { SecretMetadataDto } from "../types";
 import { formatDateTime, formatEnumLabel } from "../utils/formatters";
 import { revealSecret, copySecretToClipboard } from "../api/secretApi";

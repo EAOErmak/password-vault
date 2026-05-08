@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   createAccount,
   getAccountDetails,
@@ -44,7 +44,7 @@ type VaultHomePageProps = {
   onRestoreInterrupted: (message: string) => Promise<void> | void;
   sessionResetToken: number;
   vaultPath: string | null;
-  themeToggle: JSX.Element;
+  themeToggle: React.ReactElement;
 };
 
 type LoadSnapshotOptions = {
@@ -503,14 +503,12 @@ export function VaultHomePage({
             accountCount={accounts.length}
             canCreateAccount={platforms.length > 0}
             errorMessage={headerErrorMessage}
-            isLoading={isLoadingSnapshot}
             isLocking={isLocking}
             onLock={onLock}
             onOpenBackupRestore={handleOpenBackupRestore}
             onOpenCreateAccount={handleOpenCreateAccount}
             onOpenImport={handleOpenImport}
             onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
-            onRefresh={handleRefresh}
             platformCount={platforms.length}
             vaultPath={vaultPath}
             themeToggle={themeToggle}
