@@ -166,6 +166,18 @@ export function AccountList({
   const [clientNameFilter, setClientNameFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  const [sortColumn, setSortColumn] = useState<"name" | "platform" | "value" | null>(null);
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const handleSort = (column: "name" | "platform" | "value") => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+    } else {
+      setSortColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
   const trimmedSearchQuery = searchQuery.trim();
   const hasSearchQuery = trimmedSearchQuery.length > 0;
 
@@ -186,8 +198,29 @@ export function AccountList({
       baseRows = baseRows.filter((r) => r.accountName && r.accountName.toLowerCase().includes(trimmedNameFilter));
     }
 
+    if (sortColumn) {
+      baseRows.sort((a, b) => {
+        let valA = "";
+        let valB = "";
+        
+        if (sortColumn === "name") {
+          valA = a.accountName || "";
+          valB = b.accountName || "";
+        } else if (sortColumn === "platform") {
+          valA = a.platformName || "";
+          valB = b.platformName || "";
+        } else if (sortColumn === "value") {
+          valA = a.value || "";
+          valB = b.value || "";
+        }
+        
+        const cmp = valA.localeCompare(valB, undefined, { sensitivity: 'accent' });
+        return sortDirection === "asc" ? cmp : -cmp;
+      });
+    }
+
     return baseRows;
-  }, [accounts, trimmedValueFilter, trimmedNameFilter]);
+  }, [accounts, trimmedValueFilter, trimmedNameFilter, sortColumn, sortDirection]);
 
   const visibleAccountCount = rows.length;
   const totalPages = Math.max(1, Math.ceil(visibleAccountCount / ACCOUNTS_PER_PAGE));
@@ -477,14 +510,20 @@ export function AccountList({
             <table className="account-table">
               <thead>
                 <tr>
-                  <th scope="col">
-                    <span className="account-table__heading-chip">Name</span>
+                  <th scope="col" onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
+                    <span className="account-table__heading-chip">
+                      Name {sortColumn === "name" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
+                    </span>
                   </th>
-                  <th scope="col">
-                    <span className="account-table__heading-chip">Platform</span>
+                  <th scope="col" onClick={() => handleSort("platform")} style={{ cursor: "pointer" }}>
+                    <span className="account-table__heading-chip">
+                      Platform {sortColumn === "platform" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
+                    </span>
                   </th>
-                  <th scope="col">
-                    <span className="account-table__heading-chip">Value</span>
+                  <th scope="col" onClick={() => handleSort("value")} style={{ cursor: "pointer" }}>
+                    <span className="account-table__heading-chip">
+                      Value {sortColumn === "value" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
+                    </span>
                   </th>
                   <th scope="col">
                     <span className="account-table__heading-chip">Secret</span>
