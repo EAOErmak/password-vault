@@ -304,7 +304,7 @@ function App() {
 
   return (
     <>
-      {themeToggle}
+      {!isAuthView && themeToggle}
       <main className="app-shell">
         <section className={`app-panel${isAuthView ? " app-panel--auth" : ""}`}>
           <header className="app-header">
