@@ -500,14 +500,11 @@ export function AccountList({
                     <span className="account-table__heading-chip">Value</span>
                   </th>
                   <th scope="col">
-                    <span className="account-table__heading-chip">Value actions</span>
+                    <span className="account-table__heading-chip">Secret</span>
                   </th>
-                  <th scope="col">
-                    <span className="account-table__heading-chip">Secret actions</span>
-                  </th>
-                  <th scope="col">
-                    <span className="account-table__heading-chip">Additional Details</span>
-                  </th>
+
+
+
                 </tr>
               </thead>
               <tbody>
@@ -519,7 +516,11 @@ export function AccountList({
                         : "account-table__row"
                     }
                     key={row.rowId}
-                    onClick={() => onSelectAccount(row.accountId)}
+                    onClick={() => {
+                      onSelectAccount(row.accountId);
+                      onOpenDetails(row.accountId);
+                    }}
+                    style={{ cursor: "pointer" }}
                   >
                     <td>{renderAccountName(row.accountName)}</td>
                     <td>{renderStaticField(row.platformName)}</td>
@@ -534,101 +535,15 @@ export function AccountList({
                       )}
                     </td>
                     <td>
-                      {row.valueEntry ? (
-                        <div className="account-table__actions">
-                          <button
-                            className={
-                              row.valueEntry.id === copiedValueId
-                                ? "button-secondary button-small account-table__copy-button account-table__copy-button--copied"
-                                : "button-secondary button-small account-table__copy-button"
-                            }
-                            onClick={(event) => {
-                              void handleCopyValue(event, row);
-                            }}
-                            type="button"
-                          >
-                            {row.valueEntry.id === copiedValueId ? "Copied" : "Copy value"}
-                          </button>
-                          <button
-                            className="button-secondary button-small"
-                            disabled={isSubmitting}
-                            onClick={(event) => handleOpenEditValue(event, row)}
-                            type="button"
-                          >
-                            Edit value
-                          </button>
-                        </div>
+                      {row.hasAnyPasswordSecret ? (
+                        renderStaticField("••••••••", "account-table__static-field--secret")
                       ) : (
-                        <div className="account-table__actions">
-                          <button
-                            className="button-secondary button-small"
-                            onClick={(event) => handleOpenAddValue(event, row)}
-                            type="button"
-                          >
-                            Add value
-                          </button>
-                        </div>
+                        <span className="table-empty">-</span>
                       )}
                     </td>
-                    <td>
-                      <div className="account-table__actions">
-                        {row.primaryPasswordSecret ? (
-                          <>
-                            <button
-                              className={
-                                row.primaryPasswordSecret.id === copiedSecretId
-                                  ? "button-secondary button-small account-table__copy-button account-table__copy-button--copied"
-                                  : "button-secondary button-small account-table__copy-button"
-                              }
-                              disabled={isCopyingSecretId !== null || isSubmitting}
-                              onClick={(event) => {
-                                void handleCopySecret(event, row);
-                              }}
-                              type="button"
-                            >
-                              {isCopyingSecretId === row.primaryPasswordSecret.id
-                                ? "Copying..."
-                                : row.primaryPasswordSecret.id === copiedSecretId
-                                  ? "Copied"
-                                  : "Copy secret"}
-                            </button>
-                            <button
-                              className="button-secondary button-small"
-                              disabled={isSubmitting}
-                              onClick={(event) => handleOpenEditSecret(event, row)}
-                              type="button"
-                            >
-                              Edit secret
-                            </button>
-                          </>
-                        ) : row.hasAnyPasswordSecret ? (
-                          <span className="table-empty">No primary password</span>
-                        ) : (
-                          <>
-                            <span className="table-empty">No password</span>
-                            <button
-                              className="button-secondary button-small"
-                              disabled={isSubmitting}
-                              onClick={(event) => handleOpenAddSecret(event, row)}
-                              type="button"
-                            >
-                              Add secret
-                            </button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="account-table__actions">
-                        <button
-                          className="button-secondary button-small"
-                          onClick={(event) => handleOpenDetails(event, row.accountId)}
-                          type="button"
-                        >
-                          Details
-                        </button>
-                      </div>
-                    </td>
+
+
+
                   </tr>
                 ))}
               </tbody>
