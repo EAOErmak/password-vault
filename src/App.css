@@ -1789,6 +1789,11 @@ textarea {
   width: 100%;
 }
 
+.account-table__static-field--value,
+.account-table__static-field--secret {
+  cursor: pointer;
+}
+
 .account-table__static-field--empty {
   color: var(--color-text-muted);
 }
@@ -1840,6 +1845,19 @@ textarea {
 .account-table__copy-button--copied:hover {
   background: var(--surface-status);
   color: var(--color-accent);
+}
+
+.account-table__cell--copied {
+  animation: pulse-copied 1s ease-out;
+}
+
+@keyframes pulse-copied {
+  0% {
+    background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 .pagination-bar {

@@ -113,9 +113,12 @@ function buildTableRows(accounts: AccountSummary[]): AccountTableDisplayRow[] {
   });
 }
 
-function renderStaticField(content: ReactNode, className?: string) {
+function renderStaticField(content: ReactNode, className?: string, onClick?: (event: MouseEvent<HTMLElement>) => void) {
   return (
-    <span className={className ? `account-table__static-field ${className}` : "account-table__static-field"}>
+    <span 
+      className={className ? `account-table__static-field ${className}` : "account-table__static-field"}
+      onClick={onClick}
+    >
       {content}
     </span>
   );
@@ -220,7 +223,7 @@ export function AccountList({
     };
   }, []);
 
-  const handleCopyValue = async (event: MouseEvent<HTMLButtonElement>, row: AccountTableDisplayRow) => {
+  const handleCopyValue = async (event: MouseEvent<HTMLElement>, row: AccountTableDisplayRow) => {
     event.stopPropagation();
 
     if (!row.valueEntry) {
@@ -252,7 +255,7 @@ export function AccountList({
   };
 
   const handleCopySecret = async (
-    event: MouseEvent<HTMLButtonElement>,
+    event: MouseEvent<HTMLElement>,
     row: AccountTableDisplayRow,
   ) => {
     event.stopPropagation();
@@ -528,7 +531,11 @@ export function AccountList({
                       {row.valueEntry ? (
                         renderStaticField(
                           row.valueEntry.value,
-                          "account-table__static-field--value",
+                          `account-table__static-field--value ${row.valueEntry.id === copiedValueId ? "account-table__cell--copied" : ""}`,
+                          (event) => {
+                            event.stopPropagation();
+                            void handleCopyValue(event, row);
+                          }
                         )
                       ) : (
                         <span className="table-empty">No values for this account</span>
@@ -536,7 +543,16 @@ export function AccountList({
                     </td>
                     <td>
                       {row.hasAnyPasswordSecret ? (
-                        renderStaticField("••••••••", "account-table__static-field--secret")
+                        renderStaticField(
+                          "••••••••",
+                          `account-table__static-field--secret ${row.primaryPasswordSecret?.id === copiedSecretId ? "account-table__cell--copied" : ""}`,
+                          (event) => {
+                            if (row.primaryPasswordSecret) {
+                              event.stopPropagation();
+                              void handleCopySecret(event, row);
+                            }
+                          }
+                        )
                       ) : (
                         <span className="table-empty">-</span>
                       )}
