@@ -119,16 +119,17 @@ export function PasswordGeneratorControls({
 
   return (
     <section className="generator-panel">
-      <div className="generator-panel__header">
-        <div 
-          onClick={() => setIsExpanded(!isExpanded)} 
-          style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
-        >
+      <div 
+        className="generator-panel__header" 
+        onClick={() => setIsExpanded(!isExpanded)} 
+        style={{ cursor: "pointer" }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <h4>Password generator</h4>
           {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </div>
 
-        <div className="value-row__actions">
+        <div className="value-row__actions" onClick={(e) => e.stopPropagation()}>
           <button
             className="button-secondary button-small"
             disabled={isBusy}
