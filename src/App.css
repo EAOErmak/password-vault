@@ -142,12 +142,16 @@ body,
   min-height: 100%;
 }
 
-html, body {
-  scrollbar-width: none; /* Firefox */
+html,
+body {
+  scrollbar-width: none;
+  /* Firefox */
 }
 
-html::-webkit-scrollbar, body::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge (Tauri) */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari, Edge (Tauri) */
 }
 
 body {
@@ -1862,6 +1866,7 @@ textarea {
   0% {
     background-color: color-mix(in srgb, var(--color-accent) 30%, transparent);
   }
+
   100% {
     background-color: transparent;
   }
@@ -2237,4 +2242,14 @@ textarea {
 .custom-titlebar__button--close:hover {
   background: #dc2626;
   color: #ffffff;
+}
+
+/* Create Value Button */
+.button-create-value {
+  background: #1e3140;
+  color: #ffffff;
+}
+
+.button-create-value:hover {
+  background: #0044aa;
 }

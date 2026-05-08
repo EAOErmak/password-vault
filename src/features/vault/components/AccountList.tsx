@@ -522,7 +522,15 @@ export function AccountList({
                           }
                         )
                       ) : (
-                        <span className="table-empty">No values for this account</span>
+                        <button 
+                          className="button-secondary button-small button-create-value" 
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleOpenAddValue(event, row);
+                          }}
+                        >
+                          Create Value
+                        </button>
                       )}
                     </td>
                     <td>
