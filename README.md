@@ -6,6 +6,12 @@ A premium, local-first password and account management application built with **
 
 Password Vault is a state-of-the-art desktop application that allows you to securely store and manage your digital identity. Unlike cloud-based solutions, Password Vault prioritizes your privacy by keeping all sensitive data on your local machine, protected by a master password and the safety of the Rust ecosystem.
 
+## Download & Installation 📥
+
+You can download the pre-compiled installers directly from the repository:
+- **Windows Setup (.exe)**: [password-vault_0.1.0_x64-setup.exe](src-tauri/target/release/bundle/nsis/password-vault_0.1.0_x64-setup.exe)
+- **Windows Installer (.msi)**: [password-vault_0.1.0_x64_en-US.msi](src-tauri/target/release/bundle/msi/password-vault_0.1.0_x64_en-US.msi)
+
 ## Key Features
 
 - **Double-Layered Security**: Separate management for sensitive **Secrets** (passwords, tokens) and metadata **Values** (emails, usernames, custom fields).

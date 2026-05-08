@@ -5,11 +5,14 @@ dist-ssr/
 *.local
 
 # Rust / Cargo / Tauri build output
-target/
-src-tauri/target/
+/target/
+src-tauri/target/*
+!src-tauri/target/release/
+src-tauri/target/release/*
+!src-tauri/target/release/bundle/
 
 # Tauri generated bundles, installers, and packaged apps
-src-tauri/target/release/bundle/
+# (We allow them in the bundle folder above)
 *.msi
 *-setup.exe
 *.app
@@ -17,6 +20,8 @@ src-tauri/target/release/bundle/
 *.AppImage
 *.deb
 *.rpm
+!src-tauri/target/release/bundle/**/*.msi
+!src-tauri/target/release/bundle/**/*-setup.exe
 
 # Local vault databases, SQLCipher files, and user data
 *.db
