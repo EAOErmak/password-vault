@@ -1654,6 +1654,7 @@ textarea {
   place-items: center;
   overflow-y: auto;
   background: var(--surface-overlay);
+  z-index: 1000;
 }
 
 .dialog-card {
@@ -1989,6 +1990,14 @@ textarea {
   border: 1px solid var(--border-theme-toggle);
   box-shadow: var(--shadow-theme-toggle);
   backdrop-filter: blur(14px);
+}
+
+.vault-header-actions .theme-toggle {
+  position: static;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  background: var(--surface-secondary-button);
 }
 
 @media (max-width: 1180px) {

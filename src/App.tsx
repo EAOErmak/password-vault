@@ -287,18 +287,16 @@ function App() {
 
   if (view === "home") {
     return (
-      <>
-        {themeToggle}
-        <VaultHomePage
-          errorMessage={errorMessage}
-          isLocking={isBusy}
-          onLock={handleLockVault}
-          onRestoreComplete={handleRestoreComplete}
-          onRestoreInterrupted={handleRestoreInterrupted}
-          sessionResetToken={sessionResetToken}
-          vaultPath={currentVaultPath}
-        />
-      </>
+      <VaultHomePage
+        errorMessage={errorMessage}
+        isLocking={isBusy}
+        onLock={handleLockVault}
+        onRestoreComplete={handleRestoreComplete}
+        onRestoreInterrupted={handleRestoreInterrupted}
+        sessionResetToken={sessionResetToken}
+        vaultPath={currentVaultPath}
+        themeToggle={themeToggle}
+      />
     );
   }
 

@@ -44,6 +44,7 @@ type VaultHomePageProps = {
   onRestoreInterrupted: (message: string) => Promise<void> | void;
   sessionResetToken: number;
   vaultPath: string | null;
+  themeToggle: JSX.Element;
 };
 
 type LoadSnapshotOptions = {
@@ -59,6 +60,7 @@ export function VaultHomePage({
   onRestoreInterrupted,
   sessionResetToken,
   vaultPath,
+  themeToggle,
 }: VaultHomePageProps) {
   const snapshotRequestRef = useRef(0);
   const detailsRequestRef = useRef(0);
@@ -511,6 +513,7 @@ export function VaultHomePage({
             onRefresh={handleRefresh}
             platformCount={platforms.length}
             vaultPath={vaultPath}
+            themeToggle={themeToggle}
           />
         }
         main={

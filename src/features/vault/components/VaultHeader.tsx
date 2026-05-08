@@ -12,6 +12,7 @@ type VaultHeaderProps = {
   onRefresh: () => Promise<void>;
   platformCount: number;
   vaultPath: string | null;
+  themeToggle: JSX.Element;
 };
 
 export function VaultHeader({
@@ -28,6 +29,7 @@ export function VaultHeader({
   onRefresh,
   platformCount,
   vaultPath,
+  themeToggle,
 }: VaultHeaderProps) {
 
   return (
@@ -82,6 +84,7 @@ export function VaultHeader({
           >
             {isLoading ? "Refreshing..." : "Refresh"}
           </button>
+          {themeToggle}
           <button
             className="button-primary"
             disabled={isLocking}
