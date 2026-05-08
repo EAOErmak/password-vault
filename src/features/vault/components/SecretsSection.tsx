@@ -36,6 +36,7 @@ export function SecretsSection({
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingSecret, setEditingSecret] = useState<SecretMetadataDto | null>(null);
   const [historySecret, setHistorySecret] = useState<SecretMetadataDto | null>(null);
+  const [historyTab, setHistoryTab] = useState<"history" | "other">("history");
   const [secretHistory, setSecretHistory] = useState<SecretHistoryDto[]>([]);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -84,11 +85,12 @@ export function SecretsSection({
 
 
 
-  const handleOpenHistory = async (secret: SecretMetadataDto) => {
+  const handleOpenHistory = async (secret: SecretMetadataDto, tab: "history" | "other" = "history") => {
     const requestId = historyRequestRef.current + 1;
     historyRequestRef.current = requestId;
     setActionError(null);
     setHistorySecret(secret);
+    setHistoryTab(tab);
     setSecretHistory([]);
     setHistoryError(null);
     setIsLoadingHistory(true);
@@ -184,7 +186,21 @@ export function SecretsSection({
     <section className="details-section">
       <div className="section-heading">
         <h4>Secrets</h4>
-        <div className="section-heading__actions">
+        <div className="section-heading__actions" style={{ display: "flex", gap: "8px" }}>
+          {account.secrets.length > 1 ? (
+            <button
+              className="button-secondary button-small"
+              onClick={() => {
+                const primarySecret = account.secrets.find(s => s.is_primary) || account.secrets[0];
+                if (primarySecret) {
+                  void handleOpenHistory(primarySecret, "other");
+                }
+              }}
+              type="button"
+            >
+              Other secrets
+            </button>
+          ) : null}
           <button className="button-secondary button-small" onClick={handleOpenAdd} type="button">
             Add secret
           </button>
@@ -237,6 +253,7 @@ export function SecretsSection({
         onDelete={handleDeleteClick}
         onEdit={handleOpenEdit}
         onHistory={handleOpenHistory}
+        initialTab={historyTab}
       />
 
       <EditSecretDialog

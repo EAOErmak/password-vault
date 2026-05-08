@@ -20,6 +20,7 @@ type SecretHistoryDialogProps = {
   onDelete?: (secret: SecretMetadataDto) => void;
   onEdit?: (secret: SecretMetadataDto) => void;
   onHistory?: (secret: SecretMetadataDto) => Promise<void>;
+  initialTab?: "history" | "other";
 };
 
 
@@ -35,10 +36,11 @@ export function SecretHistoryDialog({
   onDelete,
   onEdit,
   onHistory,
+  initialTab = "history",
 }: SecretHistoryDialogProps) {
   const [historyPage, setHistoryPage] = useState(1);
   const [otherSecretsPage, setOtherSecretsPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"history" | "other">("history");
+  const [activeTab, setActiveTab] = useState<"history" | "other">(initialTab);
   const [revealedHistory, setRevealedHistory] = useState<Record<string, { old?: string; new?: string }>>({});
   const [isRevealingHistory, setIsRevealingHistory] = useState<Record<string, boolean>>({});
   const [copiedField, setCopiedField] = useState<string | null>(null);
@@ -50,11 +52,11 @@ export function SecretHistoryDialog({
 
     setHistoryPage(1);
     setOtherSecretsPage(1);
-    setActiveTab("history");
+    setActiveTab(initialTab);
     setRevealedHistory({});
     setIsRevealingHistory({});
     setCopiedField(null);
-  }, [isOpen, secret?.id]);
+  }, [isOpen, secret?.id, initialTab]);
 
   const handleToggleRevealHistory = async (historyId: string) => {
     if (revealedHistory[historyId]) {
@@ -138,7 +140,9 @@ export function SecretHistoryDialog({
         <div className="dialog-header">
           <div style={{ width: "100%" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-              <h3 style={{ margin: 0 }}>Secret history</h3>
+              <h3 style={{ margin: 0 }}>
+                {activeTab === "history" ? "Secret history" : "Other secrets"}
+              </h3>
               <button
                 className="button-ghost button-small"
                 onClick={onClose}
@@ -154,30 +158,11 @@ export function SecretHistoryDialog({
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 
-        {!isLoading && hasOtherSecrets ? (
-          <div className="actions" style={{ marginBottom: "20px" }}>
-            <button
-              className={activeTab === "history" ? "button-primary" : "button-secondary"}
-              onClick={() => setActiveTab("history")}
-              type="button"
-            >
-              Change history
-            </button>
-            <button
-              className={activeTab === "other" ? "button-primary" : "button-secondary"}
-              onClick={() => setActiveTab("other")}
-              type="button"
-            >
-              Other secrets
-            </button>
-          </div>
-        ) : null}
+
 
         {!isLoading && activeTab === "history" ? (
           <section className="history-dialog-section">
-            <div className="history-dialog-section__header">
-              <h4>Change history</h4>
-            </div>
+
             {hasHistory ? (
               <>
                 <div className="metadata-list">
@@ -302,9 +287,7 @@ export function SecretHistoryDialog({
 
         {hasOtherSecrets && activeTab === "other" ? (
           <section className="history-dialog-section">
-            <div className="history-dialog-section__header">
-              <h4>Other secrets</h4>
-            </div>
+
             <div className="metadata-list">
               {paginatedOtherSecrets.map((s) => (
                 <SecretRow

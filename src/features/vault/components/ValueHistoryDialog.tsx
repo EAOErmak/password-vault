@@ -19,6 +19,7 @@ type ValueHistoryDialogProps = {
   onDelete?: (value: AccountValueDto) => void;
   onEdit?: (value: AccountValueDto) => void;
   onHistory?: (value: AccountValueDto) => void;
+  initialTab?: "history" | "other";
 };
 
 export function ValueHistoryDialog({
@@ -32,10 +33,11 @@ export function ValueHistoryDialog({
   onDelete,
   onEdit,
   onHistory,
+  initialTab = "history",
 }: ValueHistoryDialogProps) {
   const [historyPage, setHistoryPage] = useState(1);
   const [otherValuesPage, setOtherValuesPage] = useState(1);
-  const [activeTab, setActiveTab] = useState<"history" | "other">("history");
+  const [activeTab, setActiveTab] = useState<"history" | "other">(initialTab);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,9 +47,9 @@ export function ValueHistoryDialog({
 
     setHistoryPage(1);
     setOtherValuesPage(1);
-    setActiveTab("history");
+    setActiveTab(initialTab);
     setCopiedField(null);
-  }, [isOpen, value?.id]);
+  }, [isOpen, value?.id, initialTab]);
  
   const handleCopyValue = async (value: string, fieldId: string) => {
     try {
@@ -104,7 +106,9 @@ export function ValueHistoryDialog({
         <div className="dialog-header">
           <div style={{ width: "100%" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-              <h3 style={{ margin: 0 }}>Value history</h3>
+              <h3 style={{ margin: 0 }}>
+                {activeTab === "history" ? "Value history" : "Other values"}
+              </h3>
               <button
                 className="button-ghost button-small"
                 onClick={onClose}
@@ -120,30 +124,11 @@ export function ValueHistoryDialog({
         {errorMessage ? <p className="error-banner">{errorMessage}</p> : null}
         {isLoading ? <p className="muted-state">Loading history...</p> : null}
 
-        {!isLoading && hasOtherValues ? (
-          <div className="actions" style={{ marginBottom: "20px" }}>
-            <button
-              className={activeTab === "history" ? "button-primary" : "button-secondary"}
-              onClick={() => setActiveTab("history")}
-              type="button"
-            >
-              Change history
-            </button>
-            <button
-              className={activeTab === "other" ? "button-primary" : "button-secondary"}
-              onClick={() => setActiveTab("other")}
-              type="button"
-            >
-              Other values
-            </button>
-          </div>
-        ) : null}
+
 
         {!isLoading && activeTab === "history" ? (
           <section className="history-dialog-section">
-            <div className="history-dialog-section__header">
-              <h4>Change history</h4>
-            </div>
+
             {hasHistory ? (
               <>
                 <div className="metadata-list">
@@ -245,9 +230,7 @@ export function ValueHistoryDialog({
 
         {hasOtherValues && activeTab === "other" ? (
           <section className="history-dialog-section">
-            <div className="history-dialog-section__header">
-              <h4>Other values</h4>
-            </div>
+
             <div className="metadata-list">
               {paginatedOtherValues.map((v) => (
                 <AccountValueRow

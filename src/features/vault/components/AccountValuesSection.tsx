@@ -34,6 +34,7 @@ export function AccountValuesSection({
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingValue, setEditingValue] = useState<AccountValueDto | null>(null);
   const [historyValue, setHistoryValue] = useState<AccountValueDto | null>(null);
+  const [historyTab, setHistoryTab] = useState<"history" | "other">("history");
   const [valueHistory, setValueHistory] = useState<AccountValueHistoryDto[]>([]);
   const [historyError, setHistoryError] = useState<string | null>(null);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
@@ -77,11 +78,12 @@ export function AccountValuesSection({
     setEditingValue(null);
   };
 
-  const handleOpenHistory = async (value: AccountValueDto) => {
+  const handleOpenHistory = async (value: AccountValueDto, tab: "history" | "other" = "history") => {
     const requestId = historyRequestRef.current + 1;
     historyRequestRef.current = requestId;
     setActionError(null);
     setHistoryValue(value);
+    setHistoryTab(tab);
     setValueHistory([]);
     setHistoryError(null);
     setIsLoadingHistory(true);
@@ -173,7 +175,21 @@ export function AccountValuesSection({
     <section className="details-section">
       <div className="section-heading">
         <h4>Values</h4>
-        <div className="section-heading__actions">
+        <div className="section-heading__actions" style={{ display: "flex", gap: "8px" }}>
+          {account.values.length > 1 ? (
+            <button
+              className="button-secondary button-small"
+              onClick={() => {
+                const primaryValue = account.values.find(v => v.is_primary) || account.values[0];
+                if (primaryValue) {
+                  void handleOpenHistory(primaryValue, "other");
+                }
+              }}
+              type="button"
+            >
+              Other values
+            </button>
+          ) : null}
           <button className="button-secondary button-small" onClick={handleOpenAdd} type="button">
             Add value
           </button>
@@ -223,6 +239,7 @@ export function AccountValuesSection({
         onDelete={handleDeleteClick}
         onEdit={handleOpenEdit}
         onHistory={handleOpenHistory}
+        initialTab={historyTab}
       />
 
       <EditAccountValueDialog
