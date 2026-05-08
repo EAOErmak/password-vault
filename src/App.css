@@ -1357,9 +1357,7 @@ textarea {
   border-radius: 16px;
 }
 
-.account-details-dialog .section-heading {
-  align-items: flex-start;
-}
+
 
 .details-section--danger {
   padding-top: 12px;
