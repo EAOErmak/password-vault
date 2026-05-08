@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 import { open } from "@tauri-apps/plugin-dialog";
 import {
   exportEncryptedBackup,
@@ -148,7 +149,7 @@ export function BackupRestoreDialog({
                   type="button"
                   style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}
                 >
-                  Close
+                  <X />
                 </button>
               </div>
               <p className="field-helper">

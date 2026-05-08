@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { X } from "lucide-react";
 import type { AccountDetails, PlatformDto, UpdateAccountRequest } from "../types";
 import { DialogBackdrop } from "./DialogBackdrop";
 import { PlatformSelect } from "./PlatformSelect";
@@ -65,7 +66,7 @@ export function EditAccountDialog({
                 style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}
                 type="button"
               >
-                Close
+                <X />
               </button>
             </div>
             <PlatformSelect

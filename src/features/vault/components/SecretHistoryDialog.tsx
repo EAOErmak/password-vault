@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Eye, EyeOff, Copy, Check } from "lucide-react";
+import { Eye, EyeOff, Copy, Check, X } from "lucide-react";
 import type { SecretHistoryDto, SecretMetadataDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
 import { DialogBackdrop } from "./DialogBackdrop";
@@ -145,7 +145,7 @@ export function SecretHistoryDialog({
                 type="button"
                 style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}
               >
-                Close
+                <X />
               </button>
             </div>
           </div>

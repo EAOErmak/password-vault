@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { X } from "lucide-react";
 import { revealSecret } from "../api/secretApi";
 import type { SecretMetadataDto, UpdateSecretRequest } from "../types";
 import { getVaultErrorMessage } from "../../../lib/vault";
@@ -112,7 +113,7 @@ export function EditSecretDialog({
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span className="summary-label">Type</span>
               <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
-                Close
+                <X />
               </button>
             </div>
             <SecretTypeSelect

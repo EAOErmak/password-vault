@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { X } from "lucide-react";
 import type { CreatePlatformRequest } from "../types";
 import { DialogBackdrop } from "./DialogBackdrop";
 
@@ -44,7 +45,7 @@ export function CreatePlatformDialog({
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span className="summary-label">Platform name</span>
               <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
-                Close
+                <X />
               </button>
             </div>
             <input

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { X } from "lucide-react";
 import { importTxtAccounts, parseTxtImport } from "../api/importApi";
 import type {
   ImportTxtAccountsResultDto,
@@ -123,7 +124,7 @@ export function ImportTxtDialog({
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <span className="summary-label">TXT file</span>
                 <button className="button-ghost button-small" disabled={isBusy} onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
-                  Close
+                  <X />
                 </button>
               </div>
               <input
@@ -211,7 +212,7 @@ export function ImportTxtDialog({
             <ImportResultSummary fileName={fileName} result={result} />
             <div className="actions">
               <button className="button-primary" onClick={onClose} type="button">
-                Close
+                <X />
               </button>
             </div>
           </>

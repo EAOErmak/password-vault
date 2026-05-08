@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { X } from "lucide-react";
 import type { AccountValueDto, AccountValueType, UpdateAccountValueRequest } from "../types";
 import {
   getDefaultAccountValueLabel,
@@ -71,7 +72,7 @@ export function EditAccountValueDialog({
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <span className="summary-label">Type</span>
               <button className="button-ghost button-small" onClick={onClose} type="button" style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}>
-                Close
+                <X />
               </button>
             </div>
             <AccountValueTypeSelect

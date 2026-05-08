@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 import type {
   AccountDetails,
   AddAccountValueRequest,
@@ -141,7 +142,7 @@ export function AccountDetailsDialog({
             <h3>Account details</h3>
           </div>
           <button className="button-ghost" onClick={onClose} type="button">
-            Close
+            <X />
           </button>
         </div>
 

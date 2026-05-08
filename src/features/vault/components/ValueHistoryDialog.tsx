@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, X } from "lucide-react";
 import type { AccountValueDto, AccountValueHistoryDto } from "../types";
 import { formatDateTime } from "../utils/formatters";
 import { DialogBackdrop } from "./DialogBackdrop";
@@ -111,7 +111,7 @@ export function ValueHistoryDialog({
                 type="button"
                 style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}
               >
-                Close
+                <X />
               </button>
             </div>
           </div>
