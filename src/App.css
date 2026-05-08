@@ -2174,3 +2174,59 @@ textarea {
   display: grid;
   gap: 4px;
 }
+
+/* Custom Titlebar */
+.custom-titlebar {
+  height: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 0 12px;
+  user-select: none;
+}
+
+.custom-titlebar__title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  pointer-events: none;
+}
+
+.custom-titlebar__spacer {
+  flex: 1;
+  height: 100%;
+}
+
+.custom-titlebar__actions {
+  display: flex;
+  align-items: center;
+}
+
+.custom-titlebar__button {
+  width: 36px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+}
+
+.custom-titlebar__button:hover {
+  background: var(--surface-muted);
+  color: var(--color-text-primary);
+}
+
+.custom-titlebar__button--close:hover {
+  background: #dc2626;
+  color: #ffffff;
+}

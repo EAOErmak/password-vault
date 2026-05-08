@@ -14,6 +14,8 @@ import {
   type VaultStatus,
   unlockVault,
 } from "./lib/vault";
+import { getCurrentWindow } from "@tauri-apps/api/window";
+import { Minus, Square, X } from "lucide-react";
 import {
   applyTheme,
   resolveInitialTheme,
@@ -285,64 +287,80 @@ function App() {
     </button>
   );
 
-  if (view === "home") {
-    return (
-      <VaultHomePage
-        errorMessage={errorMessage}
-        isLocking={isBusy}
-        onLock={handleLockVault}
-        onRestoreComplete={handleRestoreComplete}
-        onRestoreInterrupted={handleRestoreInterrupted}
-        sessionResetToken={sessionResetToken}
-        vaultPath={currentVaultPath}
-        themeToggle={themeToggle}
-      />
-    );
-  }
-
   const isAuthView = view === "create" || view === "unlock";
-
-  return (
-    <>
-      {!isAuthView && themeToggle}
-      <main className="app-shell">
-        <section className={`app-panel${isAuthView ? " app-panel--auth" : ""}`}>
-          <header className="app-header">
-            <h1 className="app-title">Password Vault</h1>
-          </header>
-
-          {view === "loading" ? (
-            <section className="loading-state">
-              <h2>Checking vault status</h2>
-              <p>Loading the current session state from Tauri.</p>
-            </section>
-          ) : null}
-
-          {view === "create" ? (
-            <CreateVaultPage
-              errorMessage={errorMessage}
-              initialPath={currentVaultPath}
-              isSubmitting={isBusy}
-              onSubmit={handleCreateVault}
-              onSwitchToUnlock={showUnlockPage}
-              statusMessage={statusMessage}
-            />
-          ) : null}
-
-          {view === "unlock" ? (
-            <UnlockVaultPage
-              errorMessage={errorMessage}
-              initialPath={currentVaultPath}
-              isSubmitting={isBusy}
-              onSubmit={handleUnlockVault}
-              onSwitchToCreate={showCreatePage}
-              statusMessage={statusMessage}
-            />
-          ) : null}
-        </section>
-      </main>
-    </>
-  );
+ 
+   return (
+     <>
+       <div className="custom-titlebar">
+         <span data-tauri-drag-region className="custom-titlebar__title">Password Vault</span>
+         <div data-tauri-drag-region className="custom-titlebar__spacer"></div>
+         <div className="custom-titlebar__actions">
+           <button onClick={() => void getCurrentWindow().minimize()} className="custom-titlebar__button" type="button">
+             <Minus size={14} />
+           </button>
+           <button onClick={() => void getCurrentWindow().toggleMaximize()} className="custom-titlebar__button" type="button">
+             <Square size={12} />
+           </button>
+           <button onClick={() => void getCurrentWindow().close()} className="custom-titlebar__button custom-titlebar__button--close" type="button">
+             <X size={14} />
+           </button>
+         </div>
+       </div>
+ 
+       {view === "home" ? (
+         <VaultHomePage
+           errorMessage={errorMessage}
+           isLocking={isBusy}
+           onLock={handleLockVault}
+           onRestoreComplete={handleRestoreComplete}
+           onRestoreInterrupted={handleRestoreInterrupted}
+           sessionResetToken={sessionResetToken}
+           vaultPath={currentVaultPath}
+           themeToggle={themeToggle}
+         />
+       ) : (
+         <>
+           {!isAuthView && themeToggle}
+           <main className="app-shell">
+             <section className={`app-panel${isAuthView ? " app-panel--auth" : ""}`}>
+               <header className="app-header">
+                 <h1 className="app-title">Password Vault</h1>
+               </header>
+ 
+               {view === "loading" ? (
+                 <section className="loading-state">
+                   <h2>Checking vault status</h2>
+                   <p>Loading the current session state from Tauri.</p>
+                 </section>
+               ) : null}
+ 
+               {view === "create" ? (
+                 <CreateVaultPage
+                   errorMessage={errorMessage}
+                   initialPath={currentVaultPath}
+                   isSubmitting={isBusy}
+                   onSubmit={handleCreateVault}
+                   onSwitchToUnlock={showUnlockPage}
+                   statusMessage={statusMessage}
+                 />
+               ) : null}
+ 
+               {view === "unlock" ? (
+                 <UnlockVaultPage
+                   errorMessage={errorMessage}
+                   initialPath={currentVaultPath}
+                   isSubmitting={isBusy}
+                   onSubmit={handleUnlockVault}
+                   onSwitchToCreate={showCreatePage}
+                   statusMessage={statusMessage}
+                 />
+               ) : null}
+             </section>
+           </main>
+         </>
+       )}
+     </>
+   );
 }
 
 export default App;
