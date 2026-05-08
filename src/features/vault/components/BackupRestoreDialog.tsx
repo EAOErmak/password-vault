@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { open } from "@tauri-apps/plugin-dialog";
 import {
   exportEncryptedBackup,
   restoreEncryptedBackup,
@@ -51,6 +52,35 @@ export function BackupRestoreDialog({
   }
 
   const isBusy = isExporting || isRestoring;
+
+  const handleBrowse = async () => {
+    try {
+      const selected = await open({
+        directory: true,
+        multiple: false,
+      });
+      if (typeof selected === "string") {
+        setExportPath(selected);
+      }
+    } catch (err) {
+      console.error("Failed to open dialog", err);
+    }
+  };
+
+  const handleBrowseRestore = async () => {
+    try {
+      const selected = await open({
+        directory: false,
+        multiple: false,
+        filters: [{ name: "Database", extensions: ["db"] }],
+      });
+      if (typeof selected === "string") {
+        setRestorePath(selected);
+      }
+    } catch (err) {
+      console.error("Failed to open dialog", err);
+    }
+  };
 
   const handleExport = async () => {
     setIsExporting(true);
@@ -129,19 +159,29 @@ export function BackupRestoreDialog({
 
             <div className="field">
               <span className="summary-label">Destination path or folder</span>
-              <input
-                autoComplete="off"
-                disabled={isBusy}
-                onChange={(event) => {
-                  setExportPath(event.currentTarget.value);
-                  setExportErrorMessage(null);
-                  setExportStatusMessage(null);
-                }}
-                placeholder="C:\\Backups\\ or C:\\Backups\\vault-backup.db"
-                spellCheck={false}
-                type="text"
-                value={exportPath}
-              />
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  autoComplete="off"
+                  disabled={isBusy}
+                  onChange={(event) => {
+                    setExportPath(event.currentTarget.value);
+                    setExportErrorMessage(null);
+                    setExportStatusMessage(null);
+                  }}
+                  placeholder="C:\\Backups\\ or C:\\Backups\\vault-backup.db"
+                  spellCheck={false}
+                  type="text"
+                  value={exportPath}
+                />
+                <button
+                  type="button"
+                  className="button-secondary"
+                  onClick={handleBrowse}
+                  disabled={isBusy}
+                >
+                  Browse
+                </button>
+              </div>
             </div>
 
             {exportStatusMessage ? <p className="status-toast">{exportStatusMessage}</p> : null}
@@ -180,18 +220,28 @@ export function BackupRestoreDialog({
 
             <label className="field">
               <span>Encrypted backup path</span>
-              <input
-                autoComplete="off"
-                disabled={isBusy}
-                onChange={(event) => {
-                  setRestorePath(event.currentTarget.value);
-                  setRestoreErrorMessage(null);
-                }}
-                placeholder="C:\\Backups\\vault-backup.db"
-                spellCheck={false}
-                type="text"
-                value={restorePath}
-              />
+              <div style={{ display: "flex", gap: "8px" }}>
+                <input
+                  autoComplete="off"
+                  disabled={isBusy}
+                  onChange={(event) => {
+                    setRestorePath(event.currentTarget.value);
+                    setRestoreErrorMessage(null);
+                  }}
+                  placeholder="C:\\Backups\\vault-backup.db"
+                  spellCheck={false}
+                  type="text"
+                  value={restorePath}
+                />
+                <button
+                  type="button"
+                  className="button-secondary"
+                  onClick={handleBrowseRestore}
+                  disabled={isBusy}
+                >
+                  Browse
+                </button>
+              </div>
             </label>
 
             <label className="checkbox-field">
@@ -224,7 +274,7 @@ export function BackupRestoreDialog({
           </section>
         </div>
 
-        {vaultPath ? <p className="field-helper">Current vault: {vaultPath}</p> : null}
+
       </div>
     </DialogBackdrop>
   );
