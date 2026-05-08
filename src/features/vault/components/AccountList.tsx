@@ -152,12 +152,7 @@ export function AccountList({
   platforms,
 }: AccountListProps) {
   const clipboardClearAfterSeconds = 30;
-  const valueCopyFeedbackTimerRef = useRef<number | null>(null);
-  const secretCopyFeedbackTimerRef = useRef<number | null>(null);
-
   const [actionError, setActionError] = useState<string | null>(null);
-  const [copiedSecretId, setCopiedSecretId] = useState<string | null>(null);
-  const [copiedValueId, setCopiedValueId] = useState<string | null>(null);
   const [dialogError, setDialogError] = useState<string | null>(null);
   const [editingSecret, setEditingSecret] = useState<EditingSecretState | null>(null);
   const [editingValue, setEditingValue] = useState<EditingValueState | null>(null);
@@ -212,16 +207,7 @@ export function AccountList({
     setCurrentPage((page) => Math.min(page, totalPages));
   }, [totalPages]);
 
-  useEffect(() => {
-    return () => {
-      if (valueCopyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(valueCopyFeedbackTimerRef.current);
-      }
-      if (secretCopyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(secretCopyFeedbackTimerRef.current);
-      }
-    };
-  }, []);
+
 
   const handleCopyValue = async (event: MouseEvent<HTMLElement>, row: AccountTableDisplayRow) => {
     event.stopPropagation();
@@ -231,6 +217,7 @@ export function AccountList({
     }
 
     setActionError(null);
+    const target = event.currentTarget;
 
     try {
       if (!navigator.clipboard) {
@@ -239,16 +226,14 @@ export function AccountList({
 
       await navigator.clipboard.writeText(row.valueEntry.value);
       onSelectAccount(row.accountId);
-      setCopiedValueId(row.valueEntry.id);
-      if (valueCopyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(valueCopyFeedbackTimerRef.current);
-      }
-      valueCopyFeedbackTimerRef.current = window.setTimeout(() => {
-        setCopiedValueId((currentValueId) =>
-          currentValueId === row.valueEntry?.id ? null : currentValueId,
-        );
-        valueCopyFeedbackTimerRef.current = null;
-      }, 2000);
+      
+      target.animate([
+        { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
+        { backgroundColor: 'transparent' }
+      ], {
+        duration: 1000,
+        easing: 'ease-out'
+      });
     } catch (error) {
       setActionError(getVaultErrorMessage(error));
     }
@@ -259,6 +244,7 @@ export function AccountList({
     row: AccountTableDisplayRow,
   ) => {
     event.stopPropagation();
+    const target = event.currentTarget;
 
     if (!row.primaryPasswordSecret) {
       return;
@@ -270,16 +256,14 @@ export function AccountList({
     try {
       await copySecretToClipboard(row.primaryPasswordSecret.id, clipboardClearAfterSeconds);
       onSelectAccount(row.accountId);
-      setCopiedSecretId(row.primaryPasswordSecret.id);
-      if (secretCopyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(secretCopyFeedbackTimerRef.current);
-      }
-      secretCopyFeedbackTimerRef.current = window.setTimeout(() => {
-        setCopiedSecretId((currentSecretId) =>
-          currentSecretId === row.primaryPasswordSecret?.id ? null : currentSecretId,
-        );
-        secretCopyFeedbackTimerRef.current = null;
-      }, 2000);
+      
+      target.animate([
+        { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
+        { backgroundColor: 'transparent' }
+      ], {
+        duration: 1000,
+        easing: 'ease-out'
+      });
     } catch (error) {
       setActionError(getVaultErrorMessage(error));
     } finally {
@@ -531,7 +515,7 @@ export function AccountList({
                       {row.valueEntry ? (
                         renderStaticField(
                           row.valueEntry.value,
-                          `account-table__static-field--value ${row.valueEntry.id === copiedValueId ? "account-table__cell--copied" : ""}`,
+                          "account-table__static-field--value",
                           (event) => {
                             event.stopPropagation();
                             void handleCopyValue(event, row);
@@ -545,7 +529,7 @@ export function AccountList({
                       {row.hasAnyPasswordSecret ? (
                         renderStaticField(
                           "••••••••",
-                          `account-table__static-field--secret ${row.primaryPasswordSecret?.id === copiedSecretId ? "account-table__cell--copied" : ""}`,
+                          "account-table__static-field--secret",
                           (event) => {
                             if (row.primaryPasswordSecret) {
                               event.stopPropagation();

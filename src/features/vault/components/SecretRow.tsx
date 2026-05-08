@@ -21,16 +21,7 @@ export function SecretRow({
 }: SecretRowProps) {
   const [revealedValue, setRevealedValue] = useState<string | null>(null);
   const [isRevealing, setIsRevealing] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const copyFeedbackTimerRef = useRef<number | null>(null);
 
-  useEffect(() => {
-    return () => {
-      if (copyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(copyFeedbackTimerRef.current);
-      }
-    };
-  }, []);
 
   const handleToggleReveal = async () => {
     if (revealedValue !== null) {
@@ -49,17 +40,18 @@ export function SecretRow({
     }
   };
 
-  const handleCopy = async () => {
+  const handleCopy = async (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.currentTarget;
     try {
       await copySecretToClipboard(secret.id, 30);
-      setCopied(true);
-      if (copyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(copyFeedbackTimerRef.current);
-      }
-      copyFeedbackTimerRef.current = window.setTimeout(() => {
-        setCopied(false);
-        copyFeedbackTimerRef.current = null;
-      }, 2000);
+      
+      target.animate([
+        { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
+        { backgroundColor: 'transparent' }
+      ], {
+        duration: 1000,
+        easing: 'ease-out'
+      });
     } catch (error) {
       console.error("Failed to copy secret", error);
     }
@@ -76,7 +68,11 @@ export function SecretRow({
       </div>
 
       <div className="secret-row__masked" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span className={revealedValue === null ? "secret-row__masked--value" : ""} style={{ wordBreak: "break-all" }}>
+        <span 
+          className={revealedValue === null ? "secret-row__masked--value" : ""} 
+          style={{ wordBreak: "break-all", cursor: "pointer" }}
+          onClick={handleCopy}
+        >
           {revealedValue !== null ? revealedValue : "********"}
         </span>
         <div style={{ display: "flex", gap: "8px", marginLeft: "12px", flexShrink: 0 }}>
@@ -91,19 +87,6 @@ export function SecretRow({
               <EyeOff className="value-row__copy-icon" size={16} />
             ) : (
               <Eye className="value-row__copy-icon" size={16} />
-            )}
-          </button>
-          <button 
-            type="button" 
-            className="button-ghost value-row__copy-button"
-            onClick={handleCopy}
-            disabled={isBusy}
-            title="Copy secret"
-          >
-            {copied ? (
-              <Check className="value-row__copy-icon value-row__copy-icon--copied" size={16} />
-            ) : (
-              <Copy className="value-row__copy-icon" size={16} />
             )}
           </button>
         </div>

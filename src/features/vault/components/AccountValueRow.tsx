@@ -18,32 +18,24 @@ export function AccountValueRow({
   onHistory,
   value,
 }: AccountValueRowProps) {
-  const copyFeedbackTimerRef = useRef<number | null>(null);
-  const [copied, setCopied] = useState(false);
 
-  useEffect(() => {
-    return () => {
-      if (copyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(copyFeedbackTimerRef.current);
-      }
-    };
-  }, []);
 
-  const handleCopy = async () => {
+  const handleCopy = async (event: React.MouseEvent<HTMLElement>) => {
+    const target = event.currentTarget;
     try {
       if (!navigator.clipboard) {
         throw new Error("Clipboard access is unavailable.");
       }
 
       await navigator.clipboard.writeText(value.value);
-      setCopied(true);
-      if (copyFeedbackTimerRef.current !== null) {
-        window.clearTimeout(copyFeedbackTimerRef.current);
-      }
-      copyFeedbackTimerRef.current = window.setTimeout(() => {
-        setCopied(false);
-        copyFeedbackTimerRef.current = null;
-      }, 2000);
+      
+      target.animate([
+        { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
+        { backgroundColor: 'transparent' }
+      ], {
+        duration: 1000,
+        easing: 'ease-out'
+      });
     } catch (error) {
       console.error("Failed to copy value", error);
     }
@@ -60,20 +52,13 @@ export function AccountValueRow({
       </div>
 
       <div className="value-row__content-shell">
-        <p className="value-row__content">{value.value}</p>
-        <button
-          className="button-ghost value-row__copy-button"
-          disabled={isBusy}
+        <p 
+          className="value-row__content"
           onClick={handleCopy}
-          title="Copy value"
-          type="button"
+          style={{ cursor: "pointer" }}
         >
-          {copied ? (
-            <Check className="value-row__copy-icon value-row__copy-icon--copied" size={16} />
-          ) : (
-            <Copy className="value-row__copy-icon" size={16} />
-          )}
-        </button>
+          {value.value}
+        </p>
       </div>
 
       <div className="value-row__footer">
