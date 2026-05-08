@@ -254,6 +254,10 @@ textarea {
   border: 0;
 }
 
+.unlock-vault-form .custom-select-menu {
+  border: 0;
+}
+
 .unlock-vault-form .field input:focus,
 .unlock-vault-form .field textarea:focus,
 .unlock-vault-form .field select:focus,
