@@ -1785,9 +1785,6 @@ textarea {
   word-break: break-word;
 }
 
-.account-table__static-field--value {
-  width: 100%;
-}
 
 .account-table__static-field--value,
 .account-table__static-field--secret {
