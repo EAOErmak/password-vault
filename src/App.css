@@ -142,6 +142,14 @@ body,
   min-height: 100%;
 }
 
+html, body {
+  scrollbar-width: none; /* Firefox */
+}
+
+html::-webkit-scrollbar, body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge (Tauri) */
+}
+
 body {
   margin: 0;
   color: var(--color-text-primary);
