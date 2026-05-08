@@ -270,6 +270,7 @@ impl SecretService {
             secret_type: secret.secret_type,
             label: secret.label,
             is_primary: secret.is_primary,
+            secret_length: secret.secret_length,
             created_at: secret.created_at,
             updated_at: secret.updated_at,
         }

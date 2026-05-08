@@ -16,6 +16,7 @@ pub struct SecretMetadataRecord {
     pub secret_type: SecretType,
     pub label: String,
     pub is_primary: bool,
+    pub secret_length: usize,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
@@ -40,6 +41,7 @@ struct SecretMetadataRow {
     is_primary: i64,
     created_at: String,
     updated_at: String,
+    secret_length: i64,
 }
 
 struct SecretHistoryRow {
@@ -86,6 +88,7 @@ impl SecretRepository {
             secret_type: secret_type.clone(),
             label: label.to_string(),
             is_primary,
+            secret_length: secret_value.len(),
             created_at: now.clone(),
             updated_at: now.clone(),
         })
@@ -96,7 +99,7 @@ impl SecretRepository {
         account_id: Uuid,
     ) -> Result<Vec<SecretMetadataRecord>, VaultError> {
         let mut statement = executor.connection().prepare(
-            "SELECT s.id, s.account_id, s.secret_type, s.label, s.is_primary, s.created_at, s.updated_at
+            "SELECT s.id, s.account_id, s.secret_type, s.label, s.is_primary, s.created_at, s.updated_at, LENGTH(s.secret_value)
              FROM secrets s
              INNER JOIN accounts a ON a.id = s.account_id
              WHERE s.account_id = ?1
@@ -120,7 +123,7 @@ impl SecretRepository {
         let row = executor
             .connection()
             .query_row(
-                "SELECT id, account_id, secret_type, label, is_primary, created_at, updated_at
+                "SELECT id, account_id, secret_type, label, is_primary, created_at, updated_at, LENGTH(secret_value)
                  FROM secrets
                  WHERE account_id = ?1 AND secret_type = ?2 AND deleted_at IS NULL",
                 params![account_id.to_string(), secret_type.as_str()],
@@ -159,7 +162,7 @@ impl SecretRepository {
         let row = executor
             .connection()
             .query_row(
-                "SELECT s.id, s.account_id, s.secret_type, s.label, s.is_primary, s.created_at, s.updated_at
+                "SELECT s.id, s.account_id, s.secret_type, s.label, s.is_primary, s.created_at, s.updated_at, LENGTH(s.secret_value)
                  FROM secrets s
                  INNER JOIN accounts a ON a.id = s.account_id
                  WHERE s.id = ?1
@@ -333,6 +336,7 @@ impl SecretRepository {
             is_primary: row.get(4)?,
             created_at: row.get(5)?,
             updated_at: row.get(6)?,
+            secret_length: row.get(7)?,
         })
     }
 
@@ -368,6 +372,7 @@ impl SecretRepository {
             secret_type: SecretType::from_str(&row.secret_type)?,
             label: row.label,
             is_primary: row.is_primary != 0,
+            secret_length: row.secret_length as usize,
             created_at: parse_timestamp(&row.created_at)?,
             updated_at: parse_timestamp(&row.updated_at)?,
         })

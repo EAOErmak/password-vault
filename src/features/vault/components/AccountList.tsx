@@ -528,7 +528,7 @@ export function AccountList({
                     <td>
                       {row.hasAnyPasswordSecret ? (
                         renderStaticField(
-                          "••••••••",
+                          "•".repeat(row.primaryPasswordSecret?.secret_length || 8),
                           "account-table__static-field--secret",
                           (event) => {
                             if (row.primaryPasswordSecret) {

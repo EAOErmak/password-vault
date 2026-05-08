@@ -37,6 +37,7 @@ pub struct SecretMetadataDto {
     pub secret_type: SecretType,
     pub label: String,
     pub is_primary: bool,
+    pub secret_length: usize,
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }

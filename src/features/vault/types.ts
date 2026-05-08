@@ -38,6 +38,7 @@ export type SecretMetadataDto = {
   secret_type: SecretType;
   label: string;
   is_primary: boolean;
+  secret_length: number;
   created_at: string;
   updated_at: string;
 };
