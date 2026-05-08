@@ -2244,12 +2244,22 @@ textarea {
   color: #ffffff;
 }
 
-/* Create Value Button */
+/* Create Value Button (Light Theme) */
 .button-create-value {
+  background: #c5daf0;
+  color: var(--color-text-primary);
+}
+
+.button-create-value:hover {
+  background: #b0cdec;
+}
+
+/* Create Value Button (Dark Theme) */
+:root[data-theme="dark"] .button-create-value {
   background: #1e3140;
   color: #ffffff;
 }
 
-.button-create-value:hover {
-  background: #0044aa;
+:root[data-theme="dark"] .button-create-value:hover {
+  background: #2a4154;
 }

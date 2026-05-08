@@ -71,16 +71,7 @@ export function VaultHeader({
           >
             Backup / Restore
           </button>
-          <button
-            className="button-secondary"
-            disabled={isLoading}
-            onClick={() => {
-              void onRefresh();
-            }}
-            type="button"
-          >
-            {isLoading ? "Refreshing..." : "Refresh"}
-          </button>
+
           {themeToggle}
           <button
             className="button-primary"
