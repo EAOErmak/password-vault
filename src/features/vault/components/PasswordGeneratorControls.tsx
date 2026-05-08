@@ -154,7 +154,7 @@ export function PasswordGeneratorControls({
         </div>
       </div>
 
-      {isExpanded ? (
+      <div className={`generator-panel__collapsible ${isExpanded ? "is-expanded" : ""}`}>
         <div className="generator-grid">
           <label className="field">
             <span>Length</span>
@@ -221,7 +221,7 @@ export function PasswordGeneratorControls({
             <span>Exclude ambiguous</span>
           </label>
         </div>
-      ) : null}
+      </div>
 
       {generatorError ? <p className="error-banner">{generatorError}</p> : null}
       {copyMessage ? (

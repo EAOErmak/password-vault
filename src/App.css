@@ -454,7 +454,7 @@ textarea {
   scrollbar-width: thin;
 }
 
-.vault-header-actions > * {
+.vault-header-actions>* {
   flex: 0 0 auto;
   white-space: nowrap;
 }
@@ -1312,12 +1312,15 @@ textarea {
 
 .account-details-dialog {
   width: min(100%, 840px);
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
 
 .account-details-dialog::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+  display: none;
+  /* Chrome, Safari and Opera */
 }
 
 .account-details-dialog .dialog-header {
@@ -1556,6 +1559,7 @@ textarea {
   border: 1px solid var(--color-border-strong);
   border-radius: 18px;
   background: var(--surface-muted);
+  margin-top: 10px;
 }
 
 .generator-panel h4 {
@@ -1579,11 +1583,23 @@ textarea {
   margin: 0;
 }
 
+.generator-panel__collapsible {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+  overflow: hidden;
+}
+
+.generator-panel__collapsible.is-expanded {
+  grid-template-rows: 1fr;
+}
+
 .generator-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px 16px;
   align-items: start;
+  min-height: 0;
 }
 
 .generator-grid .field {
@@ -1792,7 +1808,7 @@ textarea {
   white-space: nowrap;
 }
 
-.account-table__actions > * {
+.account-table__actions>* {
   flex: 0 0 auto;
 }
 
@@ -1889,7 +1905,7 @@ textarea {
   gap: 10px;
 }
 
-.history-dialog-section + .history-dialog-section {
+.history-dialog-section+.history-dialog-section {
   margin-top: 16px;
 }
 
@@ -2031,6 +2047,7 @@ textarea {
 }
 
 @media (max-width: 900px) {
+
   .vault-header-row,
   .panel-header,
   .dialog-header,
@@ -2087,6 +2104,7 @@ textarea {
 }
 
 @media (max-width: 640px) {
+
   .app-shell,
   .vault-screen {
     padding: 20px 12px;
@@ -2110,11 +2128,11 @@ textarea {
     padding-inline: 10px;
   }
 
-  .vault-header-actions > * {
+  .vault-header-actions>* {
     width: auto;
   }
 
-  .actions > * {
+  .actions>* {
     width: 100%;
   }
 
