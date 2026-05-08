@@ -1718,6 +1718,7 @@ textarea {
   width: 100%;
   border-collapse: separate;
   border-spacing: 0 12px;
+  table-layout: fixed;
 }
 
 .account-table th,
@@ -1733,6 +1734,7 @@ textarea {
   white-space: nowrap;
   vertical-align: middle;
   padding: 14px 12px 2px;
+  width: 25%;
   border-bottom: 0;
 }
 
