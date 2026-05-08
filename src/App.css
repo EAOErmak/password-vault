@@ -1572,7 +1572,7 @@ textarea {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .generator-panel__header .field-helper {

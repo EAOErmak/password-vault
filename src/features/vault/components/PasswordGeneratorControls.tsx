@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 import { generatePassword } from "../api/secretApi";
 import {
   DEFAULT_GENERATED_PASSWORD_LENGTH,
@@ -33,6 +34,7 @@ export function PasswordGeneratorControls({
   const [generatorError, setGeneratorError] = useState<string | null>(null);
   const [copyMessage, setCopyMessage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -118,7 +120,13 @@ export function PasswordGeneratorControls({
   return (
     <section className="generator-panel">
       <div className="generator-panel__header">
-        <h4>Password generator</h4>
+        <div 
+          onClick={() => setIsExpanded(!isExpanded)} 
+          style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}
+        >
+          <h4>Password generator</h4>
+          {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+        </div>
 
         <div className="value-row__actions">
           <button
@@ -146,72 +154,74 @@ export function PasswordGeneratorControls({
         </div>
       </div>
 
-      <div className="generator-grid">
-        <label className="field">
-          <span>Length</span>
-          <input
-            disabled={isBusy}
-            min={MIN_GENERATED_PASSWORD_LENGTH}
-            onChange={(event) =>
-              updateOptions({
-                length: Number.parseInt(event.currentTarget.value, 10) || 0,
-              })
-            }
-            type="number"
-            value={options.length}
-          />
-        </label>
+      {isExpanded ? (
+        <div className="generator-grid">
+          <label className="field">
+            <span>Length</span>
+            <input
+              disabled={isBusy}
+              min={MIN_GENERATED_PASSWORD_LENGTH}
+              onChange={(event) =>
+                updateOptions({
+                  length: Number.parseInt(event.currentTarget.value, 10) || 0,
+                })
+              }
+              type="number"
+              value={options.length}
+            />
+          </label>
 
-        <label className="checkbox-field generator-grid__checkbox--top">
-          <input
-            checked={options.include_uppercase}
-            disabled={isBusy}
-            onChange={(event) => updateOptions({ include_uppercase: event.currentTarget.checked })}
-            type="checkbox"
-          />
-          <span>Uppercase</span>
-        </label>
+          <label className="checkbox-field generator-grid__checkbox--top">
+            <input
+              checked={options.include_uppercase}
+              disabled={isBusy}
+              onChange={(event) => updateOptions({ include_uppercase: event.currentTarget.checked })}
+              type="checkbox"
+            />
+            <span>Uppercase</span>
+          </label>
 
-        <label className="checkbox-field">
-          <input
-            checked={options.include_lowercase}
-            disabled={isBusy}
-            onChange={(event) => updateOptions({ include_lowercase: event.currentTarget.checked })}
-            type="checkbox"
-          />
-          <span>Lowercase</span>
-        </label>
+          <label className="checkbox-field">
+            <input
+              checked={options.include_lowercase}
+              disabled={isBusy}
+              onChange={(event) => updateOptions({ include_lowercase: event.currentTarget.checked })}
+              type="checkbox"
+            />
+            <span>Lowercase</span>
+          </label>
 
-        <label className="checkbox-field">
-          <input
-            checked={options.include_digits}
-            disabled={isBusy}
-            onChange={(event) => updateOptions({ include_digits: event.currentTarget.checked })}
-            type="checkbox"
-          />
-          <span>Digits</span>
-        </label>
+          <label className="checkbox-field">
+            <input
+              checked={options.include_digits}
+              disabled={isBusy}
+              onChange={(event) => updateOptions({ include_digits: event.currentTarget.checked })}
+              type="checkbox"
+            />
+            <span>Digits</span>
+          </label>
 
-        <label className="checkbox-field">
-          <input
-            checked={options.include_symbols}
-            disabled={isBusy}
-            onChange={(event) => updateOptions({ include_symbols: event.currentTarget.checked })}
-            type="checkbox"
-          />
-          <span>Symbols</span>
-        </label>
+          <label className="checkbox-field">
+            <input
+              checked={options.include_symbols}
+              disabled={isBusy}
+              onChange={(event) => updateOptions({ include_symbols: event.currentTarget.checked })}
+              type="checkbox"
+            />
+            <span>Symbols</span>
+          </label>
 
-        <label className="checkbox-field">
-          <input
-            checked={options.exclude_ambiguous}
-            disabled={isBusy}
-            onChange={(event) => updateOptions({ exclude_ambiguous: event.currentTarget.checked })}
-            type="checkbox"
-          />
-          <span>Exclude ambiguous</span>
-        </label>
-      </div>
+          <label className="checkbox-field">
+            <input
+              checked={options.exclude_ambiguous}
+              disabled={isBusy}
+              onChange={(event) => updateOptions({ exclude_ambiguous: event.currentTarget.checked })}
+              type="checkbox"
+            />
+            <span>Exclude ambiguous</span>
+          </label>
+        </div>
+      ) : null}
 
       {generatorError ? <p className="error-banner">{generatorError}</p> : null}
       {copyMessage ? (
