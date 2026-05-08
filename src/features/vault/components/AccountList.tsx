@@ -546,7 +546,15 @@ export function AccountList({
                           }
                         )
                       ) : (
-                        <span className="table-empty">-</span>
+                        <button 
+                          className="button-secondary button-small button-create-value" 
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            handleOpenAddSecret(event, row);
+                          }}
+                        >
+                          Create Secret
+                        </button>
                       )}
                     </td>
 
