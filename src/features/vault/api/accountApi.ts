@@ -48,7 +48,7 @@ function sanitizeAccountValue(value: AccountValueDto): AccountValueDto {
 }
 
 function sanitizeSecretMetadata(secret: SecretMetadataDto): SecretMetadataDto {
-  const { id, account_id, secret_type, label, is_primary, created_at, updated_at } = secret;
+  const { id, account_id, secret_type, label, is_primary, secret_length, created_at, updated_at } = secret;
 
   return {
     id,
@@ -56,6 +56,7 @@ function sanitizeSecretMetadata(secret: SecretMetadataDto): SecretMetadataDto {
     secret_type,
     label,
     is_primary,
+    secret_length,
     created_at,
     updated_at,
   };

@@ -67,11 +67,12 @@ type EditingSecretState = {
 const ACCOUNTS_PER_PAGE = 10;
 
 function getPrimaryPasswordSecret(account: AccountSummary): SecretMetadataDto | null {
-  return (
-    account.secrets.find(
-      (secret) => secret.secret_type === "PASSWORD" && secret.is_primary,
-    ) ?? null
+  const primary = account.secrets.find(
+    (secret) => secret.secret_type === "PASSWORD" && secret.is_primary,
   );
+  if (primary) return primary;
+  
+  return account.secrets.find((secret) => secret.secret_type === "PASSWORD") ?? null;
 }
 
 function hasAnyPasswordSecret(account: AccountSummary): boolean {
