@@ -81,20 +81,6 @@ export function AddAccountValueDialog({
           </div>
 
           <label className="field">
-            <span>Label</span>
-            <input
-              autoComplete="off"
-              disabled={isSubmitting}
-              onChange={(event) => setLabel(event.currentTarget.value)}
-              placeholder={getDefaultAccountValueLabel(valueType)}
-              type="text"
-              value={label}
-            />
-          </label>
-
-          {isCustom ? <p className="field-helper">Custom values need a label.</p> : null}
-
-          <label className="field">
             <span>Value</span>
             <input
               autoComplete="off"
@@ -105,6 +91,20 @@ export function AddAccountValueDialog({
               value={value}
             />
           </label>
+
+          <label className="field">
+            <span>Label</span>
+            <input
+              autoComplete="off"
+              disabled={isSubmitting}
+              onChange={(event) => setLabel(event.currentTarget.value)}
+              placeholder="Name"
+              type="text"
+              value={label}
+            />
+          </label>
+
+          {isCustom ? <p className="field-helper">Custom values need a label.</p> : null}
 
           <label className="checkbox-field">
             <input

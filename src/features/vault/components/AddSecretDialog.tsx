@@ -81,27 +81,7 @@ export function AddSecretDialog({
             />
           </div>
 
-          <label className="field">
-            <span>Label</span>
-            <input
-              autoComplete="off"
-              disabled={isSubmitting}
-              onChange={(event) => setLabel(event.currentTarget.value)}
-              placeholder={getDefaultSecretLabel(secretType)}
-              type="text"
-              value={label}
-            />
-          </label>
-
-          {secretType === "PASSWORD" ? (
-            <PasswordGeneratorControls
-              disabled={isSubmitting}
-              onChangeValue={setSecretValue}
-              value={secretValue}
-            />
-          ) : null}
-
-          <label className="field">
+           <label className="field">
             <span>Secret value</span>
             {multiline ? (
               <textarea
@@ -122,6 +102,26 @@ export function AddSecretDialog({
                 value={secretValue}
               />
             )}
+          </label>
+
+          {secretType === "PASSWORD" ? (
+            <PasswordGeneratorControls
+              disabled={isSubmitting}
+              onChangeValue={setSecretValue}
+              value={secretValue}
+            />
+          ) : null}
+ 
+           <label className="field">
+            <span>Label</span>
+            <input
+              autoComplete="off"
+              disabled={isSubmitting}
+              onChange={(event) => setLabel(event.currentTarget.value)}
+              placeholder={getDefaultSecretLabel(secretType)}
+              type="text"
+              value={label}
+            />
           </label>
 
           <label className="checkbox-field">
