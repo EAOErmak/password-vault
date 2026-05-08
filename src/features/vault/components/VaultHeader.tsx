@@ -38,10 +38,7 @@ export function VaultHeader({
         <div className="vault-header-copy">
           <p className="eyebrow">Unlocked Vault</p>
           <h1>Platforms and accounts</h1>
-          <p className="intro">
-            Browse account metadata, review safe details, and create platforms or
-            accounts without exposing secrets.
-          </p>
+
         </div>
 
         <div className="vault-header-actions">

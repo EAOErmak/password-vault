@@ -73,7 +73,6 @@ export function AccountFiltersBar({
       <div className="vault-platform-filter__header">
         <div className="page-copy">
           <h2>Filters</h2>
-          <p>Narrow the account table by platform, value, or account name.</p>
         </div>
       </div>
 
