@@ -1,5 +1,6 @@
 import type { AccountDetails, SecretMetadataDto } from "../types";
 import { DialogBackdrop } from "./DialogBackdrop";
+import { X } from "lucide-react";
 
 type DeleteSecretConfirmDialogProps = {
   account: AccountDetails;
@@ -46,7 +47,7 @@ export function DeleteSecretConfirmDialog({
                 type="button"
                 style={{ padding: "4px 8px", margin: "-8px -8px -8px 0" }}
               >
-                Close
+                <X />
               </button>
             </div>
             <p style={{ color: "var(--color-danger-muted)", fontSize: "0.95rem", margin: "16px 0" }}>
