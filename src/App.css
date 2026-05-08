@@ -1554,7 +1554,6 @@ textarea {
 
 .generator-panel {
   display: grid;
-  gap: 14px;
   padding: 16px;
   border: 1px solid var(--color-border-strong);
   border-radius: 18px;
@@ -1592,6 +1591,12 @@ textarea {
 
 .generator-panel__collapsible.is-expanded {
   grid-template-rows: 1fr;
+  margin-top: 14px;
+}
+
+.generator-panel .error-banner,
+.generator-panel .status-toast {
+  margin-top: 14px;
 }
 
 .generator-grid {

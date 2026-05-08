@@ -78,6 +78,7 @@ export function EditSecretDialog({
   };
 
   const handleLoadCurrentValue = async () => {
+    if (isLoadingCurrentValue) return;
     const requestId = revealRequestRef.current + 1;
     revealRequestRef.current = requestId;
     setIsLoadingCurrentValue(true);
@@ -117,7 +118,7 @@ export function EditSecretDialog({
               </button>
             </div>
             <SecretTypeSelect
-              disabled={isSubmitting || isLoadingCurrentValue}
+              disabled={isSubmitting}
               onChange={setSecretType}
               value={secretType}
             />
@@ -127,7 +128,7 @@ export function EditSecretDialog({
             <span>Label</span>
             <input
               autoComplete="off"
-              disabled={isSubmitting || isLoadingCurrentValue}
+              disabled={isSubmitting}
               onChange={(event) => setLabel(event.currentTarget.value)}
               placeholder={getDefaultSecretLabel(secretType)}
               type="text"
@@ -138,17 +139,17 @@ export function EditSecretDialog({
           <div className="secret-dialog-toolbar">
             <button
               className="button-secondary button-small"
-              disabled={isSubmitting || isLoadingCurrentValue}
+              disabled={isSubmitting}
               onClick={handleLoadCurrentValue}
               type="button"
             >
-              {isLoadingCurrentValue ? "Loading current value..." : "Load current value"}
+              Load current value
             </button>
           </div>
 
           {secretType === "PASSWORD" ? (
             <PasswordGeneratorControls
-              disabled={isSubmitting || isLoadingCurrentValue}
+              disabled={isSubmitting}
               onChangeValue={setSecretValue}
               value={secretValue}
             />
@@ -158,7 +159,7 @@ export function EditSecretDialog({
             <span>Secret value</span>
             {multiline ? (
               <textarea
-                disabled={isSubmitting || isLoadingCurrentValue}
+                disabled={isSubmitting}
                 onChange={(event) => setSecretValue(event.currentTarget.value)}
                 placeholder="Enter a replacement value or load the current one"
                 rows={6}
@@ -167,7 +168,7 @@ export function EditSecretDialog({
             ) : (
               <input
                 autoComplete="off"
-                disabled={isSubmitting || isLoadingCurrentValue}
+                disabled={isSubmitting}
                 onChange={(event) => setSecretValue(event.currentTarget.value)}
                 placeholder="Enter a replacement value or load the current one"
                 spellCheck={false}
@@ -180,7 +181,7 @@ export function EditSecretDialog({
           <label className="checkbox-field">
             <input
               checked={isPrimary}
-              disabled={isSubmitting || isLoadingCurrentValue}
+              disabled={isSubmitting}
               onChange={(event) => setIsPrimary(event.currentTarget.checked)}
               type="checkbox"
             />
@@ -196,7 +197,7 @@ export function EditSecretDialog({
             </button>
             <button
               className="button-secondary"
-              disabled={isSubmitting || isLoadingCurrentValue}
+              disabled={isSubmitting}
               onClick={onClose}
               type="button"
             >
