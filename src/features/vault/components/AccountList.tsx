@@ -510,18 +510,30 @@ export function AccountList({
             <table className="account-table">
               <thead>
                 <tr>
-                  <th scope="col" onClick={() => handleSort("name")} style={{ cursor: "pointer" }}>
-                    <span className="account-table__heading-chip">
+                  <th scope="col">
+                    <span 
+                      className="account-table__heading-chip" 
+                      onClick={() => handleSort("name")} 
+                      style={{ cursor: "pointer" }}
+                    >
                       Name {sortColumn === "name" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
                     </span>
                   </th>
-                  <th scope="col" onClick={() => handleSort("platform")} style={{ cursor: "pointer" }}>
-                    <span className="account-table__heading-chip">
+                  <th scope="col">
+                    <span 
+                      className="account-table__heading-chip" 
+                      onClick={() => handleSort("platform")} 
+                      style={{ cursor: "pointer" }}
+                    >
                       Platform {sortColumn === "platform" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
                     </span>
                   </th>
-                  <th scope="col" onClick={() => handleSort("value")} style={{ cursor: "pointer" }}>
-                    <span className="account-table__heading-chip">
+                  <th scope="col">
+                    <span 
+                      className="account-table__heading-chip" 
+                      onClick={() => handleSort("value")} 
+                      style={{ cursor: "pointer" }}
+                    >
                       Value {sortColumn === "value" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
                     </span>
                   </th>
