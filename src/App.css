@@ -178,6 +178,42 @@ textarea {
   place-items: center;
 }
 
+.custom-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background: var(--surface-app);
+  border-bottom: 1px solid var(--color-border-soft);
+}
+
+.custom-titlebar__title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.custom-titlebar__spacer {
+  flex: 1;
+}
+
+.custom-titlebar__actions {
+  display: flex;
+  gap: 8px;
+}
+
+.custom-titlebar__button {
+  background: transparent;
+  border: 0;
+  padding: 4px;
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+
+.custom-titlebar__button:hover {
+  color: var(--color-text-primary);
+}
+
 .app-panel {
   width: min(100%, 560px);
   padding: 28px;
