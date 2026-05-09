@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus } from "lucide-react";
+import { Plus, LayoutGrid, Users } from "lucide-react";
 
 type VaultHeaderProps = {
   accountCount: number;
@@ -41,9 +41,23 @@ export function VaultHeader({
 
       <div className="vault-metrics">
         <div className="metric-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span className="metric-label" style={{ fontSize: "1.1rem" }}>Platforms</span>
-            <strong style={{ fontSize: "1.5rem" }}>{platformCount}</strong>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <LayoutGrid size={20} style={{ opacity: 0.7 }} />
+              <span className="metric-label" style={{ fontSize: "1.1rem", fontWeight: 500 }}>Platforms</span>
+            </div>
+            <div style={{ 
+              fontSize: "1.2rem", 
+              fontWeight: "bold", 
+              background: "var(--color-border-soft)", 
+              padding: "4px 12px", 
+              borderRadius: "12px",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}>
+              {platformCount}
+            </div>
           </div>
           <button
             onClick={onOpenCreatePlatform}
@@ -56,9 +70,23 @@ export function VaultHeader({
           </button>
         </div>
         <div className="metric-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span className="metric-label" style={{ fontSize: "1.1rem" }}>Accounts</span>
-            <strong style={{ fontSize: "1.5rem" }}>{accountCount}</strong>
+          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Users size={20} style={{ opacity: 0.7 }} />
+              <span className="metric-label" style={{ fontSize: "1.1rem", fontWeight: 500 }}>Accounts</span>
+            </div>
+            <div style={{ 
+              fontSize: "1.2rem", 
+              fontWeight: "bold", 
+              background: "var(--color-border-soft)", 
+              padding: "4px 12px", 
+              borderRadius: "12px",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}>
+              {accountCount}
+            </div>
           </div>
           <button
             onClick={onOpenCreateAccount}
