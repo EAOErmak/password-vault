@@ -54,32 +54,7 @@ export function VaultHeader({
           >
             New platform
           </button>
-          <button
-            className="button-secondary"
-            onClick={onOpenImport}
-            type="button"
-          >
-            Import TXT
-          </button>
-          <button
-            className="button-secondary"
-            onClick={onOpenBackupRestore}
-            type="button"
-          >
-            Backup / Restore
-          </button>
 
-          {themeToggle}
-          <button
-            className="button-primary"
-            disabled={isLocking}
-            onClick={() => {
-              void onLock();
-            }}
-            type="button"
-          >
-            {isLocking ? "Locking..." : "Lock"}
-          </button>
         </div>
       </div>
 

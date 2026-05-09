@@ -52,16 +52,22 @@ type LoadSnapshotOptions = {
   seedDetails?: AccountDetails | null;
 };
 
-export function VaultHomePage({
-  errorMessage,
-  isLocking,
-  onLock,
-  onRestoreComplete,
-  onRestoreInterrupted,
-  sessionResetToken,
-  vaultPath,
-  themeToggle,
-}: VaultHomePageProps) {
+export type VaultHomePageRef = {
+  openImport: () => void;
+  openBackupRestore: () => void;
+};
+
+export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePageProps>((props, ref) => {
+  const {
+    errorMessage,
+    isLocking,
+    onLock,
+    onRestoreComplete,
+    onRestoreInterrupted,
+    sessionResetToken,
+    vaultPath,
+    themeToggle,
+  } = props;
   const snapshotRequestRef = useRef(0);
   const detailsRequestRef = useRef(0);
   const lastSessionResetTokenRef = useRef(sessionResetToken);
@@ -348,6 +354,11 @@ export function VaultHomePage({
     setIsBackupRestoreOpen(false);
   };
 
+  React.useImperativeHandle(ref, () => ({
+    openImport: handleOpenImport,
+    openBackupRestore: handleOpenBackupRestore,
+  }));
+
   const handleCreatePlatform = async (request: CreatePlatformRequest) => {
     setIsCreatingPlatform(true);
     setCreatePlatformError(null);
@@ -588,4 +599,4 @@ export function VaultHomePage({
       />
     </>
   );
-}
+});

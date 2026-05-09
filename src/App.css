@@ -2303,7 +2303,7 @@ textarea {
   left: 0;
   right: 0;
   z-index: 1000;
-  padding: 0 0 0 12px;
+  padding: 0;
   user-select: none;
 }
 
@@ -2345,6 +2345,36 @@ textarea {
 .custom-titlebar__button--close:hover {
   background: #dc2626;
   color: #ffffff;
+}
+
+/* Custom Titlebar Dropdown */
+.custom-titlebar__dropdown {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  background: var(--surface-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  min-width: 150px;
+  z-index: 1001;
+}
+
+.custom-titlebar__dropdown-item {
+  padding: 8px 12px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  color: var(--color-text-primary);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 150ms ease;
+}
+
+.custom-titlebar__dropdown-item:hover {
+  background: var(--surface-muted);
 }
 
 /* Create Value Button (Light Theme) */
