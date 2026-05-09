@@ -15,7 +15,7 @@ import {
   unlockVault,
 } from "./lib/vault";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { Minus, Square, X, Copy, Menu } from "lucide-react";
+import { Minus, Square, X, Copy } from "lucide-react";
 import {
   applyTheme,
   resolveInitialTheme,
@@ -25,6 +25,7 @@ import {
 import { CreateVaultPage } from "./pages/CreateVaultPage";
 import { UnlockVaultPage } from "./pages/UnlockVaultPage";
 import { VaultHomePage, type VaultHomePageRef } from "./pages/VaultHomePage";
+import nakedPv from "../assets/naked_pv.svg";
 
 type AppView = "loading" | "create" | "unlock" | "home";
 
@@ -32,6 +33,7 @@ function App() {
   const autoLockTimerRef = useRef<number | null>(null);
   const isLockingRef = useRef(false);
   const vaultHomeRef = useRef<VaultHomePageRef>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const [view, setView] = useState<AppView>("loading");
   const [autoLockTimeout, setAutoLockTimeout] = useState<number | null>(AUTO_LOCK_TIMEOUT_MS);
@@ -51,6 +53,19 @@ function App() {
   useEffect(() => {
     void syncVaultStatus();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
 
   useEffect(() => {
     applyTheme(theme);
@@ -321,30 +336,32 @@ function App() {
   return (
     <>
       <div className={`custom-titlebar ${isScrolled ? "custom-titlebar--scrolled" : ""}`} data-tauri-drag-region>
-        <button className="custom-titlebar__button" type="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          <Menu size={14} strokeWidth={3.5} />
-        </button>
+        <div ref={menuRef} style={{ display: "inline-flex", position: "relative" }}>
+          <button className="custom-titlebar__button" type="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <img src={nakedPv} alt="App Icon" style={{ width: "16px", height: "16px" }} />
+          </button>
+          
+          {isMenuOpen && (
+            <div className="custom-titlebar__dropdown">
+              <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openImport(); }}>
+                Import TXT
+              </button>
+              <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openBackupRestore(); }}>
+                Backup / Restore
+              </button>
+              <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setTheme(theme === "dark" ? "light" : "dark"); }}>
+                {nextThemeLabel}
+              </button>
+              <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); void handleLockVault(); }}>
+                Lock
+              </button>
+              <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); void getCurrentWindow().close(); }}>
+                Quit
+              </button>
+            </div>
+          )}
+        </div>
         <span data-tauri-drag-region className="custom-titlebar__title">Password Vault</span>
-        
-        {isMenuOpen && (
-          <div className="custom-titlebar__dropdown">
-            <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openImport(); }}>
-              Import TXT
-            </button>
-            <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openBackupRestore(); }}>
-              Backup / Restore
-            </button>
-            <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setTheme(theme === "dark" ? "light" : "dark"); }}>
-              {nextThemeLabel}
-            </button>
-            <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); void handleLockVault(); }}>
-              Lock
-            </button>
-            <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); void getCurrentWindow().close(); }}>
-              Quit
-            </button>
-          </div>
-        )}
         <div data-tauri-drag-region className="custom-titlebar__spacer"></div>
         <div className="custom-titlebar__actions">
           <button onClick={() => void getCurrentWindow().minimize()} className="custom-titlebar__button" type="button">
