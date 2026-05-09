@@ -2417,3 +2417,35 @@ textarea {
   user-select: none;
   -webkit-user-select: none;
 }
+
+/* Make UI labels and buttons non-selectable */
+.account-details-dialog h4,
+.account-details-dialog .summary-label,
+.account-details-dialog dt,
+.account-details-dialog .pill,
+.status-pill,
+.dialog-card h3,
+.dialog-card .empty-state p,
+.pagination-summary,
+.dialog-card .field > span,
+.dialog-card .checkbox-field > span,
+.custom-titlebar__title,
+.app-title,
+.vault-form span,
+button {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Make placeholders non-selectable */
+::placeholder {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Make Name and Platform in account list non-selectable */
+.account-table__row td:nth-child(1) .account-table__static-field,
+.account-table__row td:nth-child(2) .account-table__static-field {
+  user-select: none;
+  -webkit-user-select: none;
+}

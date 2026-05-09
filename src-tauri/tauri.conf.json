@@ -17,7 +17,8 @@
         "height": 800,
         "decorations": false,
         "shadow": false,
-        "center": true
+        "center": true,
+        "zoomHotkeysEnabled": false
       }
     ],
     "security": {
