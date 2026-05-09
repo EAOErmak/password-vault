@@ -227,7 +227,6 @@ textarea {
 
 .custom-titlebar__actions {
   display: flex;
-  gap: 8px;
 }
 
 .custom-titlebar__button {
@@ -236,7 +235,6 @@ textarea {
   padding: 6px;
   cursor: pointer;
   color: var(--color-text-muted);
-  border-radius: 6px;
   transition: background-color 0.2s ease, color 0.2s ease;
   display: inline-flex;
   align-items: center;
