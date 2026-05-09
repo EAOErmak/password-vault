@@ -15,7 +15,7 @@ import {
   unlockVault,
 } from "./lib/vault";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { Minus, Square, X } from "lucide-react";
+import { Minus, Square, X, Copy } from "lucide-react";
 import {
   applyTheme,
   resolveInitialTheme,
@@ -44,6 +44,7 @@ function App() {
   const [sessionResetToken, setSessionResetToken] = useState(0);
   const [theme, setTheme] = useState<AppTheme>(() => resolveInitialTheme());
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMaximized, setIsMaximized] = useState(false);
 
   useEffect(() => {
     void syncVaultStatus();
@@ -60,6 +61,23 @@ function App() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const checkMaximized = async () => {
+      const maximized = await getCurrentWindow().isMaximized();
+      setIsMaximized(maximized);
+    };
+
+    checkMaximized();
+
+    const unlistenPromise = getCurrentWindow().listen("tauri://resize", async () => {
+      void checkMaximized();
+    });
+
+    return () => {
+      void unlistenPromise.then((unlisten) => unlisten());
+    };
   }, []);
 
   useEffect(() => {
@@ -308,7 +326,7 @@ function App() {
              <Minus size={14} />
            </button>
            <button onClick={() => void getCurrentWindow().toggleMaximize()} className="custom-titlebar__button" type="button">
-             <Square size={12} />
+             {isMaximized ? <Copy size={12} /> : <Square size={12} />}
            </button>
            <button onClick={() => void getCurrentWindow().close()} className="custom-titlebar__button custom-titlebar__button--close" type="button">
              <X size={14} />

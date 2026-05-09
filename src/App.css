@@ -233,13 +233,23 @@ textarea {
 .custom-titlebar__button {
   background: transparent;
   border: 0;
-  padding: 4px;
+  padding: 6px;
   cursor: pointer;
   color: var(--color-text-muted);
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .custom-titlebar__button:hover {
   color: var(--color-text-primary);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+:root[data-theme="dark"] .custom-titlebar__button:hover {
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .app-panel {
