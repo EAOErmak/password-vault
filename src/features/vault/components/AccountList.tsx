@@ -249,6 +249,10 @@ export function AccountList({
       return;
     }
 
+    if (copiedState?.rowId === row.rowId && copiedState?.type === 'value') {
+      return;
+    }
+
     setActionError(null);
     const target = event.currentTarget;
 
@@ -285,6 +289,10 @@ export function AccountList({
     const target = event.currentTarget;
 
     if (!row.primaryPasswordSecret) {
+      return;
+    }
+
+    if (copiedState?.rowId === row.rowId && copiedState?.type === 'secret') {
       return;
     }
 
@@ -535,7 +543,7 @@ export function AccountList({
                     <td>{renderAccountName(row.accountName)}</td>
                     <td>{renderStaticField(row.platformName)}</td>
                     <td>
-                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
                         {row.valueEntry ? (
                           renderStaticField(
                             row.valueEntry.value,
@@ -569,7 +577,7 @@ export function AccountList({
                       </div>
                     </td>
                     <td>
-                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                      <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
                         {row.hasAnyPasswordSecret ? (
                           renderStaticField(
                             "•".repeat(row.primaryPasswordSecret?.secret_length || 8),
