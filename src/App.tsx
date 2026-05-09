@@ -33,7 +33,6 @@ function App() {
   const autoLockTimerRef = useRef<number | null>(null);
   const isLockingRef = useRef(false);
   const vaultHomeRef = useRef<VaultHomePageRef>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
 
   const [view, setView] = useState<AppView>("loading");
   const [autoLockTimeout, setAutoLockTimeout] = useState<number | null>(AUTO_LOCK_TIMEOUT_MS);
@@ -53,19 +52,6 @@ function App() {
   useEffect(() => {
     void syncVaultStatus();
   }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isMenuOpen]);
 
   useEffect(() => {
     applyTheme(theme);
@@ -336,13 +322,26 @@ function App() {
   return (
     <>
       <div className={`custom-titlebar ${isScrolled ? "custom-titlebar--scrolled" : ""}`} data-tauri-drag-region>
-        <div ref={menuRef} style={{ display: "inline-flex", position: "relative" }}>
+        <div style={{ display: "inline-flex", position: "relative" }}>
           <button className="custom-titlebar__button" type="button" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             <img src={nakedPv} alt="App Icon" style={{ width: "16px", height: "16px" }} />
           </button>
           
           {isMenuOpen && (
-            <div className="custom-titlebar__dropdown">
+            <>
+              <div 
+                style={{ 
+                  position: "fixed", 
+                  top: 0, 
+                  left: 0, 
+                  right: 0, 
+                  bottom: 0, 
+                  zIndex: 1000, 
+                  background: "transparent" 
+                }} 
+                onClick={() => setIsMenuOpen(false)}
+              />
+              <div className="custom-titlebar__dropdown">
               <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openImport(); }}>
                 Import TXT
               </button>
@@ -359,6 +358,7 @@ function App() {
                 Quit
               </button>
             </div>
+            </>
           )}
         </div>
         <span data-tauri-drag-region className="custom-titlebar__title">Password Vault</span>

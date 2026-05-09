@@ -1449,10 +1449,21 @@ textarea {
 }
 
 @keyframes fadeInOut {
-  0% { opacity: 0; }
-  15% { opacity: 1; }
-  85% { opacity: 1; }
-  100% { opacity: 0; }
+  0% {
+    opacity: 0;
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 .account-details-summary__stats {
@@ -2352,30 +2363,35 @@ textarea {
   position: absolute;
   top: 32px;
   left: 0;
-  background: var(--surface-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: 0 0 8px 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: var(--surface-menu);
+  border: 1px solid var(--color-border-soft);
+  border-radius: 12px;
+  box-shadow: var(--shadow-menu);
   display: flex;
   flex-direction: column;
-  min-width: 150px;
+  min-width: 180px;
+  padding: 6px;
   z-index: 1001;
 }
 
 .custom-titlebar__dropdown-item {
-  padding: 8px 12px;
+  padding: 10px 14px;
   background: transparent;
   border: 0;
+  border-radius: 8px;
   text-align: left;
   color: var(--color-text-primary);
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background 150ms ease;
+  font-weight: 500;
+  transition: background 150ms ease, color 150ms ease;
 }
 
 .custom-titlebar__dropdown-item:hover {
-  background: var(--surface-muted);
+  background: var(--surface-menu-option-hover);
 }
+
+
 
 /* Create Value Button (Light Theme) */
 .button-create-value {
