@@ -329,7 +329,7 @@ function App() {
             {isMaximized ? <Copy size={12} strokeWidth={3.5} /> : <Square size={12} strokeWidth={4} />}
           </button>
           <button onClick={() => void getCurrentWindow().close()} className="custom-titlebar__button custom-titlebar__button--close" type="button">
-            <X size={14} strokeWidth={3.5} />
+            <X size={17} strokeWidth={3} />
           </button>
         </div>
       </div>
