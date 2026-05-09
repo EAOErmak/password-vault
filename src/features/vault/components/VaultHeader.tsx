@@ -41,9 +41,9 @@ export function VaultHeader({
 
       <div className="vault-metrics">
         <div className="metric-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <span className="metric-label" style={{ display: "block" }}>Platforms</span>
-            <strong>{platformCount}</strong>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span className="metric-label" style={{ fontSize: "1.1rem" }}>Platforms</span>
+            <strong style={{ fontSize: "1.5rem" }}>{platformCount}</strong>
           </div>
           <button
             onClick={onOpenCreatePlatform}
@@ -56,9 +56,9 @@ export function VaultHeader({
           </button>
         </div>
         <div className="metric-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-          <div>
-            <span className="metric-label" style={{ display: "block" }}>Accounts</span>
-            <strong>{accountCount}</strong>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span className="metric-label" style={{ fontSize: "1.1rem" }}>Accounts</span>
+            <strong style={{ fontSize: "1.5rem" }}>{accountCount}</strong>
           </div>
           <button
             onClick={onOpenCreateAccount}

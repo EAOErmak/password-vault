@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { save } from "@tauri-apps/plugin-dialog";
+import { open } from "@tauri-apps/plugin-dialog";
 
 type CreateVaultPageProps = {
   errorMessage: string | null;
@@ -18,18 +18,34 @@ export function CreateVaultPage({
   onSwitchToUnlock,
   statusMessage,
 }: CreateVaultPageProps) {
-  const [path, setPath] = useState(initialPath ?? "");
+  const [vaultName, setVaultName] = useState("");
+  const [vaultPath, setVaultPath] = useState(initialPath ?? "");
   const [masterPassword, setMasterPassword] = useState("");
 
   useEffect(() => {
-    setPath(initialPath ?? "");
+    if (initialPath) {
+      const separator = initialPath.includes("\\") ? "\\" : "/";
+      const lastIndex = initialPath.lastIndexOf(separator);
+      if (lastIndex !== -1 && initialPath.endsWith(".vault.db")) {
+        setVaultPath(initialPath.substring(0, lastIndex));
+        const name = initialPath.substring(lastIndex + 1).replace(".vault.db", "");
+        setVaultName(name);
+      } else {
+        setVaultPath(initialPath);
+      }
+    }
   }, [initialPath]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
-      await onSubmit(path, masterPassword);
+      const separator = vaultPath.includes("\\") ? "\\" : "/";
+      const fullPath = vaultPath.endsWith(separator) 
+        ? `${vaultPath}${vaultName}.vault.db` 
+        : `${vaultPath}${separator}${vaultName}.vault.db`;
+
+      await onSubmit(fullPath, masterPassword);
     } finally {
       setMasterPassword("");
     }
@@ -37,34 +53,51 @@ export function CreateVaultPage({
 
   const handleBrowse = async () => {
     try {
-      const selected = await save({
-        filters: [{ name: "Vault Database", extensions: ["vault.db"] }],
+      const selected = await open({
+        directory: true,
+        multiple: false,
       });
       if (typeof selected === "string") {
-        setPath(selected);
+        setVaultPath(selected);
       }
     } catch (err) {
-      console.error("Failed to save dialog", err);
+      console.error("Failed to open dialog", err);
     }
   };
 
   const isSubmitDisabled =
-    isSubmitting || path.trim().length === 0 || masterPassword.length === 0;
+    isSubmitting || 
+    vaultName.trim().length === 0 || 
+    vaultPath.trim().length === 0 || 
+    masterPassword.length === 0;
 
   return (
     <section className="page">
       <form className="vault-form create-vault-form" onSubmit={handleSubmit}>
+        <label className="field">
+          <span>Vault name</span>
+          <input
+            autoComplete="off"
+            disabled={isSubmitting}
+            onChange={(event) => setVaultName(event.currentTarget.value)}
+            placeholder="personal"
+            spellCheck={false}
+            type="text"
+            value={vaultName}
+          />
+        </label>
+
         <label className="field">
           <span>Vault path</span>
           <div style={{ display: "flex", gap: "8px" }}>
             <input
               autoComplete="off"
               disabled={isSubmitting}
-              onChange={(event) => setPath(event.currentTarget.value)}
-              placeholder="C:\\Vaults\\personal.vault.db"
+              onChange={(event) => setVaultPath(event.currentTarget.value)}
+              placeholder="C:\\Vaults"
               spellCheck={false}
               type="text"
-              value={path}
+              value={vaultPath}
             />
             <button
               type="button"
