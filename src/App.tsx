@@ -364,18 +364,24 @@ function App() {
                 onClick={() => setIsMenuOpen(false)}
               />
               <div className="custom-titlebar__dropdown">
-              <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openImport(); }}>
-                Import TXT
-              </button>
-              <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openBackupRestore(); }}>
-                Backup / Restore
-              </button>
+              {view === "home" && (
+                <>
+                  <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openImport(); }}>
+                    Import TXT
+                  </button>
+                  <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openBackupRestore(); }}>
+                    Backup / Restore
+                  </button>
+                </>
+              )}
               <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setTheme(theme === "dark" ? "light" : "dark"); }}>
                 {nextThemeLabel}
               </button>
-              <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); void handleLockVault(); }}>
-                Lock
-              </button>
+              {view === "home" && (
+                <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); void handleLockVault(); }}>
+                  Lock
+                </button>
+              )}
               <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); void getCurrentWindow().close(); }}>
                 Quit
               </button>
