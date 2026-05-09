@@ -2412,3 +2412,8 @@ textarea {
 :root[data-theme="dark"] .button-create-value:hover {
   background: #2a4154;
 }
+
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}

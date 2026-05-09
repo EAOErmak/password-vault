@@ -72,13 +72,13 @@ export function AccountFiltersBar({
     <div className="vault-platform-filter">
       <div className="vault-platform-filter__header">
         <div className="page-copy">
-          <h2>Filters</h2>
+          <h2 className="no-select">Filters</h2>
         </div>
       </div>
 
       <div className="account-filters-grid">
         <label className="field account-filters-grid__field">
-          <span>Filter by Platform</span>
+          <span className="no-select">Filter by Platform</span>
           <div className="custom-select-container account-filters-select" ref={dropdownRef}>
             <div className="select-input custom-select-trigger account-filters-select__trigger">
               <input
@@ -168,7 +168,7 @@ export function AccountFiltersBar({
         </label>
 
         <label className="field account-filters-grid__field">
-          <span>Filter by Value</span>
+          <span className="no-select">Filter by Value</span>
           <input
             autoComplete="off"
             onChange={(e) => onValueFilterChange(e.currentTarget.value)}
@@ -180,7 +180,7 @@ export function AccountFiltersBar({
         </label>
 
         <label className="field account-filters-grid__field">
-          <span>Search by Name</span>
+          <span className="no-select">Search by Name</span>
           <input
             autoComplete="off"
             onChange={(e) => onNameFilterChange(e.currentTarget.value)}

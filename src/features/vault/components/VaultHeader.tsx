@@ -35,12 +35,12 @@ export function VaultHeader({
     <section className="vault-card vault-header-card" data-tauri-drag-region>
       <div className="vault-header-row">
         <div className="vault-header-copy">
-          <h1>Platforms and accounts</h1>
+          <h1 className="no-select">Platforms and accounts</h1>
         </div>
       </div>
 
       <div className="vault-metrics">
-        <div className="metric-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="metric-card no-select" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <LayoutGrid size={20} style={{ opacity: 0.7 }} />
@@ -69,7 +69,7 @@ export function VaultHeader({
             <Plus size={24} />
           </button>
         </div>
-        <div className="metric-card" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div className="metric-card no-select" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
               <Users size={20} style={{ opacity: 0.7 }} />
@@ -99,7 +99,7 @@ export function VaultHeader({
             <Plus size={24} />
           </button>
         </div>
-        <div className="metric-card metric-card--path">
+        <div className="metric-card metric-card--path no-select">
           <span className="metric-label">Vault file</span>
           <strong>{vaultPath ?? "Active path unavailable"}</strong>
         </div>

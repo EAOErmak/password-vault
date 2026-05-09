@@ -462,7 +462,7 @@ export function AccountList({
       <section className="vault-card panel-card account-list-card">
         <div className="panel-header account-list-card__header">
           <div className="page-copy">
-            <h2>Accounts</h2>
+            <h2 className="no-select">Accounts</h2>
           </div>
           <span className="status-pill">
             {visibleAccountCount === 0
