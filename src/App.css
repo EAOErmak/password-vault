@@ -184,7 +184,12 @@ textarea {
   justify-content: space-between;
   padding: 8px 16px;
   background: var(--surface-app);
-  border-bottom: 1px solid var(--color-border-soft);
+  border-bottom: 1px solid transparent;
+  transition: border-bottom-color 0.2s ease;
+}
+
+.custom-titlebar--scrolled {
+  border-bottom-color: var(--color-border-soft);
 }
 
 .custom-titlebar__title {

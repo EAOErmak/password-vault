@@ -43,6 +43,7 @@ function App() {
   const [isBusy, setIsBusy] = useState(false);
   const [sessionResetToken, setSessionResetToken] = useState(0);
   const [theme, setTheme] = useState<AppTheme>(() => resolveInitialTheme());
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     void syncVaultStatus();
@@ -52,6 +53,14 @@ function App() {
     applyTheme(theme);
     storeTheme(theme);
   }, [theme]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     isLockingRef.current = isBusy;
@@ -291,7 +300,7 @@ function App() {
  
    return (
      <>
-       <div className="custom-titlebar" data-tauri-drag-region>
+       <div className={`custom-titlebar ${isScrolled ? "custom-titlebar--scrolled" : ""}`} data-tauri-drag-region>
          <span data-tauri-drag-region className="custom-titlebar__title">Password Vault</span>
          <div data-tauri-drag-region className="custom-titlebar__spacer"></div>
          <div className="custom-titlebar__actions">
