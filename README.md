@@ -52,12 +52,17 @@ You can download the pre-compiled installers directly from the repository:
    pnpm install
    ```
 
-3. Run in development mode:
+3. Set up the development environment (Windows PowerShell):
+   ```powershell
+   . .\scripts\dev-env.ps1
+   ```
+
+4. Run in development mode:
    ```bash
    pnpm tauri dev
    ```
 
-4. Build for production:
+5. Build for production:
    ```bash
    pnpm tauri build
    ```
