@@ -660,50 +660,7 @@ export function AccountList({
           </div>
         ) : null}
 
-        {visibleAccountCount > ACCOUNTS_PER_PAGE ? (
-          <div className="pagination-bar">
-            <p className="pagination-summary">
-              Page {resolvedCurrentPage} of {totalPages}
-            </p>
-            <div className="pagination-controls">
-              <button
-                className="button-secondary button-small pagination-button"
-                disabled={resolvedCurrentPage === 1}
-                onClick={() => setCurrentPage((page) => Math.max(1, page - 1))}
-                type="button"
-              >
-                Previous
-              </button>
-
-              {Array.from({ length: totalPages }, (_, index) => {
-                const pageNumber = index + 1;
-                return (
-                  <button
-                    className={
-                      pageNumber === resolvedCurrentPage
-                        ? "button-secondary button-small pagination-button pagination-button--active"
-                        : "button-secondary button-small pagination-button"
-                    }
-                    key={pageNumber}
-                    onClick={() => setCurrentPage(pageNumber)}
-                    type="button"
-                  >
-                    {pageNumber}
-                  </button>
-                );
-              })}
-
-              <button
-                className="button-secondary button-small pagination-button"
-                disabled={resolvedCurrentPage === totalPages}
-                onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))}
-                type="button"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        ) : null}
+        {/* Pagination removed from bottom */}
       </section>
 
       <AddAccountValueDialog
