@@ -1921,6 +1921,7 @@ textarea {
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.02em;
+  user-select: none;
 }
 
 .account-table__actions {
