@@ -166,11 +166,11 @@ export function AccountList({
   const [clientNameFilter, setClientNameFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [sortColumn, setSortColumn] = useState<"name" | "platform" | "value" | null>(null);
+  const [sortColumn, setSortColumn] = useState<"name" | "platform" | "value" | "secret" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-  const [copiedState, setCopiedState] = useState<{ rowId: string; type: 'value' | 'secret'; offsetX: number; offsetY: number } | null>(null);
+  const [copiedStates, setCopiedStates] = useState<Record<string, { offsetX: number; offsetY: number }>>({});
 
-  const handleSort = (event: MouseEvent<HTMLElement>, column: "name" | "platform" | "value") => {
+  const handleSort = (event: MouseEvent<HTMLElement>, column: "name" | "platform" | "value" | "secret") => {
     const target = event.currentTarget;
     
     target.animate([
@@ -211,6 +211,12 @@ export function AccountList({
 
     if (sortColumn) {
       baseRows.sort((a, b) => {
+        if (sortColumn === "secret") {
+          const lenA = a.primaryPasswordSecret?.secret_length || 0;
+          const lenB = b.primaryPasswordSecret?.secret_length || 0;
+          return sortDirection === "asc" ? lenA - lenB : lenB - lenA;
+        }
+
         let valA = "";
         let valB = "";
         
@@ -259,7 +265,8 @@ export function AccountList({
       return;
     }
 
-    if (copiedState?.rowId === row.rowId && copiedState?.type === 'value') {
+    const key = `${row.rowId}-value`;
+    if (copiedStates[key]) {
       return;
     }
 
@@ -276,8 +283,15 @@ export function AccountList({
       
       const offsetX = Math.floor(Math.random() * 60) - 30; // -30 to 30
       const offsetY = Math.floor(Math.random() * 30) - 15; // -15 to 15
-      setCopiedState({ rowId: row.rowId, type: 'value', offsetX, offsetY });
-      setTimeout(() => setCopiedState(null), 1500);
+      
+      setCopiedStates(prev => ({ ...prev, [key]: { offsetX, offsetY } }));
+      setTimeout(() => {
+        setCopiedStates(prev => {
+          const newState = { ...prev };
+          delete newState[key];
+          return newState;
+        });
+      }, 1500);
       
       target.animate([
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
@@ -302,7 +316,8 @@ export function AccountList({
       return;
     }
 
-    if (copiedState?.rowId === row.rowId && copiedState?.type === 'secret') {
+    const key = `${row.rowId}-secret`;
+    if (copiedStates[key]) {
       return;
     }
 
@@ -314,8 +329,15 @@ export function AccountList({
       
       const offsetX = Math.floor(Math.random() * 60) - 30; // -30 to 30
       const offsetY = Math.floor(Math.random() * 30) - 15; // -15 to 15
-      setCopiedState({ rowId: row.rowId, type: 'secret', offsetX, offsetY });
-      setTimeout(() => setCopiedState(null), 1500);
+      
+      setCopiedStates(prev => ({ ...prev, [key]: { offsetX, offsetY } }));
+      setTimeout(() => {
+        setCopiedStates(prev => {
+          const newState = { ...prev };
+          delete newState[key];
+          return newState;
+        });
+      }, 1500);
       
       target.animate([
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
@@ -528,7 +550,13 @@ export function AccountList({
                     </span>
                   </th>
                   <th scope="col">
-                    <span className="account-table__heading-chip">Secret</span>
+                    <span 
+                      className="account-table__heading-chip" 
+                      onClick={(event) => handleSort(event, "secret")} 
+                      style={{ cursor: "pointer" }}
+                    >
+                      Secret {sortColumn === "secret" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
+                    </span>
                   </th>
 
 
@@ -574,11 +602,11 @@ export function AccountList({
                             Create Value
                           </button>
                         )}
-                        {copiedState?.rowId === row.rowId && copiedState?.type === 'value' && (
+                        {copiedStates[`${row.rowId}-value`] && (
                           <div 
                             className="copied-overlay"
                             style={{ 
-                              transform: `translate(-50%, -50%) translate(${copiedState.offsetX}px, ${copiedState.offsetY}px)`,
+                              transform: `translate(-50%, -50%) translate(${copiedStates[`${row.rowId}-value`].offsetX}px, ${copiedStates[`${row.rowId}-value`].offsetY}px)`,
                               left: '50%',
                               top: '50%'
                             }}
@@ -610,11 +638,11 @@ export function AccountList({
                             Create Secret
                           </button>
                         )}
-                        {copiedState?.rowId === row.rowId && copiedState?.type === 'secret' && (
+                        {copiedStates[`${row.rowId}-secret`] && (
                           <div 
                             className="copied-overlay"
                             style={{ 
-                              transform: `translate(-50%, -50%) translate(${copiedState.offsetX}px, ${copiedState.offsetY}px)`,
+                              transform: `translate(-50%, -50%) translate(${copiedStates[`${row.rowId}-secret`].offsetX}px, ${copiedStates[`${row.rowId}-secret`].offsetY}px)`,
                               left: '50%',
                               top: '50%'
                             }}
