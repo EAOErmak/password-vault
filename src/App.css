@@ -1904,6 +1904,7 @@ textarea {
 .account-table__static-field--value,
 .account-table__static-field--secret {
   cursor: pointer;
+  user-select: none;
 }
 
 .account-table__static-field--empty {

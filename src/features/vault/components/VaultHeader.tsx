@@ -34,7 +34,6 @@ export function VaultHeader({
     <section className="vault-card vault-header-card" data-tauri-drag-region>
       <div className="vault-header-row">
         <div className="vault-header-copy">
-          <p className="eyebrow">Unlocked Vault</p>
           <h1>Platforms and accounts</h1>
 
         </div>
