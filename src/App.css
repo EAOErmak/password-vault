@@ -752,9 +752,14 @@ textarea {
   gap: 18px;
 }
 
+.account-list-card {
+  padding-bottom: 0;
+}
+
 .account-list-card .account-table-wrapper {
   margin-inline: -24px;
   padding-inline: clamp(16px, 3vw, 28px);
+  padding-bottom: clamp(16px, 3vw, 28px);
 }
 
 .account-list-card__header {
