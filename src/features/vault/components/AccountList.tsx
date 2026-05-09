@@ -168,6 +168,7 @@ export function AccountList({
 
   const [sortColumn, setSortColumn] = useState<"name" | "platform" | "value" | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [copiedState, setCopiedState] = useState<{ rowId: string; type: 'value' | 'secret'; offsetX: number; offsetY: number } | null>(null);
 
   const handleSort = (column: "name" | "platform" | "value") => {
     if (sortColumn === column) {
@@ -259,6 +260,11 @@ export function AccountList({
       await navigator.clipboard.writeText(row.valueEntry.value);
       onSelectAccount(row.accountId);
       
+      const offsetX = Math.floor(Math.random() * 60) - 30; // -30 to 30
+      const offsetY = Math.floor(Math.random() * 30) - 15; // -15 to 15
+      setCopiedState({ rowId: row.rowId, type: 'value', offsetX, offsetY });
+      setTimeout(() => setCopiedState(null), 1500);
+      
       target.animate([
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
         { backgroundColor: 'transparent' }
@@ -287,6 +293,11 @@ export function AccountList({
     try {
       await copySecretToClipboard(row.primaryPasswordSecret.id, clipboardClearAfterSeconds);
       onSelectAccount(row.accountId);
+      
+      const offsetX = Math.floor(Math.random() * 60) - 30; // -30 to 30
+      const offsetY = Math.floor(Math.random() * 30) - 15; // -15 to 15
+      setCopiedState({ rowId: row.rowId, type: 'secret', offsetX, offsetY });
+      setTimeout(() => setCopiedState(null), 1500);
       
       target.animate([
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
@@ -524,50 +535,74 @@ export function AccountList({
                     <td>{renderAccountName(row.accountName)}</td>
                     <td>{renderStaticField(row.platformName)}</td>
                     <td>
-                      {row.valueEntry ? (
-                        renderStaticField(
-                          row.valueEntry.value,
-                          "account-table__static-field--value",
-                          (event) => {
-                            event.stopPropagation();
-                            void handleCopyValue(event, row);
-                          }
-                        )
-                      ) : (
-                        <button 
-                          className="button-secondary button-small button-create-value" 
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleOpenAddValue(event, row);
-                          }}
-                        >
-                          Create Value
-                        </button>
-                      )}
+                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        {row.valueEntry ? (
+                          renderStaticField(
+                            row.valueEntry.value,
+                            "account-table__static-field--value",
+                            (event) => {
+                              event.stopPropagation();
+                              void handleCopyValue(event, row);
+                            }
+                          )
+                        ) : (
+                          <button 
+                            className="button-secondary button-small button-create-value" 
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleOpenAddValue(event, row);
+                            }}
+                          >
+                            Create Value
+                          </button>
+                        )}
+                        {copiedState?.rowId === row.rowId && copiedState?.type === 'value' && (
+                          <div 
+                            className="copied-overlay"
+                            style={{ 
+                              transform: `translate(-50%, -50%) translate(${copiedState.offsetX}px, ${copiedState.offsetY}px)`,
+                              left: '50%',
+                              top: '50%'
+                            }}
+                          >Copied</div>
+                        )}
+                      </div>
                     </td>
                     <td>
-                      {row.hasAnyPasswordSecret ? (
-                        renderStaticField(
-                          "•".repeat(row.primaryPasswordSecret?.secret_length || 8),
-                          "account-table__static-field--secret",
-                          (event) => {
-                            if (row.primaryPasswordSecret) {
-                              event.stopPropagation();
-                              void handleCopySecret(event, row);
+                      <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                        {row.hasAnyPasswordSecret ? (
+                          renderStaticField(
+                            "•".repeat(row.primaryPasswordSecret?.secret_length || 8),
+                            "account-table__static-field--secret",
+                            (event) => {
+                              if (row.primaryPasswordSecret) {
+                                event.stopPropagation();
+                                void handleCopySecret(event, row);
+                              }
                             }
-                          }
-                        )
-                      ) : (
-                        <button 
-                          className="button-secondary button-small button-create-value" 
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleOpenAddSecret(event, row);
-                          }}
-                        >
-                          Create Secret
-                        </button>
-                      )}
+                          )
+                        ) : (
+                          <button 
+                            className="button-secondary button-small button-create-value" 
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              handleOpenAddSecret(event, row);
+                            }}
+                          >
+                            Create Secret
+                          </button>
+                        )}
+                        {copiedState?.rowId === row.rowId && copiedState?.type === 'secret' && (
+                          <div 
+                            className="copied-overlay"
+                            style={{ 
+                              transform: `translate(-50%, -50%) translate(${copiedState.offsetX}px, ${copiedState.offsetY}px)`,
+                              left: '50%',
+                              top: '50%'
+                            }}
+                          >Copied</div>
+                        )}
+                      </div>
                     </td>
 
 
