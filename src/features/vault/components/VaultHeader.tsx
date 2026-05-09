@@ -1,34 +1,23 @@
-import React from "react";
 import { Plus, LayoutGrid, Users } from "lucide-react";
 
 type VaultHeaderProps = {
   accountCount: number;
   canCreateAccount: boolean;
   errorMessage: string | null;
-  isLocking: boolean;
-  onLock: () => Promise<void>;
-  onOpenBackupRestore: () => void;
   onOpenCreateAccount: () => void;
-  onOpenImport: () => void;
   onOpenCreatePlatform: () => void;
   platformCount: number;
   vaultPath: string | null;
-  themeToggle: React.ReactElement;
 };
 
 export function VaultHeader({
   accountCount,
   canCreateAccount,
   errorMessage,
-  isLocking,
-  onLock,
-  onOpenBackupRestore,
   onOpenCreateAccount,
-  onOpenImport,
   onOpenCreatePlatform,
   platformCount,
   vaultPath,
-  themeToggle,
 }: VaultHeaderProps) {
 
   return (

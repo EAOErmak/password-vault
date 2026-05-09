@@ -60,13 +60,10 @@ export type VaultHomePageRef = {
 export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePageProps>((props, ref) => {
   const {
     errorMessage,
-    isLocking,
-    onLock,
     onRestoreComplete,
     onRestoreInterrupted,
     sessionResetToken,
     vaultPath,
-    themeToggle,
   } = props;
   const snapshotRequestRef = useRef(0);
   const detailsRequestRef = useRef(0);
@@ -514,15 +511,10 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
             accountCount={accounts.length}
             canCreateAccount={platforms.length > 0}
             errorMessage={headerErrorMessage}
-            isLocking={isLocking}
-            onLock={onLock}
-            onOpenBackupRestore={handleOpenBackupRestore}
             onOpenCreateAccount={handleOpenCreateAccount}
-            onOpenImport={handleOpenImport}
             onOpenCreatePlatform={() => handleOpenCreatePlatform(false)}
             platformCount={platforms.length}
             vaultPath={vaultPath}
-            themeToggle={themeToggle}
           />
         }
         main={
