@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState, type MouseEvent, type ReactNode } from "react";
 import { copySecretToClipboard } from "../api/secretApi";
+import { ArrowBigLeftDash, ArrowBigRightDash } from 'lucide-react';
 import type {
   AccountSummary,
   AccountTableRow,
@@ -464,11 +465,31 @@ export function AccountList({
           <div className="page-copy">
             <h2 className="no-select">Accounts</h2>
           </div>
-          <span className="status-pill">
-            {visibleAccountCount === 0
-              ? "0 shown"
-              : `${currentRangeStart}-${currentRangeEnd} of ${visibleAccountCount}`}
-          </span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+            <button 
+              className="button-ghost button-small" 
+              onClick={(e) => { e.stopPropagation(); setCurrentPage(page => Math.max(1, page - 1)); }}
+              disabled={resolvedCurrentPage === 1}
+              style={{ padding: '2px', height: 'auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+              title="Previous page"
+            >
+              <ArrowBigLeftDash size={18} />
+            </button>
+            <span className="status-pill" style={{ minWidth: '100px', justifyContent: 'center' }}>
+              {visibleAccountCount === 0
+                ? "0 shown"
+                : `${currentRangeStart}-${currentRangeEnd} of ${visibleAccountCount}`}
+            </span>
+            <button 
+              className="button-ghost button-small" 
+              onClick={(e) => { e.stopPropagation(); setCurrentPage(page => Math.min(totalPages, page + 1)); }}
+              disabled={resolvedCurrentPage === totalPages}
+              style={{ padding: '2px', height: 'auto', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}
+              title="Next page"
+            >
+              <ArrowBigRightDash size={18} />
+            </button>
+          </div>
         </div>
 
         {errorMessage && accounts.length === 0 ? <p className="error-banner">{errorMessage}</p> : null}
