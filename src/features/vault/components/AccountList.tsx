@@ -170,7 +170,17 @@ export function AccountList({
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [copiedState, setCopiedState] = useState<{ rowId: string; type: 'value' | 'secret'; offsetX: number; offsetY: number } | null>(null);
 
-  const handleSort = (column: "name" | "platform" | "value") => {
+  const handleSort = (event: MouseEvent<HTMLElement>, column: "name" | "platform" | "value") => {
+    const target = event.currentTarget;
+    
+    target.animate([
+      { backgroundColor: 'color-mix(in srgb, var(--color-accent) 25%, var(--surface-muted))' },
+      { backgroundColor: 'var(--surface-muted)' }
+    ], {
+      duration: 600,
+      easing: 'ease-out'
+    });
+
     if (sortColumn === column) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
@@ -493,7 +503,7 @@ export function AccountList({
                   <th scope="col">
                     <span 
                       className="account-table__heading-chip" 
-                      onClick={() => handleSort("name")} 
+                      onClick={(event) => handleSort(event, "name")} 
                       style={{ cursor: "pointer" }}
                     >
                       Name {sortColumn === "name" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
@@ -502,7 +512,7 @@ export function AccountList({
                   <th scope="col">
                     <span 
                       className="account-table__heading-chip" 
-                      onClick={() => handleSort("platform")} 
+                      onClick={(event) => handleSort(event, "platform")} 
                       style={{ cursor: "pointer" }}
                     >
                       Platform {sortColumn === "platform" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
@@ -511,7 +521,7 @@ export function AccountList({
                   <th scope="col">
                     <span 
                       className="account-table__heading-chip" 
-                      onClick={() => handleSort("value")} 
+                      onClick={(event) => handleSort(event, "value")} 
                       style={{ cursor: "pointer" }}
                     >
                       Value {sortColumn === "value" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
