@@ -183,13 +183,36 @@ textarea {
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;
-  background: var(--surface-app);
-  border-bottom: 1px solid transparent;
-  transition: border-bottom-color 0.2s ease;
+  background: transparent;
+  transition: background-color 0.2s ease;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.custom-titlebar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background-color: transparent;
+  transition: background-color 0.2s ease;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .custom-titlebar--scrolled {
-  border-bottom-color: var(--color-border-soft);
+  background: #eef6ff;
+}
+
+.custom-titlebar--scrolled::after {
+  background-color: var(--color-border-soft);
+}
+
+:root[data-theme="dark"] .custom-titlebar--scrolled {
+  background: #16222c;
 }
 
 .custom-titlebar__title {
