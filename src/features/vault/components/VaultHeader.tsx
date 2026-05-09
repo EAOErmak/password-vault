@@ -31,7 +31,7 @@ export function VaultHeader({
 }: VaultHeaderProps) {
 
   return (
-    <section className="vault-card vault-header-card">
+    <section className="vault-card vault-header-card" data-tauri-drag-region>
       <div className="vault-header-row">
         <div className="vault-header-copy">
           <p className="eyebrow">Unlocked Vault</p>
