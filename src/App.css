@@ -759,7 +759,7 @@ textarea {
 .account-list-card .account-table-wrapper {
   margin-inline: -24px;
   padding-inline: clamp(16px, 3vw, 28px);
-  padding-bottom: clamp(16px, 3vw, 28px);
+  padding-bottom: 16px;
 }
 
 .account-list-card__header {
@@ -2432,8 +2432,8 @@ textarea {
 .dialog-card h3,
 .dialog-card .empty-state p,
 .pagination-summary,
-.dialog-card .field > span,
-.dialog-card .checkbox-field > span,
+.dialog-card .field>span,
+.dialog-card .checkbox-field>span,
 .custom-titlebar__title,
 .app-title,
 .vault-form span,
