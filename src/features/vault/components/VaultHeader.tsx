@@ -49,7 +49,7 @@ export function VaultHeader({
             onClick={onOpenCreatePlatform}
             type="button"
             className="button-secondary"
-            style={{ width: "50px", height: "50px", padding: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "50%" }}
+            style={{ width: "50px", height: "50px", padding: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "12px" }}
             title="New platform"
           >
             <Plus size={24} />
@@ -65,7 +65,7 @@ export function VaultHeader({
             type="button"
             className="button-secondary"
             disabled={!canCreateAccount}
-            style={{ width: "50px", height: "50px", padding: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "50%" }}
+            style={{ width: "50px", height: "50px", padding: 0, display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "12px" }}
             title="New account"
           >
             <Plus size={24} />
