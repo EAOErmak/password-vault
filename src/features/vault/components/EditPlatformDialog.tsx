@@ -143,6 +143,7 @@ export function EditPlatformDialog({
               placeholder="Search platforms..."
               type="text"
               value={searchQuery}
+              style={{ border: "none", outline: "none" }}
             />
           </div>
 
