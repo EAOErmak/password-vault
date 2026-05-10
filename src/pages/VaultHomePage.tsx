@@ -6,7 +6,7 @@ import {
   softDeleteAccount,
   updateAccount,
 } from "../features/vault/api/accountApi";
-import { createPlatform, listPlatforms } from "../features/vault/api/platformApi";
+import { createPlatform, listPlatforms, updatePlatform, deletePlatform } from "../features/vault/api/platformApi";
 import { addSecret, softDeleteSecret, updateSecret } from "../features/vault/api/secretApi";
 import {
   addAccountValue,
@@ -18,6 +18,7 @@ import { BackupRestoreDialog } from "../features/vault/components/BackupRestoreD
 import { AccountList } from "../features/vault/components/AccountList";
 import { CreateAccountDialog } from "../features/vault/components/CreateAccountDialog";
 import { CreatePlatformDialog } from "../features/vault/components/CreatePlatformDialog";
+import { EditPlatformDialog } from "../features/vault/components/EditPlatformDialog";
 import { ImportTxtDialog } from "../features/vault/components/ImportTxtDialog";
 import { VaultHeader } from "../features/vault/components/VaultHeader";
 import { VaultLayout } from "../features/vault/components/VaultLayout";
@@ -55,6 +56,7 @@ type LoadSnapshotOptions = {
 export type VaultHomePageRef = {
   openImport: () => void;
   openBackupRestore: () => void;
+  openEditPlatform: () => void;
 };
 
 export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePageProps>((props, ref) => {
@@ -80,6 +82,7 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
   const [isLoadingSnapshot, setIsLoadingSnapshot] = useState(true);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
   const [isCreatePlatformOpen, setIsCreatePlatformOpen] = useState(false);
+  const [isEditPlatformOpen, setIsEditPlatformOpen] = useState(false);
   const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
   const [isImportOpen, setIsImportOpen] = useState(false);
   const [isBackupRestoreOpen, setIsBackupRestoreOpen] = useState(false);
@@ -88,6 +91,7 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [createPlatformError, setCreatePlatformError] = useState<string | null>(null);
   const [createAccountError, setCreateAccountError] = useState<string | null>(null);
+  const [editPlatformError, setEditPlatformError] = useState<string | null>(null);
   const [returnToAccountDialog, setReturnToAccountDialog] = useState(false);
   const [createAccountPlatformId, setCreateAccountPlatformId] = useState<string | null>(null);
 
@@ -101,6 +105,7 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
     setCreatePlatformError(null);
     setCreateAccountError(null);
     setIsCreatePlatformOpen(false);
+    setIsEditPlatformOpen(false);
     setIsCreateAccountOpen(false);
     setIsImportOpen(false);
     setIsBackupRestoreOpen(false);
@@ -354,6 +359,7 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
   React.useImperativeHandle(ref, () => ({
     openImport: handleOpenImport,
     openBackupRestore: handleOpenBackupRestore,
+    openEditPlatform: () => setIsEditPlatformOpen(true),
   }));
 
   const handleCreatePlatform = async (request: CreatePlatformRequest) => {
@@ -376,6 +382,28 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
       setCreatePlatformError(getVaultErrorMessage(currentError));
     } finally {
       setIsCreatingPlatform(false);
+    }
+  };
+
+  const handleUpdatePlatform = async (id: string, name: string) => {
+    setEditPlatformError(null);
+    try {
+      await updatePlatform(id, name);
+      await handleRefresh();
+    } catch (error) {
+      setEditPlatformError(getVaultErrorMessage(error));
+      throw error;
+    }
+  };
+
+  const handleDeletePlatform = async (id: string) => {
+    setEditPlatformError(null);
+    try {
+      await deletePlatform(id);
+      await handleRefresh();
+    } catch (error) {
+      setEditPlatformError(getVaultErrorMessage(error));
+      throw error;
     }
   };
 
@@ -546,6 +574,18 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
         isSubmitting={isCreatingPlatform}
         onClose={handleCloseCreatePlatform}
         onSubmit={handleCreatePlatform}
+      />
+
+      <EditPlatformDialog
+        errorMessage={editPlatformError}
+        isOpen={isEditPlatformOpen}
+        onClose={() => {
+          setIsEditPlatformOpen(false);
+          setEditPlatformError(null);
+        }}
+        onDeletePlatform={handleDeletePlatform}
+        onUpdatePlatform={handleUpdatePlatform}
+        platforms={platforms}
       />
 
       <CreateAccountDialog

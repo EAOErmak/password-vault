@@ -22,6 +22,8 @@ pub fn run() {
             commands::vault_commands::attempt_auto_unlock,
             commands::platform_commands::create_platform,
             commands::platform_commands::list_platforms,
+            commands::platform_commands::update_platform,
+            commands::platform_commands::delete_platform,
             commands::account_commands::create_account,
             commands::account_commands::list_accounts,
             commands::account_commands::get_account_details,

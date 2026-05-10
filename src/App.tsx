@@ -384,6 +384,9 @@ function App() {
                   <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openBackupRestore(); }}>
                     Backup / Restore
                   </button>
+                  <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openEditPlatform(); }}>
+                    Edit Platforms
+                  </button>
                 </>
               )}
               <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setTheme(theme === "dark" ? "light" : "dark"); }}>

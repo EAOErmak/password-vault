@@ -16,3 +16,19 @@ pub fn list_platforms(state: State<'_, AppState>) -> CommandResult<Vec<PlatformD
     let service = PlatformService;
     into_command_result(service.list_platforms(state.inner()))
 }
+
+#[tauri::command]
+pub fn update_platform(
+    state: State<'_, AppState>,
+    id: uuid::Uuid,
+    name: String,
+) -> CommandResult<PlatformDto> {
+    let service = PlatformService;
+    into_command_result(service.update_platform(state.inner(), id, &name))
+}
+
+#[tauri::command]
+pub fn delete_platform(state: State<'_, AppState>, id: uuid::Uuid) -> CommandResult<()> {
+    let service = PlatformService;
+    into_command_result(service.delete_platform(state.inner(), id))
+}

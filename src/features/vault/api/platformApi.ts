@@ -26,3 +26,19 @@ export async function createPlatform(
 
   return sanitizePlatform(platform);
 }
+
+export async function updatePlatform(
+  id: string,
+  name: string,
+): Promise<PlatformDto> {
+  const platform = await invoke<PlatformDto>("update_platform", {
+    id,
+    name,
+  });
+
+  return sanitizePlatform(platform);
+}
+
+export async function deletePlatform(id: string): Promise<void> {
+  await invoke<void>("delete_platform", { id });
+}

@@ -105,6 +105,36 @@ impl PlatformRepository {
         row.map(Self::build_platform).transpose()
     }
 
+    pub fn update(
+        executor: &impl SqlExecutor,
+        id: Uuid,
+        name: &str,
+        normalized_name: &str,
+    ) -> Result<(), VaultError> {
+        executor.connection().execute(
+            "UPDATE platforms SET name = ?1, normalized_name = ?2 WHERE id = ?3",
+            params![name, normalized_name, id.to_string()],
+        )?;
+        Ok(())
+    }
+
+    pub fn delete(executor: &impl SqlExecutor, id: Uuid) -> Result<(), VaultError> {
+        executor.connection().execute(
+            "DELETE FROM platforms WHERE id = ?1",
+            params![id.to_string()],
+        )?;
+        Ok(())
+    }
+
+    pub fn has_accounts(executor: &impl SqlExecutor, id: Uuid) -> Result<bool, VaultError> {
+        let count: i64 = executor.connection().query_row(
+            "SELECT COUNT(1) FROM accounts WHERE platform_id = ?1",
+            params![id.to_string()],
+            |row| row.get(0),
+        )?;
+        Ok(count > 0)
+    }
+
     fn map_row(row: &Row<'_>) -> rusqlite::Result<PlatformRow> {
         Ok(PlatformRow {
             id: row.get(0)?,
