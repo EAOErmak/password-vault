@@ -24,6 +24,8 @@ export function EditPlatformDialog({
   const [editName, setEditName] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     if (!isOpen) {
@@ -31,8 +33,14 @@ export function EditPlatformDialog({
       setEditName("");
       setLocalError(null);
       setIsSubmitting(false);
+      setSearchQuery("");
+      setPage(1);
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery]);
 
   if (!isOpen) {
     return null;
@@ -85,6 +93,21 @@ export function EditPlatformDialog({
     }
   };
 
+  const PAGE_SIZE = 6;
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const filteredPlatforms = (platforms || []).filter((platform) =>
+    platform.name && platform.name.toLowerCase().includes(normalizedQuery)
+  );
+  const totalPages = Math.max(1, Math.ceil(filteredPlatforms.length / PAGE_SIZE));
+  const resolvedPage = Math.min(page, totalPages);
+  const paginatedPlatforms = filteredPlatforms.slice(
+    (resolvedPage - 1) * PAGE_SIZE,
+    resolvedPage * PAGE_SIZE
+  );
+  const hasPagination = filteredPlatforms.length > PAGE_SIZE;
+
+
+
   return (
     <DialogBackdrop onClose={onClose}>
       <div
@@ -113,51 +136,77 @@ export function EditPlatformDialog({
         ) : null}
 
         <div className="details-panel" style={{ padding: "16px" }}>
-          {platforms.length === 0 ? (
+          <div className="field" style={{ marginBottom: "12px" }}>
+            <input
+              autoComplete="off"
+              onChange={(e) => setSearchQuery(e.currentTarget.value)}
+              placeholder="Search platforms..."
+              type="text"
+              value={searchQuery}
+            />
+          </div>
+
+          {filteredPlatforms.length === 0 ? (
             <p className="muted-state">No platforms found.</p>
           ) : (
-            <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-              {platforms.map((platform) => (
+            <ul className="custom-select-list">
+              {paginatedPlatforms.map((platform) => (
                 <li
                   key={platform.id}
+                  className="custom-select-option"
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    padding: "12px",
-                    borderBottom: "1px solid var(--color-border-soft)",
                     gap: "12px",
                   }}
                 >
                   {editingId === platform.id ? (
-                    <div style={{ display: "flex", gap: "8px", flex: 1 }}>
+                    <div style={{ 
+                      display: "flex", 
+                      gap: "6px", 
+                      flex: 1,
+                      background: "color-mix(in srgb, var(--color-accent) 5%, var(--dialog-tonal-bg))",
+                      borderRadius: "12px",
+                      padding: "4px",
+                      border: "1px solid var(--color-accent)",
+                      alignItems: "center"
+                    }}>
                       <input
                         autoComplete="off"
                         disabled={isSubmitting}
                         onChange={(e) => setEditName(e.currentTarget.value)}
                         type="text"
                         value={editName}
-                        style={{ flex: 1 }}
+                        style={{ 
+                          flex: 1, 
+                          background: "transparent", 
+                          border: "none", 
+                          outline: "none",
+                          padding: "6px 10px",
+                          fontSize: "inherit",
+                          color: "inherit"
+                        }}
                       />
                       <button
                         className="button-primary"
                         disabled={isSubmitting || editName.trim().length === 0}
                         onClick={() => void handleSaveEdit(platform.id)}
                         type="button"
-                        style={{ padding: "4px 8px" }}
+                        style={{ padding: "0", height: "28px", width: "28px", display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "8px" }}
                         title="Save"
                       >
-                        <Check size={16} />
+                        <Check size={14} />
                       </button>
                       <button
-                        className="button-secondary"
+                        className="button-ghost"
                         disabled={isSubmitting}
                         onClick={handleCancelEdit}
                         type="button"
-                        style={{ padding: "4px 8px" }}
+                        style={{ padding: "0", height: "28px", width: "28px", display: "inline-flex", alignItems: "center", justifyContent: "center", borderRadius: "8px" }}
                         title="Cancel"
                       >
-                        <X size={16} />
+                        <X size={14} />
                       </button>
                     </div>
                   ) : (
@@ -191,6 +240,30 @@ export function EditPlatformDialog({
               ))}
             </ul>
           )}
+
+          {hasPagination ? (
+            <div className="custom-select-pagination" style={{ marginTop: "12px" }}>
+              <button
+                className="custom-select-pagination__button"
+                disabled={resolvedPage === 1}
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                type="button"
+              >
+                Previous
+              </button>
+              <span className="custom-select-pagination__summary">
+                {resolvedPage} / {totalPages}
+              </span>
+              <button
+                className="custom-select-pagination__button"
+                disabled={resolvedPage === totalPages}
+                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                type="button"
+              >
+                Next
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
     </DialogBackdrop>
