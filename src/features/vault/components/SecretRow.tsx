@@ -67,11 +67,14 @@ export function SecretRow({
         {secret.is_primary ? <span className="pill">Primary</span> : null}
       </div>
 
-      <div className="secret-row__masked" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div 
+        className="secret-row__masked" 
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
+        onClick={handleCopy}
+      >
         <span 
           className={revealedValue === null ? "secret-row__masked--value" : ""} 
-          style={{ wordBreak: "break-all", cursor: "pointer" }}
-          onClick={handleCopy}
+          style={{ wordBreak: "break-all" }}
         >
           {revealedValue !== null ? revealedValue : "********"}
         </span>
@@ -79,7 +82,7 @@ export function SecretRow({
           <button 
             type="button" 
             className="button-ghost value-row__copy-button"
-            onClick={handleToggleReveal}
+            onClick={(e) => { e.stopPropagation(); void handleToggleReveal(); }}
             disabled={isBusy || isRevealing}
             title={revealedValue !== null ? "Hide secret" : "Reveal secret"}
           >

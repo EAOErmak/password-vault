@@ -50,12 +50,12 @@ export function AccountValueRow({
         {value.is_primary ? <span className="pill">Primary</span> : null}
       </div>
 
-      <div className="value-row__content-shell">
-        <p 
-          className="value-row__content"
-          onClick={handleCopy}
-          style={{ cursor: "pointer" }}
-        >
+      <div 
+        className="value-row__content-shell"
+        onClick={handleCopy}
+        style={{ cursor: "pointer" }}
+      >
+        <p className="value-row__content">
           {value.value}
         </p>
       </div>
