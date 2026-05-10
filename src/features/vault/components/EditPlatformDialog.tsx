@@ -135,7 +135,7 @@ export function EditPlatformDialog({
           <p className="error-banner">{errorMessage || localError}</p>
         ) : null}
 
-        <div className="details-panel" style={{ padding: "5px" }}>
+        <div className="details-panel" style={{ padding: "7px" }}>
           <div className="field" style={{ marginBottom: "12px" }}>
             <input
               autoComplete="off"
@@ -226,7 +226,8 @@ export function EditPlatformDialog({
                             display: "inline-flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            borderRadius: "50%"
+                            borderRadius: "50%",
+                            background: "color-mix(in srgb, var(--surface-muted) 80%, white)"
                           }}
                           title="Edit"
                         >
