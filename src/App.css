@@ -675,6 +675,10 @@ textarea {
   border: 0;
 }
 
+.vault-header-card {
+  margin-top: 20px;
+}
+
 
 
 .vault-header-card .vault-header-row {
