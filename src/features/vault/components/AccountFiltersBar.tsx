@@ -23,6 +23,7 @@ export function AccountFiltersBar({
   platforms,
 }: AccountFiltersBarProps) {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   const [isPlatformDropdownOpen, setIsPlatformDropdownOpen] = useState(false);
   const [platformSearchQuery, setPlatformSearchQuery] = useState("");
   const [platformPage, setPlatformPage] = useState(1);
@@ -84,6 +85,7 @@ export function AccountFiltersBar({
               <input
                 autoComplete="off"
                 className="account-filters-select__input"
+                ref={inputRef}
                 onChange={(event) => {
                   setPlatformSearchQuery(event.currentTarget.value);
                   setIsPlatformDropdownOpen(true);
