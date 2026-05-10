@@ -89,6 +89,18 @@ function App() {
   }, []);
 
   useEffect(() => {
+    if (import.meta.env.PROD) {
+      const handleContextMenu = (e: MouseEvent) => {
+        e.preventDefault();
+      };
+      document.addEventListener("contextmenu", handleContextMenu);
+      return () => {
+        document.removeEventListener("contextmenu", handleContextMenu);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
     const checkMaximized = async () => {
       const maximized = await getCurrentWindow().isMaximized();
       setIsMaximized(maximized);
