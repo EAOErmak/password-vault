@@ -21,7 +21,7 @@ export function SecretRow({
 }: SecretRowProps) {
   const [revealedValue, setRevealedValue] = useState<string | null>(null);
   const [isRevealing, setIsRevealing] = useState(false);
-
+  const [copiedState, setCopiedState] = useState<{ offsetX: number; offsetY: number } | null>(null);
 
   const handleToggleReveal = async () => {
     if (revealedValue !== null) {
@@ -45,6 +45,14 @@ export function SecretRow({
     try {
       await copySecretToClipboard(secret.id, 30);
       
+      const offsetX = Math.floor(Math.random() * 60) - 30;
+      const offsetY = Math.floor(Math.random() * 30) - 15;
+      
+      setCopiedState({ offsetX, offsetY });
+      setTimeout(() => {
+        setCopiedState(null);
+      }, 1500);
+
       target.animate([
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
         { backgroundColor: 'transparent' }
@@ -69,7 +77,7 @@ export function SecretRow({
 
       <div 
         className="secret-row__masked" 
-        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer" }}
+        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", position: 'relative' }}
         onClick={handleCopy}
       >
         <span 
@@ -93,6 +101,16 @@ export function SecretRow({
             )}
           </button>
         </div>
+        {copiedState && (
+          <div 
+            className="copied-overlay"
+            style={{ 
+              transform: `translate(-50%, -50%) translate(${copiedState.offsetX}px, ${copiedState.offsetY}px)`,
+              left: '50%',
+              top: '50%'
+            }}
+          >Copied</div>
+        )}
       </div>
 
       <div className="value-row__footer">

@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import type { AccountValueDto } from "../types";
 import { formatDateTime, formatEnumLabel } from "../utils/formatters";
 
@@ -19,6 +20,8 @@ export function AccountValueRow({
 }: AccountValueRowProps) {
 
 
+  const [copiedState, setCopiedState] = useState<{ offsetX: number; offsetY: number } | null>(null);
+
   const handleCopy = async (event: React.MouseEvent<HTMLElement>) => {
     const target = event.currentTarget;
     try {
@@ -28,6 +31,14 @@ export function AccountValueRow({
 
       await navigator.clipboard.writeText(value.value);
       
+      const offsetX = Math.floor(Math.random() * 60) - 30;
+      const offsetY = Math.floor(Math.random() * 30) - 15;
+      
+      setCopiedState({ offsetX, offsetY });
+      setTimeout(() => {
+        setCopiedState(null);
+      }, 1500);
+
       target.animate([
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
         { backgroundColor: 'transparent' }
@@ -53,11 +64,21 @@ export function AccountValueRow({
       <div 
         className="value-row__content-shell"
         onClick={handleCopy}
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", position: 'relative' }}
       >
         <p className="value-row__content">
           {value.value}
         </p>
+        {copiedState && (
+          <div 
+            className="copied-overlay"
+            style={{ 
+              transform: `translate(-50%, -50%) translate(${copiedState.offsetX}px, ${copiedState.offsetY}px)`,
+              left: '50%',
+              top: '50%'
+            }}
+          >Copied</div>
+        )}
       </div>
 
       <div className="value-row__footer">
