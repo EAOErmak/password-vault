@@ -1653,7 +1653,6 @@ textarea {
   flex: 0 0 auto;
   border-radius: 7px;
   background: var(--surface-panel);
-  box-shadow: inset 0 0 0 1px var(--color-border);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 12px 12px;
