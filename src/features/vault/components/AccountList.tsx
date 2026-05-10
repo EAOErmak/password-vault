@@ -282,8 +282,9 @@ export function AccountList({
       await navigator.clipboard.writeText(row.valueEntry.value);
       onSelectAccount(row.accountId);
       
-      const offsetX = Math.floor(Math.random() * 60) - 30; // -30 to 30
-      const offsetY = Math.floor(Math.random() * 30) - 15; // -15 to 15
+      const rect = target.getBoundingClientRect();
+      const offsetX = Math.floor(Math.random() * rect.width) - rect.width / 2;
+      const offsetY = Math.floor(Math.random() * rect.height) - rect.height / 2;
       
       setCopiedStates(prev => ({ ...prev, [key]: { offsetX, offsetY } }));
       setTimeout(() => {
@@ -328,8 +329,9 @@ export function AccountList({
       await copySecretToClipboard(row.primaryPasswordSecret.id, clipboardClearAfterSeconds);
       onSelectAccount(row.accountId);
       
-      const offsetX = Math.floor(Math.random() * 60) - 30; // -30 to 30
-      const offsetY = Math.floor(Math.random() * 30) - 15; // -15 to 15
+      const rect = target.getBoundingClientRect();
+      const offsetX = Math.floor(Math.random() * rect.width) - rect.width / 2;
+      const offsetY = Math.floor(Math.random() * rect.height) - rect.height / 2;
       
       setCopiedStates(prev => ({ ...prev, [key]: { offsetX, offsetY } }));
       setTimeout(() => {

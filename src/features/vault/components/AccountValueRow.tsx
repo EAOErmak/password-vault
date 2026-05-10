@@ -31,8 +31,9 @@ export function AccountValueRow({
 
       await navigator.clipboard.writeText(value.value);
       
-      const offsetX = Math.floor(Math.random() * 60) - 30;
-      const offsetY = Math.floor(Math.random() * 30) - 15;
+      const rect = target.getBoundingClientRect();
+      const offsetX = Math.floor(Math.random() * rect.width) - rect.width / 2;
+      const offsetY = Math.floor(Math.random() * rect.height) - rect.height / 2;
       
       setCopiedState({ offsetX, offsetY });
       setTimeout(() => {
