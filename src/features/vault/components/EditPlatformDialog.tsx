@@ -219,20 +219,36 @@ export function EditPlatformDialog({
                           disabled={isSubmitting}
                           onClick={() => handleStartEdit(platform)}
                           type="button"
-                          style={{ padding: "4px 8px" }}
+                          style={{ 
+                            padding: "0", 
+                            width: "32px", 
+                            height: "32px", 
+                            display: "inline-flex", 
+                            alignItems: "center", 
+                            justifyContent: "center",
+                            borderRadius: "50%"
+                          }}
                           title="Edit"
                         >
-                          <Pencil size={16} />
+                          <Pencil size={14} />
                         </button>
                         <button
                           className="button-secondary button-danger"
                           disabled={isSubmitting}
                           onClick={() => void handleDelete(platform.id)}
                           type="button"
-                          style={{ padding: "4px 8px" }}
+                          style={{ 
+                            padding: "0", 
+                            width: "32px", 
+                            height: "32px", 
+                            display: "inline-flex", 
+                            alignItems: "center", 
+                            justifyContent: "center",
+                            borderRadius: "50%"
+                          }}
                           title="Delete"
                         >
-                          <Trash2 size={16} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </>
