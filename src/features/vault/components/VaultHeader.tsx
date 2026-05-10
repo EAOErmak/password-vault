@@ -21,7 +21,7 @@ export function VaultHeader({
 }: VaultHeaderProps) {
 
   return (
-    <section className="vault-card vault-header-card" data-tauri-drag-region>
+    <section className="vault-card vault-header-card">
       <div className="vault-header-row">
         <div className="vault-header-copy">
           <h1 className="no-select">Platforms and accounts</h1>

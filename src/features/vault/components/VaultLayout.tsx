@@ -23,7 +23,7 @@ export function VaultLayout({
           : "vault-grid vault-grid--main-only";
 
   return (
-    <main className="vault-screen" data-tauri-drag-region>
+    <main className="vault-screen">
       <div className="vault-layout">
         {header}
         <div className={gridClassName}>
