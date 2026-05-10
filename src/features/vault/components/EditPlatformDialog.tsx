@@ -135,7 +135,7 @@ export function EditPlatformDialog({
           <p className="error-banner">{errorMessage || localError}</p>
         ) : null}
 
-        <div className="details-panel" style={{ padding: "16px" }}>
+        <div className="details-panel" style={{ padding: "5px" }}>
           <div className="field" style={{ marginBottom: "12px" }}>
             <input
               autoComplete="off"
@@ -163,9 +163,9 @@ export function EditPlatformDialog({
                   }}
                 >
                   {editingId === platform.id ? (
-                    <div style={{ 
-                      display: "flex", 
-                      gap: "6px", 
+                    <div style={{
+                      display: "flex",
+                      gap: "6px",
                       flex: 1,
                       background: "color-mix(in srgb, var(--color-accent) 5%, var(--dialog-tonal-bg))",
                       borderRadius: "12px",
@@ -179,10 +179,10 @@ export function EditPlatformDialog({
                         onChange={(e) => setEditName(e.currentTarget.value)}
                         type="text"
                         value={editName}
-                        style={{ 
-                          flex: 1, 
-                          background: "transparent", 
-                          border: "none", 
+                        style={{
+                          flex: 1,
+                          background: "transparent",
+                          border: "none",
                           outline: "none",
                           padding: "6px 10px",
                           fontSize: "inherit",
@@ -219,12 +219,12 @@ export function EditPlatformDialog({
                           disabled={isSubmitting}
                           onClick={() => handleStartEdit(platform)}
                           type="button"
-                          style={{ 
-                            padding: "0", 
-                            width: "32px", 
-                            height: "32px", 
-                            display: "inline-flex", 
-                            alignItems: "center", 
+                          style={{
+                            padding: "0",
+                            width: "32px",
+                            height: "32px",
+                            display: "inline-flex",
+                            alignItems: "center",
                             justifyContent: "center",
                             borderRadius: "50%"
                           }}
@@ -237,12 +237,12 @@ export function EditPlatformDialog({
                           disabled={isSubmitting}
                           onClick={() => void handleDelete(platform.id)}
                           type="button"
-                          style={{ 
-                            padding: "0", 
-                            width: "32px", 
-                            height: "32px", 
-                            display: "inline-flex", 
-                            alignItems: "center", 
+                          style={{
+                            padding: "0",
+                            width: "32px",
+                            height: "32px",
+                            display: "inline-flex",
+                            alignItems: "center",
                             justifyContent: "center",
                             borderRadius: "50%"
                           }}
