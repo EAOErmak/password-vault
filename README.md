@@ -9,8 +9,8 @@ Password Vault is a state-of-the-art desktop application that allows you to secu
 ## Download & Installation 📥
 
 You can download the pre-compiled installers directly from the repository:
-- **Windows Setup (.exe)**: [password-vault_0.1.0_x64-setup.exe](src-tauri/target/release/bundle/nsis/password-vault_0.1.0_x64-setup.exe)
-- **Windows Installer (.msi)**: [password-vault_0.1.0_x64_en-US.msi](src-tauri/target/release/bundle/msi/password-vault_0.1.0_x64_en-US.msi)
+- **Windows Setup (.exe)**: [Password Vault_0.1.0_x64-setup.exe](src-tauri/target/release/bundle/nsis/Password%20Vault_0.1.0_x64-setup.exe)
+- **Windows Installer (.msi)**: [Password Vault_0.1.0_x64_en-US.msi](src-tauri/target/release/bundle/msi/Password%20Vault_0.1.0_x64_en-US.msi)
 
 ## Key Features
 
