@@ -775,6 +775,10 @@ textarea {
   padding-bottom: 0;
 }
 
+.account-list-card--empty {
+  padding-bottom: 24px;
+}
+
 .account-list-card .account-table-wrapper {
   margin-inline: -24px;
   padding-inline: clamp(16px, 3vw, 28px);

@@ -462,7 +462,7 @@ export function AccountList({
         />
       </section>
 
-      <section className="vault-card panel-card account-list-card">
+      <section className={`vault-card panel-card account-list-card ${accounts.length === 0 ? "account-list-card--empty" : ""}`}>
         <div className="panel-header account-list-card__header">
           <div className="page-copy">
             <h2 className="no-select">Accounts</h2>
