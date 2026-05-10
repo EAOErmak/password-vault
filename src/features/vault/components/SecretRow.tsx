@@ -41,6 +41,9 @@ export function SecretRow({
   };
 
   const handleCopy = async (event: React.MouseEvent<HTMLElement>) => {
+    if (copiedState) {
+      return;
+    }
     const target = event.currentTarget;
     try {
       await copySecretToClipboard(secret.id, 30);
@@ -58,7 +61,7 @@ export function SecretRow({
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
         { backgroundColor: 'transparent' }
       ], {
-        duration: 1000,
+        duration: 1500,
         easing: 'ease-out'
       });
     } catch (error) {

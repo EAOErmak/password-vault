@@ -299,7 +299,7 @@ export function AccountList({
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
         { backgroundColor: 'transparent' }
       ], {
-        duration: 1000,
+        duration: 1500,
         easing: 'ease-out'
       });
     } catch (error) {
@@ -346,7 +346,7 @@ export function AccountList({
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
         { backgroundColor: 'transparent' }
       ], {
-        duration: 1000,
+        duration: 1500,
         easing: 'ease-out'
       });
     } catch (error) {

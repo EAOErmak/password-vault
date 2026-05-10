@@ -23,6 +23,9 @@ export function AccountValueRow({
   const [copiedState, setCopiedState] = useState<{ offsetX: number; offsetY: number } | null>(null);
 
   const handleCopy = async (event: React.MouseEvent<HTMLElement>) => {
+    if (copiedState) {
+      return;
+    }
     const target = event.currentTarget;
     try {
       if (!navigator.clipboard) {
@@ -44,7 +47,7 @@ export function AccountValueRow({
         { backgroundColor: 'color-mix(in srgb, var(--color-accent) 30%, transparent)' },
         { backgroundColor: 'transparent' }
       ], {
-        duration: 1000,
+        duration: 1500,
         easing: 'ease-out'
       });
     } catch (error) {
