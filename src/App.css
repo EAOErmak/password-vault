@@ -324,7 +324,7 @@ textarea {
 }
 
 .dialog-card .vault-form {
-  padding: 18px;
+  padding: 5.5px 18px 18px 18px;
   border: 0;
   border-radius: 20px;
   background: var(--surface-form);
@@ -670,10 +670,17 @@ textarea {
 }
 
 .dialog-card {
-  padding-top: 6px;
+  padding-top: 10px;
 }
 
-.dialog-header .button-ghost:has(svg) {
+.dialog-header .button-ghost:has(svg),
+.create-platform-dialog .button-ghost:has(svg),
+.create-account-dialog .button-ghost:has(svg),
+.add-value-dialog .button-ghost:has(svg),
+.add-secret-dialog .button-ghost:has(svg),
+.edit-value-dialog .button-ghost:has(svg),
+.edit-secret-dialog .button-ghost:has(svg),
+.edit-account-dialog .button-ghost:has(svg) {
   margin-right: -12px !important;
 }
 
@@ -1432,7 +1439,7 @@ textarea {
 }
 
 .account-details-dialog {
-  padding-top: 17px;
+  padding-top: 10px;
 }
 
 .account-details-dialog .dialog-header {
