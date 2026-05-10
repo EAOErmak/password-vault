@@ -164,7 +164,8 @@ export function CreateVaultPage({
               value={confirmPassword}
               style={{ 
                 paddingRight: isCapsLockOn ? '70px' : '12px',
-                boxShadow: (masterPassword !== confirmPassword && confirmPassword.length > 0) ? 'inset 0 0 0 1px var(--color-danger)' : undefined
+                boxShadow: (masterPassword !== confirmPassword && confirmPassword.length > 0) ? 'inset 0 0 0 1px var(--color-danger)' : undefined,
+                background: (masterPassword !== confirmPassword && confirmPassword.length > 0) ? 'color-mix(in srgb, var(--color-danger) 15%, var(--surface-elevated))' : undefined
               }}
             />
             {isCapsLockOn && (
