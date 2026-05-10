@@ -59,8 +59,7 @@ export function AccountValueRow({
     <article className="metadata-item value-row">
       <div className="metadata-item__header">
         <div className="value-row__title">
-          <strong>{value.label}</strong>
-          <span className="value-row__type">{formatEnumLabel(value.value_type)}</span>
+          <strong>{formatEnumLabel(value.value_type)}</strong>
         </div>
         {value.is_primary ? <span className="pill">Primary</span> : null}
       </div>

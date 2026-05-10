@@ -14,7 +14,6 @@ pub struct SecretMetadataRecord {
     pub id: Uuid,
     pub account_id: Uuid,
     pub secret_type: SecretType,
-    pub label: String,
     pub is_primary: bool,
     pub secret_length: usize,
     pub created_at: DateTime<Utc>,
@@ -25,7 +24,6 @@ struct SecretRow {
     id: String,
     account_id: String,
     secret_type: String,
-    label: String,
     secret_value: String,
     is_primary: i64,
     created_at: String,
@@ -37,7 +35,6 @@ struct SecretMetadataRow {
     id: String,
     account_id: String,
     secret_type: String,
-    label: String,
     is_primary: i64,
     created_at: String,
     updated_at: String,
@@ -58,7 +55,6 @@ impl SecretRepository {
         executor: &impl SqlExecutor,
         account_id: Uuid,
         secret_type: &SecretType,
-        label: &str,
         secret_value: &str,
         is_primary: bool,
         now: &DateTime<Utc>,
@@ -68,13 +64,12 @@ impl SecretRepository {
 
         executor.connection().execute(
             "INSERT INTO secrets
-                 (id, account_id, secret_type, label, secret_value, is_primary, created_at, updated_at, deleted_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, NULL)",
+                 (id, account_id, secret_type, secret_value, is_primary, created_at, updated_at, deleted_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, NULL)",
             params![
                 id.to_string(),
                 account_id.to_string(),
                 secret_type.as_str(),
-                label,
                 secret_value,
                 if is_primary { 1 } else { 0 },
                 &timestamp,
@@ -86,7 +81,6 @@ impl SecretRepository {
             id,
             account_id,
             secret_type: secret_type.clone(),
-            label: label.to_string(),
             is_primary,
             secret_length: secret_value.len(),
             created_at: now.clone(),
@@ -99,7 +93,7 @@ impl SecretRepository {
         account_id: Uuid,
     ) -> Result<Vec<SecretMetadataRecord>, VaultError> {
         let mut statement = executor.connection().prepare(
-            "SELECT s.id, s.account_id, s.secret_type, s.label, s.is_primary, s.created_at, s.updated_at, LENGTH(s.secret_value)
+            "SELECT s.id, s.account_id, s.secret_type, s.is_primary, s.created_at, s.updated_at, LENGTH(s.secret_value)
              FROM secrets s
              INNER JOIN accounts a ON a.id = s.account_id
              WHERE s.account_id = ?1
@@ -123,7 +117,7 @@ impl SecretRepository {
         let row = executor
             .connection()
             .query_row(
-                "SELECT id, account_id, secret_type, label, is_primary, created_at, updated_at, LENGTH(secret_value)
+                "SELECT id, account_id, secret_type, is_primary, created_at, updated_at, LENGTH(secret_value)
                  FROM secrets
                  WHERE account_id = ?1 AND secret_type = ?2 AND deleted_at IS NULL",
                 params![account_id.to_string(), secret_type.as_str()],
@@ -141,7 +135,7 @@ impl SecretRepository {
         let row = executor
             .connection()
             .query_row(
-                "SELECT s.id, s.account_id, s.secret_type, s.label, s.secret_value, s.is_primary, s.created_at, s.updated_at, s.deleted_at
+                "SELECT s.id, s.account_id, s.secret_type, s.secret_value, s.is_primary, s.created_at, s.updated_at, s.deleted_at
                  FROM secrets s
                  INNER JOIN accounts a ON a.id = s.account_id
                  WHERE s.id = ?1
@@ -162,7 +156,7 @@ impl SecretRepository {
         let row = executor
             .connection()
             .query_row(
-                "SELECT s.id, s.account_id, s.secret_type, s.label, s.is_primary, s.created_at, s.updated_at, LENGTH(s.secret_value)
+                "SELECT s.id, s.account_id, s.secret_type, s.is_primary, s.created_at, s.updated_at, LENGTH(s.secret_value)
                  FROM secrets s
                  INNER JOIN accounts a ON a.id = s.account_id
                  WHERE s.id = ?1
@@ -180,7 +174,6 @@ impl SecretRepository {
         executor: &impl SqlExecutor,
         secret_id: Uuid,
         secret_type: &SecretType,
-        label: &str,
         secret_value: &str,
         is_primary: bool,
         now: &DateTime<Utc>,
@@ -188,11 +181,10 @@ impl SecretRepository {
         let affected_rows = executor.connection().execute(
             "UPDATE secrets
              SET secret_type = ?1,
-                 label = ?2,
-                 secret_value = ?3,
-                 is_primary = ?4,
-                 updated_at = ?5
-             WHERE id = ?6
+                 secret_value = ?2,
+                 is_primary = ?3,
+                 updated_at = ?4
+             WHERE id = ?5
                AND deleted_at IS NULL
                AND EXISTS (
                    SELECT 1
@@ -202,7 +194,6 @@ impl SecretRepository {
                )",
             params![
                 secret_type.as_str(),
-                label,
                 secret_value,
                 if is_primary { 1 } else { 0 },
                 to_timestamp(now),
@@ -318,12 +309,11 @@ impl SecretRepository {
             id: row.get(0)?,
             account_id: row.get(1)?,
             secret_type: row.get(2)?,
-            label: row.get(3)?,
-            secret_value: row.get(4)?,
-            is_primary: row.get(5)?,
-            created_at: row.get(6)?,
-            updated_at: row.get(7)?,
-            deleted_at: row.get(8)?,
+            secret_value: row.get(3)?,
+            is_primary: row.get(4)?,
+            created_at: row.get(5)?,
+            updated_at: row.get(6)?,
+            deleted_at: row.get(7)?,
         })
     }
 
@@ -332,11 +322,10 @@ impl SecretRepository {
             id: row.get(0)?,
             account_id: row.get(1)?,
             secret_type: row.get(2)?,
-            label: row.get(3)?,
-            is_primary: row.get(4)?,
-            created_at: row.get(5)?,
-            updated_at: row.get(6)?,
-            secret_length: row.get(7)?,
+            is_primary: row.get(3)?,
+            created_at: row.get(4)?,
+            updated_at: row.get(5)?,
+            secret_length: row.get(6)?,
         })
     }
 
@@ -356,7 +345,6 @@ impl SecretRepository {
             id: parse_uuid(&row.id)?,
             account_id: parse_uuid(&row.account_id)?,
             secret_type: SecretType::from_str(&row.secret_type)?,
-            label: row.label,
             secret_value: row.secret_value,
             is_primary: row.is_primary != 0,
             created_at: parse_timestamp(&row.created_at)?,
@@ -370,7 +358,6 @@ impl SecretRepository {
             id: parse_uuid(&row.id)?,
             account_id: parse_uuid(&row.account_id)?,
             secret_type: SecretType::from_str(&row.secret_type)?,
-            label: row.label,
             is_primary: row.is_primary != 0,
             secret_length: row.secret_length as usize,
             created_at: parse_timestamp(&row.created_at)?,

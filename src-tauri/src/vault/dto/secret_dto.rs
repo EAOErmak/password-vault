@@ -7,7 +7,6 @@ use crate::vault::domain::SecretType;
 #[derive(Debug, Clone, Deserialize)]
 pub struct AddSecretRequest {
     pub secret_type: SecretType,
-    pub label: String,
     pub secret_value: String,
     pub is_primary: bool,
 }
@@ -15,7 +14,6 @@ pub struct AddSecretRequest {
 #[derive(Debug, Clone, Deserialize)]
 pub struct UpdateSecretRequest {
     pub secret_type: SecretType,
-    pub label: String,
     pub secret_value: String,
     pub is_primary: bool,
 }
@@ -35,7 +33,6 @@ pub struct SecretMetadataDto {
     pub id: Uuid,
     pub account_id: Uuid,
     pub secret_type: SecretType,
-    pub label: String,
     pub is_primary: bool,
     pub secret_length: usize,
     pub created_at: DateTime<Utc>,
@@ -47,7 +44,6 @@ pub struct RevealedSecretDto {
     pub id: Uuid,
     pub account_id: Uuid,
     pub secret_type: SecretType,
-    pub label: String,
     pub secret_value: String,
     pub is_primary: bool,
     pub created_at: DateTime<Utc>,

@@ -34,8 +34,7 @@ export function RevealSecretDialog({
           <div className="revealed-secret">
             <div className="metadata-item__header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
               <div className="value-row__title" style={{ flexGrow: 1 }}>
-                <strong>{secret.label}</strong>
-                <span className="value-row__type">{formatEnumLabel(secret.secret_type)}</span>
+                <strong>{formatEnumLabel(secret.secret_type)}</strong>
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                 {secret.is_primary ? <span className="pill">Primary</span> : null}

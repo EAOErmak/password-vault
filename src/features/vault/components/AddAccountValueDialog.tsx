@@ -1,10 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { X } from "lucide-react";
 import type { AddAccountValueRequest, AccountValueType } from "../types";
-import {
-  isCustomAccountValueType,
-  normalizeAccountValueLabel,
-} from "../utils/accountValueHelpers";
 import { AccountValueTypeSelect } from "./AccountValueTypeSelect";
 import { DialogBackdrop } from "./DialogBackdrop";
 
@@ -24,7 +20,6 @@ export function AddAccountValueDialog({
   onSubmit,
 }: AddAccountValueDialogProps) {
   const [valueType, setValueType] = useState<AccountValueType>("EMAIL");
-  const [label, setLabel] = useState("");
   const [value, setValue] = useState("");
   const [isPrimary, setIsPrimary] = useState(false);
 
@@ -34,7 +29,6 @@ export function AddAccountValueDialog({
     }
 
     setValueType("EMAIL");
-    setLabel("");
     setValue("");
     setIsPrimary(false);
   }, [isOpen]);
@@ -43,19 +37,15 @@ export function AddAccountValueDialog({
     return null;
   }
 
-  const isCustom = isCustomAccountValueType(valueType);
-  const normalizedLabel = normalizeAccountValueLabel(valueType, label);
   const isSubmitDisabled =
     isSubmitting ||
-    value.trim().length === 0 ||
-    (isCustom && label.trim().length === 0);
+    value.trim().length === 0;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     await onSubmit({
       value_type: valueType,
-      label: normalizedLabel,
       value,
       is_primary: isPrimary,
     });
@@ -91,19 +81,6 @@ export function AddAccountValueDialog({
             />
           </label>
 
-          <label className="field">
-            <span>Label</span>
-            <input
-              autoComplete="off"
-              disabled={isSubmitting}
-              onChange={(event) => setLabel(event.currentTarget.value)}
-              placeholder="Name"
-              type="text"
-              value={label}
-            />
-          </label>
-
-          {isCustom ? <p className="field-helper">Custom values need a label.</p> : null}
 
           <label className="checkbox-field">
             <input

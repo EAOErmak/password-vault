@@ -26,14 +26,3 @@ export function isCustomAccountValueType(valueType: AccountValueType): boolean {
   return valueType === "CUSTOM";
 }
 
-export function normalizeAccountValueLabel(
-  valueType: AccountValueType,
-  label: string,
-): string {
-  const trimmed = label.trim();
-  if (trimmed.length > 0) {
-    return trimmed;
-  }
-
-  return getDefaultAccountValueLabel(valueType);
-}

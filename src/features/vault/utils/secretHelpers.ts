@@ -22,15 +22,6 @@ export function getDefaultSecretLabel(secretType: SecretType): string {
   );
 }
 
-export function normalizeSecretLabel(secretType: SecretType, label: string): string {
-  const trimmed = label.trim();
-  if (trimmed.length > 0) {
-    return trimmed;
-  }
-
-  return getDefaultSecretLabel(secretType);
-}
-
 export function usesMultilineSecretValue(secretType: SecretType): boolean {
   return secretType === "BACKUP_CODE";
 }

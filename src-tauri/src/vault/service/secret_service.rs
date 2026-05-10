@@ -22,7 +22,6 @@ impl SecretService {
         account_id: Uuid,
         request: &AddSecretRequest,
     ) -> Result<SecretMetadataDto, VaultError> {
-        let label = Self::validate_label(&request.label)?;
         Self::validate_secret_value(&request.secret_value)?;
 
         state.with_connection_mut(|connection| {
@@ -48,7 +47,6 @@ impl SecretService {
                 &transaction,
                 account_id,
                 &request.secret_type,
-                &label,
                 &request.secret_value,
                 request.is_primary,
                 &now,
@@ -66,7 +64,6 @@ impl SecretService {
         secret_id: Uuid,
         request: &UpdateSecretRequest,
     ) -> Result<SecretMetadataDto, VaultError> {
-        let label = Self::validate_label(&request.label)?;
         Self::validate_secret_value(&request.secret_value)?;
 
         state.with_connection_mut(|connection| {
@@ -108,7 +105,6 @@ impl SecretService {
                     &transaction,
                     secret_id,
                     &request.secret_type,
-                    &label,
                     &request.secret_value,
                     request.is_primary,
                     &now,
@@ -141,7 +137,6 @@ impl SecretService {
                 id: secret.id,
                 account_id: secret.account_id,
                 secret_type: secret.secret_type,
-                label: secret.label,
                 secret_value: secret.secret_value,
                 is_primary: secret.is_primary,
                 created_at: secret.created_at,
@@ -242,17 +237,6 @@ impl SecretService {
         }
     }
 
-    fn validate_label(label: &str) -> Result<String, VaultError> {
-        let trimmed = label.trim();
-        if trimmed.is_empty() {
-            Err(VaultError::Validation(
-                "secret label cannot be empty".to_string(),
-            ))
-        } else {
-            Ok(trimmed.to_string())
-        }
-    }
-
     fn validate_secret_value(value: &str) -> Result<(), VaultError> {
         if value.is_empty() {
             Err(VaultError::Validation(
@@ -268,7 +252,6 @@ impl SecretService {
             id: secret.id,
             account_id: secret.account_id,
             secret_type: secret.secret_type,
-            label: secret.label,
             is_primary: secret.is_primary,
             secret_length: secret.secret_length,
             created_at: secret.created_at,

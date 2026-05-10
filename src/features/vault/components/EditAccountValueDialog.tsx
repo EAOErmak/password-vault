@@ -1,11 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { X } from "lucide-react";
 import type { AccountValueDto, AccountValueType, UpdateAccountValueRequest } from "../types";
-import {
-  getDefaultAccountValueLabel,
-  isCustomAccountValueType,
-  normalizeAccountValueLabel,
-} from "../utils/accountValueHelpers";
 import { AccountValueTypeSelect } from "./AccountValueTypeSelect";
 import { DialogBackdrop } from "./DialogBackdrop";
 
@@ -27,7 +22,6 @@ export function EditAccountValueDialog({
   value,
 }: EditAccountValueDialogProps) {
   const [valueType, setValueType] = useState<AccountValueType>(value?.value_type ?? "EMAIL");
-  const [label, setLabel] = useState("");
   const [fieldValue, setFieldValue] = useState("");
   const [isPrimary, setIsPrimary] = useState(false);
 
@@ -36,7 +30,6 @@ export function EditAccountValueDialog({
       return;
     }
 
-    setLabel(value.label);
     setFieldValue(value.value);
     setIsPrimary(value.is_primary);
     setValueType(value.value_type);
@@ -46,19 +39,15 @@ export function EditAccountValueDialog({
     return null;
   }
 
-  const isCustom = isCustomAccountValueType(valueType);
-  const normalizedLabel = normalizeAccountValueLabel(valueType, label);
   const isSubmitDisabled =
     isSubmitting ||
-    fieldValue.trim().length === 0 ||
-    (isCustom && label.trim().length === 0);
+    fieldValue.trim().length === 0;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     await onSubmit({
       value_type: valueType,
-      label: normalizedLabel,
       value: fieldValue,
       is_primary: isPrimary,
     });
@@ -81,20 +70,6 @@ export function EditAccountValueDialog({
               value={valueType}
             />
           </div>
-
-          <label className="field">
-            <span>Label</span>
-            <input
-              autoComplete="off"
-              disabled={isSubmitting}
-              onChange={(event) => setLabel(event.currentTarget.value)}
-              placeholder={getDefaultAccountValueLabel(valueType)}
-              type="text"
-              value={label}
-            />
-          </label>
-
-          {isCustom ? <p className="field-helper">Custom values need a label.</p> : null}
 
           <label className="field">
             <span>Value</span>

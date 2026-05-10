@@ -20,7 +20,6 @@ impl ValueService {
         account_id: Uuid,
         request: &AddAccountValueRequest,
     ) -> Result<AccountValueDto, VaultError> {
-        let label = Self::validate_label(&request.label)?;
         let value = Self::validate_value(&request.value)?;
 
         state.with_connection_mut(|connection| {
@@ -46,7 +45,6 @@ impl ValueService {
                 &transaction,
                 account_id,
                 &request.value_type,
-                &label,
                 &value,
                 request.is_primary,
                 &now,
@@ -64,7 +62,6 @@ impl ValueService {
         value_id: Uuid,
         request: &UpdateAccountValueRequest,
     ) -> Result<AccountValueDto, VaultError> {
-        let label = Self::validate_label(&request.label)?;
         let value = Self::validate_value(&request.value)?;
 
         state.with_connection_mut(|connection| {
@@ -108,7 +105,6 @@ impl ValueService {
                     &transaction,
                     value_id,
                     &request.value_type,
-                    &label,
                     &value,
                     request.is_primary,
                     &now,
@@ -175,17 +171,6 @@ impl ValueService {
         }
     }
 
-    fn validate_label(label: &str) -> Result<String, VaultError> {
-        let trimmed = label.trim();
-        if trimmed.is_empty() {
-            Err(VaultError::Validation(
-                "account value label cannot be empty".to_string(),
-            ))
-        } else {
-            Ok(trimmed.to_string())
-        }
-    }
-
     fn validate_value(value: &str) -> Result<String, VaultError> {
         let trimmed = value.trim();
         if trimmed.is_empty() {
@@ -202,7 +187,6 @@ impl ValueService {
             id: value.id,
             account_id: value.account_id,
             value_type: value.value_type,
-            label: value.label,
             value: value.value,
             is_primary: value.is_primary,
             created_at: value.created_at,

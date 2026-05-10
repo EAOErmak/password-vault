@@ -4,8 +4,6 @@ import { revealSecret } from "../api/secretApi";
 import type { SecretMetadataDto, UpdateSecretRequest } from "../types";
 import { getVaultErrorMessage } from "../../../lib/vault";
 import {
-  getDefaultSecretLabel,
-  normalizeSecretLabel,
   usesMultilineSecretValue,
 } from "../utils/secretHelpers";
 import { DialogBackdrop } from "./DialogBackdrop";
@@ -31,7 +29,6 @@ export function EditSecretDialog({
 }: EditSecretDialogProps) {
   const revealRequestRef = useRef(0);
   const [secretType, setSecretType] = useState(secret?.secret_type ?? "PASSWORD");
-  const [label, setLabel] = useState("");
   const [secretValue, setSecretValue] = useState("");
   const [isPrimary, setIsPrimary] = useState(false);
   const [isLoadingCurrentValue, setIsLoadingCurrentValue] = useState(false);
@@ -41,7 +38,6 @@ export function EditSecretDialog({
     if (!isOpen || !secret) {
       revealRequestRef.current += 1;
       setSecretType("PASSWORD");
-      setLabel("");
       setSecretValue("");
       setIsPrimary(false);
       setIsLoadingCurrentValue(false);
@@ -51,7 +47,6 @@ export function EditSecretDialog({
 
     revealRequestRef.current += 1;
     setSecretType(secret.secret_type);
-    setLabel(secret.label);
     setSecretValue("");
     setIsPrimary(secret.is_primary);
     setIsLoadingCurrentValue(false);
@@ -63,7 +58,6 @@ export function EditSecretDialog({
   }
 
   const multiline = usesMultilineSecretValue(secretType);
-  const normalizedLabel = normalizeSecretLabel(secretType, label);
   const isSubmitDisabled = isSubmitting || isLoadingCurrentValue || secretValue.length === 0;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -71,7 +65,6 @@ export function EditSecretDialog({
 
     await onSubmit({
       secret_type: secretType,
-      label: normalizedLabel,
       secret_value: secretValue,
       is_primary: isPrimary,
     });
@@ -123,18 +116,6 @@ export function EditSecretDialog({
               value={secretType}
             />
           </div>
-
-          <label className="field">
-            <span>Label</span>
-            <input
-              autoComplete="off"
-              disabled={isSubmitting}
-              onChange={(event) => setLabel(event.currentTarget.value)}
-              placeholder={getDefaultSecretLabel(secretType)}
-              type="text"
-              value={label}
-            />
-          </label>
 
           <div className="secret-dialog-toolbar">
             <button

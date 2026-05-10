@@ -202,7 +202,6 @@ mod tests {
                 account.id,
                 &AddAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "dev@example.com".to_string(),
                     is_primary: true,
                 },
@@ -214,7 +213,6 @@ mod tests {
                 account.id,
                 &AddAccountValueRequest {
                     value_type: AccountValueType::Username,
-                    label: "Username".to_string(),
                     value: "dev-user".to_string(),
                     is_primary: false,
                 },
@@ -241,7 +239,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "super-secret-password".to_string(),
                     is_primary: true,
                 },
@@ -267,7 +264,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::BackupCode,
-                    label: "Backup codes".to_string(),
                     secret_value: "code-one,code-two".to_string(),
                     is_primary: false,
                 },
@@ -298,7 +294,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "secret-not-for-lists".to_string(),
                     is_primary: true,
                 },
@@ -329,7 +324,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "reveal-me-once".to_string(),
                     is_primary: true,
                 },
@@ -360,7 +354,6 @@ mod tests {
                 account.id,
                 &AddAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "old@example.com".to_string(),
                     is_primary: true,
                 },
@@ -373,7 +366,6 @@ mod tests {
                 value.id,
                 &UpdateAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "new@example.com".to_string(),
                     is_primary: true,
                 },
@@ -411,7 +403,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "old-password".to_string(),
                     is_primary: true,
                 },
@@ -424,7 +415,6 @@ mod tests {
                 secret.id,
                 &UpdateSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "new-password".to_string(),
                     is_primary: true,
                 },
@@ -462,7 +452,6 @@ mod tests {
                 account.id,
                 &AddAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "first@example.com".to_string(),
                     is_primary: true,
                 },
@@ -475,7 +464,6 @@ mod tests {
                 value.id,
                 &UpdateAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "second@example.com".to_string(),
                     is_primary: true,
                 },
@@ -487,7 +475,6 @@ mod tests {
                 value.id,
                 &UpdateAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "third@example.com".to_string(),
                     is_primary: true,
                 },
@@ -537,7 +524,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "history-secret-one".to_string(),
                     is_primary: true,
                 },
@@ -550,7 +536,6 @@ mod tests {
                 secret.id,
                 &UpdateSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "history-secret-two".to_string(),
                     is_primary: true,
                 },
@@ -617,7 +602,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "hidden-search-secret".to_string(),
                     is_primary: true,
                 },
@@ -651,7 +635,6 @@ mod tests {
                 account.id,
                 &AddAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "dev@example.com".to_string(),
                     is_primary: true,
                 },
@@ -663,7 +646,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "soft-delete-me".to_string(),
                     is_primary: true,
                 },
@@ -699,7 +681,6 @@ mod tests {
                 account.id,
                 &AddAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "dev@example.com".to_string(),
                     is_primary: true,
                 },
@@ -711,7 +692,6 @@ mod tests {
                 account.id,
                 &AddSecretRequest {
                     secret_type: SecretType::Password,
-                    label: "Password".to_string(),
                     secret_value: "still-secret".to_string(),
                     is_primary: true,
                 },
@@ -729,7 +709,6 @@ mod tests {
                 value.id,
                 &UpdateAccountValueRequest {
                     value_type: AccountValueType::Email,
-                    label: "Work email".to_string(),
                     value: "changed@example.com".to_string(),
                     is_primary: true,
                 },

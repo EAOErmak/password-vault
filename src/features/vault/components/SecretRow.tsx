@@ -73,8 +73,7 @@ export function SecretRow({
     <article className="metadata-item secret-row">
       <div className="metadata-item__header">
         <div className="value-row__title">
-          <strong>{secret.label}</strong>
-          <span className="value-row__type">{formatEnumLabel(secret.secret_type)}</span>
+          <strong>{formatEnumLabel(secret.secret_type)}</strong>
         </div>
         {secret.is_primary ? <span className="pill">Primary</span> : null}
       </div>

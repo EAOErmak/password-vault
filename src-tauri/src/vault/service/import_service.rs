@@ -475,12 +475,6 @@ impl ImportService {
                         "entry {entry_index} field {field_index} is missing an account value type"
                     ))
                 })?;
-                let label = Self::sanitize_required_text(
-                    &field.label,
-                    &format!(
-                        "entry {entry_index} field {field_index} account value label cannot be empty"
-                    ),
-                )?;
                 let value = Self::sanitize_required_text(
                     &field.value,
                     &format!(
@@ -492,7 +486,6 @@ impl ImportService {
                     transaction,
                     account_id,
                     &value_type,
-                    &label,
                     &value,
                     field.is_primary,
                     &now_utc(),
@@ -506,12 +499,6 @@ impl ImportService {
                         "entry {entry_index} field {field_index} is missing a secret type"
                     ))
                 })?;
-                let label = Self::sanitize_required_text(
-                    &field.label,
-                    &format!(
-                        "entry {entry_index} field {field_index} secret label cannot be empty"
-                    ),
-                )?;
                 let mut secret_value = Self::sanitize_required_text(
                     &field.value,
                     &format!(
@@ -523,7 +510,6 @@ impl ImportService {
                     transaction,
                     account_id,
                     &secret_type,
-                    &label,
                     &secret_value,
                     field.is_primary,
                     &now_utc(),
@@ -645,7 +631,7 @@ mod tests {
         let custom_secret_id = details
             .secrets
             .iter()
-            .find(|secret| secret.label == "Imported secret")
+            .find(|secret| secret.secret_type == SecretType::CustomSecret)
             .map(|secret| secret.id)
             .unwrap();
         let revealed_secret = SecretService

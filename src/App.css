@@ -1860,6 +1860,14 @@ textarea {
   overflow-x: auto;
 }
 
+.add-value-dialog {
+  scrollbar-width: none;
+  overflow: visible;
+}
+.add-value-dialog::-webkit-scrollbar {
+  display: none;
+}
+
 .dialog-card--wide {
   width: min(100%, 760px);
 }

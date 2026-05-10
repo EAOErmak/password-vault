@@ -1,6 +1,7 @@
 import { X } from "lucide-react";
 import type { AccountDetails, AccountValueDto } from "../types";
 import { DialogBackdrop } from "./DialogBackdrop";
+import { formatEnumLabel } from "../utils/formatters";
 
 type DeleteValueConfirmDialogProps = {
   account: AccountDetails;
@@ -51,7 +52,7 @@ export function DeleteValueConfirmDialog({
               </button>
             </div>
             <p style={{ color: "var(--color-danger-muted)", fontSize: "0.95rem", margin: "16px 0" }}>
-              Are you sure you want to delete the value <strong>"{value.label}"</strong> from <strong>"{accountLabel}"</strong>?
+              Are you sure you want to delete the value <strong>"{formatEnumLabel(value.value_type)}"</strong> from <strong>"{accountLabel}"</strong>?
             </p>
           </div>
         </div>

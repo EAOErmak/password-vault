@@ -10,13 +10,12 @@ import type {
 } from "../types";
 
 function sanitizeSecretMetadata(secret: SecretMetadataDto): SecretMetadataDto {
-  const { id, account_id, secret_type, label, is_primary, created_at, updated_at, secret_length } = secret;
+  const { id, account_id, secret_type, is_primary, created_at, updated_at, secret_length } = secret;
 
   return {
     id,
     account_id,
     secret_type,
-    label,
     is_primary,
     created_at,
     updated_at,
@@ -42,7 +41,6 @@ function sanitizeRevealedSecret(secret: RevealedSecretDto): RevealedSecretDto {
     id,
     account_id,
     secret_type,
-    label,
     secret_value,
     is_primary,
     created_at,
@@ -53,7 +51,6 @@ function sanitizeRevealedSecret(secret: RevealedSecretDto): RevealedSecretDto {
     id,
     account_id,
     secret_type,
-    label,
     secret_value,
     is_primary,
     created_at,

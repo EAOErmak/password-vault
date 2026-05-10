@@ -2,8 +2,6 @@ import { useEffect, useState, type FormEvent } from "react";
 import { X } from "lucide-react";
 import type { AddSecretRequest, SecretType } from "../types";
 import {
-  getDefaultSecretLabel,
-  normalizeSecretLabel,
   usesMultilineSecretValue,
 } from "../utils/secretHelpers";
 import { PasswordGeneratorControls } from "./PasswordGeneratorControls";
@@ -26,20 +24,17 @@ export function AddSecretDialog({
   onSubmit,
 }: AddSecretDialogProps) {
   const [secretType, setSecretType] = useState<SecretType>("PASSWORD");
-  const [label, setLabel] = useState("");
   const [secretValue, setSecretValue] = useState("");
   const [isPrimary, setIsPrimary] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
       setSecretType("PASSWORD");
-      setLabel("");
       setSecretValue("");
       setIsPrimary(false);
       return;
     }
 
-    setLabel("");
     setSecretValue("");
     setIsPrimary(false);
   }, [isOpen]);
@@ -49,7 +44,6 @@ export function AddSecretDialog({
   }
 
   const multiline = usesMultilineSecretValue(secretType);
-  const normalizedLabel = normalizeSecretLabel(secretType, label);
   const isSubmitDisabled = isSubmitting || secretValue.length === 0;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -57,7 +51,6 @@ export function AddSecretDialog({
 
     await onSubmit({
       secret_type: secretType,
-      label: normalizedLabel,
       secret_value: secretValue,
       is_primary: isPrimary,
     });
@@ -112,17 +105,6 @@ export function AddSecretDialog({
             />
           ) : null}
  
-           <label className="field">
-            <span>Label</span>
-            <input
-              autoComplete="off"
-              disabled={isSubmitting}
-              onChange={(event) => setLabel(event.currentTarget.value)}
-              placeholder={getDefaultSecretLabel(secretType)}
-              type="text"
-              value={label}
-            />
-          </label>
 
           <label className="checkbox-field">
             <input

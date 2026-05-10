@@ -28,7 +28,6 @@ function sanitizeAccountValue(value: AccountValueDto): AccountValueDto {
     id,
     account_id,
     value_type,
-    label,
     value: accountValue,
     is_primary,
     created_at,
@@ -39,7 +38,6 @@ function sanitizeAccountValue(value: AccountValueDto): AccountValueDto {
     id,
     account_id,
     value_type,
-    label,
     value: accountValue,
     is_primary,
     created_at,
@@ -48,13 +46,12 @@ function sanitizeAccountValue(value: AccountValueDto): AccountValueDto {
 }
 
 function sanitizeSecretMetadata(secret: SecretMetadataDto): SecretMetadataDto {
-  const { id, account_id, secret_type, label, is_primary, secret_length, created_at, updated_at } = secret;
+  const { id, account_id, secret_type, is_primary, secret_length, created_at, updated_at } = secret;
 
   return {
     id,
     account_id,
     secret_type,
-    label,
     is_primary,
     secret_length,
     created_at,

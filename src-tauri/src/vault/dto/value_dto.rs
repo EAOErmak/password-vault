@@ -7,7 +7,6 @@ use crate::vault::domain::AccountValueType;
 #[derive(Debug, Clone, Deserialize)]
 pub struct AddAccountValueRequest {
     pub value_type: AccountValueType,
-    pub label: String,
     pub value: String,
     pub is_primary: bool,
 }
@@ -15,7 +14,6 @@ pub struct AddAccountValueRequest {
 #[derive(Debug, Clone, Deserialize)]
 pub struct UpdateAccountValueRequest {
     pub value_type: AccountValueType,
-    pub label: String,
     pub value: String,
     pub is_primary: bool,
 }
@@ -25,7 +23,6 @@ pub struct AccountValueDto {
     pub id: Uuid,
     pub account_id: Uuid,
     pub value_type: AccountValueType,
-    pub label: String,
     pub value: String,
     pub is_primary: bool,
     pub created_at: DateTime<Utc>,

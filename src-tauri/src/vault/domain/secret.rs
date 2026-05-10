@@ -47,7 +47,6 @@ pub struct Secret {
     pub id: Uuid,
     pub account_id: Uuid,
     pub secret_type: SecretType,
-    pub label: String,
     pub secret_value: String,
     pub is_primary: bool,
     pub created_at: DateTime<Utc>,

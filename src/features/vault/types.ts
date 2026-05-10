@@ -25,7 +25,6 @@ export type AccountValueDto = {
   id: string;
   account_id: string;
   value_type: AccountValueType;
-  label: string;
   value: string;
   is_primary: boolean;
   created_at: string;
@@ -36,7 +35,6 @@ export type SecretMetadataDto = {
   id: string;
   account_id: string;
   secret_type: SecretType;
-  label: string;
   is_primary: boolean;
   secret_length: number;
   created_at: string;
@@ -47,7 +45,6 @@ export type RevealedSecretDto = {
   id: string;
   account_id: string;
   secret_type: SecretType;
-  label: string;
   secret_value: string;
   is_primary: boolean;
   created_at: string;
@@ -142,28 +139,24 @@ export type UpdateAccountRequest = {
 
 export type AddAccountValueRequest = {
   value_type: AccountValueType;
-  label: string;
   value: string;
   is_primary: boolean;
 };
 
 export type UpdateAccountValueRequest = {
   value_type: AccountValueType;
-  label: string;
   value: string;
   is_primary: boolean;
 };
 
 export type AddSecretRequest = {
   secret_type: SecretType;
-  label: string;
   secret_value: string;
   is_primary: boolean;
 };
 
 export type UpdateSecretRequest = {
   secret_type: SecretType;
-  label: string;
   secret_value: string;
   is_primary: boolean;
 };

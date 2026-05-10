@@ -13,7 +13,6 @@ struct AccountValueRow {
     id: String,
     account_id: String,
     value_type: String,
-    label: String,
     value: String,
     is_primary: i64,
     created_at: String,
@@ -35,7 +34,6 @@ impl ValueRepository {
         executor: &impl SqlExecutor,
         account_id: Uuid,
         value_type: &AccountValueType,
-        label: &str,
         value: &str,
         is_primary: bool,
         now: &DateTime<Utc>,
@@ -45,13 +43,12 @@ impl ValueRepository {
 
         executor.connection().execute(
             "INSERT INTO account_values
-                 (id, account_id, value_type, label, value, is_primary, created_at, updated_at, deleted_at)
-             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, NULL)",
+                 (id, account_id, value_type, value, is_primary, created_at, updated_at, deleted_at)
+             VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, NULL)",
             params![
                 id.to_string(),
                 account_id.to_string(),
                 value_type.as_str(),
-                label,
                 value,
                 if is_primary { 1 } else { 0 },
                 &timestamp,
@@ -63,7 +60,6 @@ impl ValueRepository {
             id,
             account_id,
             value_type: value_type.clone(),
-            label: label.to_string(),
             value: value.to_string(),
             is_primary,
             created_at: now.clone(),
@@ -77,7 +73,7 @@ impl ValueRepository {
         account_id: Uuid,
     ) -> Result<Vec<AccountValue>, VaultError> {
         let mut statement = executor.connection().prepare(
-            "SELECT av.id, av.account_id, av.value_type, av.label, av.value, av.is_primary, av.created_at, av.updated_at, av.deleted_at
+            "SELECT av.id, av.account_id, av.value_type, av.value, av.is_primary, av.created_at, av.updated_at, av.deleted_at
              FROM account_values av
              INNER JOIN accounts a ON a.id = av.account_id
              WHERE av.account_id = ?1
@@ -101,7 +97,7 @@ impl ValueRepository {
         let row = executor
             .connection()
             .query_row(
-                "SELECT id, account_id, value_type, label, value, is_primary, created_at, updated_at, deleted_at
+                "SELECT id, account_id, value_type, value, is_primary, created_at, updated_at, deleted_at
                  FROM account_values
                  WHERE account_id = ?1 AND value_type = ?2 AND deleted_at IS NULL",
                 params![account_id.to_string(), value_type.as_str()],
@@ -119,7 +115,7 @@ impl ValueRepository {
         let row = executor
             .connection()
             .query_row(
-                "SELECT av.id, av.account_id, av.value_type, av.label, av.value, av.is_primary, av.created_at, av.updated_at, av.deleted_at
+                "SELECT av.id, av.account_id, av.value_type, av.value, av.is_primary, av.created_at, av.updated_at, av.deleted_at
                  FROM account_values av
                  INNER JOIN accounts a ON a.id = av.account_id
                  WHERE av.id = ?1
@@ -137,7 +133,6 @@ impl ValueRepository {
         executor: &impl SqlExecutor,
         value_id: Uuid,
         value_type: &AccountValueType,
-        label: &str,
         value: &str,
         is_primary: bool,
         now: &DateTime<Utc>,
@@ -145,11 +140,10 @@ impl ValueRepository {
         let affected_rows = executor.connection().execute(
             "UPDATE account_values
              SET value_type = ?1,
-                 label = ?2,
-                 value = ?3,
-                 is_primary = ?4,
-                 updated_at = ?5
-             WHERE id = ?6
+                 value = ?2,
+                 is_primary = ?3,
+                 updated_at = ?4
+             WHERE id = ?5
                AND deleted_at IS NULL
                AND EXISTS (
                    SELECT 1
@@ -159,7 +153,6 @@ impl ValueRepository {
                )",
             params![
                 value_type.as_str(),
-                label,
                 value,
                 if is_primary { 1 } else { 0 },
                 to_timestamp(now),
@@ -257,12 +250,11 @@ impl ValueRepository {
             id: row.get(0)?,
             account_id: row.get(1)?,
             value_type: row.get(2)?,
-            label: row.get(3)?,
-            value: row.get(4)?,
-            is_primary: row.get(5)?,
-            created_at: row.get(6)?,
-            updated_at: row.get(7)?,
-            deleted_at: row.get(8)?,
+            value: row.get(3)?,
+            is_primary: row.get(4)?,
+            created_at: row.get(5)?,
+            updated_at: row.get(6)?,
+            deleted_at: row.get(7)?,
         })
     }
 
@@ -282,7 +274,6 @@ impl ValueRepository {
             id: parse_uuid(&row.id)?,
             account_id: parse_uuid(&row.account_id)?,
             value_type: AccountValueType::from_str(&row.value_type)?,
-            label: row.label,
             value: row.value,
             is_primary: row.is_primary != 0,
             created_at: parse_timestamp(&row.created_at)?,

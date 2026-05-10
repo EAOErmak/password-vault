@@ -47,7 +47,6 @@ pub struct AccountValue {
     pub id: Uuid,
     pub account_id: Uuid,
     pub value_type: AccountValueType,
-    pub label: String,
     pub value: String,
     pub is_primary: bool,
     pub created_at: DateTime<Utc>,
