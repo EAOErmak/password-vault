@@ -53,6 +53,9 @@ pub fn open_encrypted_database(
 
 fn initialize_connection(connection: &Connection, master_password: &str) -> Result<(), VaultError> {
     connection.pragma_update(None, "key", master_password)?;
+    // Increase KDF iterations to 1,000,000 for stronger brute-force protection
+    connection.pragma_update(None, "kdf_iter", "1000000")?;
+    
     verify_master_password(connection)?;
     connection.busy_timeout(BUSY_TIMEOUT)?;
     connection.execute_batch(

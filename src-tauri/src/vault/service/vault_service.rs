@@ -38,10 +38,49 @@ impl VaultService {
         master_password: &str,
     ) -> Result<VaultStatusDto, VaultError> {
         self.validate_master_password(master_password)?;
-        let path = self.parse_path(path)?;
-        let connection = open_encrypted_database(&path, master_password)?;
-        state.set_session(path, connection)?;
-        self.get_vault_status(state)
+        let path_buf = self.parse_path(path)?;
+        let attempts_path = path_buf.with_extension("db.attempts");
+
+        // Read attempts from file
+        let mut count = 0;
+        if attempts_path.exists() {
+            if let Ok(content) = fs::read_to_string(&attempts_path) {
+                count = content.trim().parse::<u32>().unwrap_or(0);
+            }
+        }
+
+        // Apply delay if count >= 1
+        if count >= 1 {
+            let delay_secs = match count {
+                1 => 10,
+                2 => 60,      // 1 minute
+                3 => 300,     // 5 minutes
+                4 => 1800,    // 30 minutes
+                _ => 86400,   // 1 day
+            };
+            
+            println!("Brute-force protection: sleeping for {} seconds", delay_secs);
+            std::thread::sleep(std::time::Duration::from_secs(delay_secs));
+        }
+
+        let connection_result = open_encrypted_database(&path_buf, master_password);
+
+        match connection_result {
+            Ok(connection) => {
+                // Success! Reset attempts
+                let _ = fs::remove_file(&attempts_path);
+
+                state.set_session(path_buf, connection)?;
+                self.get_vault_status(state)
+            }
+            Err(e) => {
+                // Failure! Increment attempts
+                count += 1;
+                let _ = fs::write(&attempts_path, count.to_string());
+                
+                Err(e)
+            }
+        }
     }
 
     pub fn lock_vault(&self, state: &AppState) -> Result<VaultStatusDto, VaultError> {
