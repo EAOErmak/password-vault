@@ -120,10 +120,11 @@ export function AccountFiltersBar({
                     <li
                       key={platform.id ?? "all-platforms"}
                       className={`custom-select-option ${clientPlatformFilter === platform.id ? "selected" : ""}`}
-                      onClick={() => {
+                      onMouseDown={() => {
                         onPlatformFilterChange(platform.id);
                         setPlatformSearchQuery("");
                         setIsPlatformDropdownOpen(false);
+                        inputRef.current?.blur();
                       }}
                     >
                       {platform.name}

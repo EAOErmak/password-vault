@@ -871,6 +871,10 @@ textarea {
   background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
 }
 
+.account-filters-card .custom-select-option:last-child {
+  margin-bottom: 0;
+}
+
 .account-filters-card .custom-select-option:hover {
   transform: none;
   background: color-mix(in srgb, var(--surface-muted-alt) 66%, var(--color-border) 34%);
