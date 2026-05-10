@@ -940,7 +940,8 @@ textarea {
   background: color-mix(in srgb, var(--surface-muted) 60%, var(--color-border) 40%);
 }
 
-.secret-type-select .custom-select-option:last-child {
+.secret-type-select .custom-select-option:last-child,
+.value-type-select .custom-select-option:last-child {
   margin-bottom: 0;
 }
 
