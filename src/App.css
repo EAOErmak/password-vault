@@ -669,6 +669,14 @@ textarea {
   padding: 24px;
 }
 
+.dialog-card {
+  padding-top: 6px;
+}
+
+.dialog-header .button-ghost:has(svg) {
+  margin-right: -12px !important;
+}
+
 .vault-header-card,
 .account-filters-card,
 .account-list-card {
