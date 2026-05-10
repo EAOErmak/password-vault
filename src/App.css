@@ -1859,12 +1859,14 @@ textarea {
   overflow-x: auto;
 }
 
-.add-value-dialog {
+.add-value-dialog,
+.edit-value-dialog {
   scrollbar-width: none;
   overflow: visible;
 }
 
-.add-value-dialog::-webkit-scrollbar {
+.add-value-dialog::-webkit-scrollbar,
+.edit-value-dialog::-webkit-scrollbar {
   display: none;
 }
 
