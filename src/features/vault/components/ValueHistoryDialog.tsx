@@ -95,7 +95,7 @@ export function ValueHistoryDialog({
     <DialogBackdrop onClose={onClose}>
       <div
         aria-modal="true"
-        className="dialog-card dialog-card--wide"
+        className="dialog-card dialog-card--wide history-dialog"
         role="dialog"
         style={{
           background: "var(--dialog-tonal-bg)",
