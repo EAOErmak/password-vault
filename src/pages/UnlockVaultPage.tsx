@@ -22,6 +22,7 @@ export function UnlockVaultPage({
   const [masterPassword, setMasterPassword] = useState("");
   const [autoLockMs, setAutoLockMs] = useState<number | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isCapsLockOn, setIsCapsLockOn] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -102,14 +103,38 @@ export function UnlockVaultPage({
 
         <label className="field">
           <span>Master password</span>
-          <input
-            autoComplete="current-password"
-            disabled={isSubmitting}
-            onChange={(event) => setMasterPassword(event.currentTarget.value)}
-            placeholder="Enter your master password"
-            type="password"
-            value={masterPassword}
-          />
+          <div style={{ position: 'relative' }}>
+            <input
+              autoComplete="current-password"
+              disabled={isSubmitting}
+              onChange={(event) => setMasterPassword(event.currentTarget.value)}
+              onKeyUp={(e) => setIsCapsLockOn(e.getModifierState("CapsLock"))}
+              onKeyDown={(e) => setIsCapsLockOn(e.getModifierState("CapsLock"))}
+              placeholder="Enter your master password"
+              type="password"
+              value={masterPassword}
+              style={{ paddingRight: isCapsLockOn ? '70px' : '12px' }}
+            />
+            {isCapsLockOn && (
+              <span 
+                style={{ 
+                  position: 'absolute', 
+                  right: '12px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)',
+                  color: 'var(--color-accent)',
+                  fontSize: '0.8rem',
+                  fontWeight: 'bold',
+                  pointerEvents: 'none',
+                  background: 'color-mix(in srgb, var(--color-accent) 20%, transparent)',
+                  padding: '2px 6px',
+                  borderRadius: '999px'
+                }}
+              >
+                CAPS
+              </span>
+            )}
+          </div>
         </label>
 
         <div className="field" ref={dropdownRef}>

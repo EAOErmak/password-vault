@@ -21,6 +21,8 @@ export function CreateVaultPage({
   const [vaultName, setVaultName] = useState("");
   const [vaultPath, setVaultPath] = useState(initialPath ?? "");
   const [masterPassword, setMasterPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isCapsLockOn, setIsCapsLockOn] = useState(false);
 
   useEffect(() => {
     if (initialPath) {
@@ -69,7 +71,9 @@ export function CreateVaultPage({
     isSubmitting || 
     vaultName.trim().length === 0 || 
     vaultPath.trim().length === 0 || 
-    masterPassword.length === 0;
+    masterPassword.length === 0 ||
+    confirmPassword.length === 0 ||
+    masterPassword !== confirmPassword;
 
   return (
     <section className="page">
@@ -112,14 +116,77 @@ export function CreateVaultPage({
 
         <label className="field">
           <span>Master password</span>
-          <input
-            autoComplete="new-password"
-            disabled={isSubmitting}
-            onChange={(event) => setMasterPassword(event.currentTarget.value)}
-            placeholder="Enter a strong master password"
-            type="password"
-            value={masterPassword}
-          />
+          <div style={{ position: 'relative' }}>
+            <input
+              autoComplete="new-password"
+              disabled={isSubmitting}
+              onChange={(event) => setMasterPassword(event.currentTarget.value)}
+              onKeyUp={(e) => setIsCapsLockOn(e.getModifierState("CapsLock"))}
+              onKeyDown={(e) => setIsCapsLockOn(e.getModifierState("CapsLock"))}
+              placeholder="Enter a strong master password"
+              type="password"
+              value={masterPassword}
+              style={{ paddingRight: isCapsLockOn ? '70px' : '12px' }}
+            />
+            {isCapsLockOn && (
+              <span 
+                style={{ 
+                  position: 'absolute', 
+                  right: '12px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)',
+                  color: 'var(--color-accent)',
+                  fontSize: '0.8rem',
+                  fontWeight: 'bold',
+                  pointerEvents: 'none',
+                  background: 'color-mix(in srgb, var(--color-accent) 20%, transparent)',
+                  padding: '2px 6px',
+                  borderRadius: '999px'
+                }}
+              >
+                CAPS
+              </span>
+            )}
+          </div>
+        </label>
+
+        <label className="field">
+          <span>Confirm master password</span>
+          <div style={{ position: 'relative' }}>
+            <input
+              autoComplete="new-password"
+              disabled={isSubmitting}
+              onChange={(event) => setConfirmPassword(event.currentTarget.value)}
+              onKeyUp={(e) => setIsCapsLockOn(e.getModifierState("CapsLock"))}
+              onKeyDown={(e) => setIsCapsLockOn(e.getModifierState("CapsLock"))}
+              placeholder="Confirm your master password"
+              type="password"
+              value={confirmPassword}
+              style={{ 
+                paddingRight: isCapsLockOn ? '70px' : '12px',
+                boxShadow: (masterPassword !== confirmPassword && confirmPassword.length > 0) ? 'inset 0 0 0 1px var(--color-danger)' : undefined
+              }}
+            />
+            {isCapsLockOn && (
+              <span 
+                style={{ 
+                  position: 'absolute', 
+                  right: '12px', 
+                  top: '50%', 
+                  transform: 'translateY(-50%)',
+                  color: 'var(--color-accent)',
+                  fontSize: '0.8rem',
+                  fontWeight: 'bold',
+                  pointerEvents: 'none',
+                  background: 'color-mix(in srgb, var(--color-accent) 20%, transparent)',
+                  padding: '2px 6px',
+                  borderRadius: '999px'
+                }}
+              >
+                CAPS
+              </span>
+            )}
+          </div>
         </label>
 
         {statusMessage ? <p className="status-toast">{statusMessage}</p> : null}

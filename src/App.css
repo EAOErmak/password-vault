@@ -366,6 +366,11 @@ textarea {
   border-color: transparent;
 }
 
+.unlock-vault-form .field input[type="password"],
+.create-vault-form .field input[type="password"] {
+  border-radius: 14px;
+}
+
 .field {
   display: grid;
   gap: 8px;
