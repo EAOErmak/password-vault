@@ -22,7 +22,7 @@ export function DialogBackdrop({
       const scrollableDialog = document.querySelector(".dialog-card--scrollable");
       if (scrollableDialog) {
         event.preventDefault();
-        scrollableDialog.scrollTop += event.deltaY * 0.7;
+        scrollableDialog.scrollTop += event.deltaY * 0.25;
       }
     };
 
