@@ -407,7 +407,7 @@ function App() {
                     {isNameColumnEnabled ? "Disable Name" : "Enable Name"}
                   </button>
                   <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setIsPrimaryByDefault(!isPrimaryByDefault); }}>
-                    {isPrimaryByDefault ? "Disable Primary By Default" : "Enable Primary By Default"}
+                    {isPrimaryByDefault ? "Disable Primary" : "Enable Primary"}
                   </button>
                 </>
               )}
