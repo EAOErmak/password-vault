@@ -697,6 +697,7 @@ export function AccountList({
       </section>
 
       <AddAccountValueDialog
+        key={addingValueAccount?.id || "add-value"}
         errorMessage={dialogError}
         isOpen={addingValueAccount !== null}
         isSubmitting={isSubmitting}
@@ -705,10 +706,11 @@ export function AccountList({
           setAddingValueAccount(null);
         }}
         onSubmit={handleSubmitAddValue}
-        defaultIsPrimary={isPrimaryByDefault && (addingValueAccount?.values.length === 0)}
+        defaultIsPrimary={(!addingValueAccount?.values || addingValueAccount.values.length === 0) ? true : isPrimaryByDefault}
       />
 
       <AddSecretDialog
+        key={addingSecretAccount?.id || "add-secret"}
         errorMessage={dialogError}
         isOpen={addingSecretAccount !== null}
         isSubmitting={isSubmitting}
@@ -717,7 +719,7 @@ export function AccountList({
           setAddingSecretAccount(null);
         }}
         onSubmit={handleSubmitAddSecret}
-        defaultIsPrimary={isPrimaryByDefault && (addingSecretAccount?.secrets.length === 0)}
+        defaultIsPrimary={(!addingSecretAccount?.secrets || addingSecretAccount.secrets.length === 0) ? true : isPrimaryByDefault}
       />
 
       <EditAccountValueDialog

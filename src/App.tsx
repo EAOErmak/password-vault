@@ -48,8 +48,14 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isNameColumnEnabled, setIsNameColumnEnabled] = useState(false);
-  const [isPrimaryByDefault, setIsPrimaryByDefault] = useState(true);
+  const [isNameColumnEnabled, setIsNameColumnEnabled] = useState(() => {
+    const saved = localStorage.getItem("isNameColumnEnabled");
+    return saved !== null ? JSON.parse(saved) : false;
+  });
+  const [isPrimaryByDefault, setIsPrimaryByDefault] = useState(() => {
+    const saved = localStorage.getItem("isPrimaryByDefault");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
 
   useEffect(() => {
     void syncVaultStatus();
@@ -59,6 +65,14 @@ function App() {
     applyTheme(theme);
     storeTheme(theme);
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem("isNameColumnEnabled", JSON.stringify(isNameColumnEnabled));
+  }, [isNameColumnEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem("isPrimaryByDefault", JSON.stringify(isPrimaryByDefault));
+  }, [isPrimaryByDefault]);
 
   useEffect(() => {
     const handleScroll = () => {

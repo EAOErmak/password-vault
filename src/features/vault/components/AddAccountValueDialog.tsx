@@ -24,6 +24,7 @@ export function AddAccountValueDialog({
   const [valueType, setValueType] = useState<AccountValueType>("EMAIL");
   const [value, setValue] = useState("");
   const [isPrimary, setIsPrimary] = useState(defaultIsPrimary);
+  const [isMounting, setIsMounting] = useState(true);
 
   useEffect(() => {
     if (!isOpen) {
@@ -32,8 +33,8 @@ export function AddAccountValueDialog({
 
     setValueType("EMAIL");
     setValue("");
-    setIsPrimary(defaultIsPrimary);
-  }, [isOpen, defaultIsPrimary]);
+    setIsMounting(false);
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;
@@ -90,6 +91,7 @@ export function AddAccountValueDialog({
               disabled={isSubmitting}
               onChange={(event) => setIsPrimary(event.currentTarget.checked)}
               type="checkbox"
+              style={isMounting ? { transition: "none" } : undefined}
             />
             <span>Mark as primary</span>
           </label>

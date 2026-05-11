@@ -28,18 +28,18 @@ export function AddSecretDialog({
   const [secretType, setSecretType] = useState<SecretType>("PASSWORD");
   const [secretValue, setSecretValue] = useState("");
   const [isPrimary, setIsPrimary] = useState(defaultIsPrimary);
+  const [isMounting, setIsMounting] = useState(true);
 
   useEffect(() => {
     if (isOpen) {
       setSecretType("PASSWORD");
       setSecretValue("");
-      setIsPrimary(defaultIsPrimary);
+      setIsMounting(false);
       return;
     }
 
     setSecretValue("");
-    setIsPrimary(defaultIsPrimary);
-  }, [isOpen, defaultIsPrimary]);
+  }, [isOpen]);
 
   if (!isOpen) {
     return null;
@@ -114,6 +114,7 @@ export function AddSecretDialog({
               disabled={isSubmitting}
               onChange={(event) => setIsPrimary(event.currentTarget.checked)}
               type="checkbox"
+              style={isMounting ? { transition: "none" } : undefined}
             />
             <span>Mark as primary</span>
           </label>
