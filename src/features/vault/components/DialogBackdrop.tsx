@@ -22,12 +22,12 @@ export function DialogBackdrop({
       const scrollableDialog = document.querySelector(".dialog-card--scrollable");
       if (scrollableDialog) {
         event.preventDefault();
-        scrollableDialog.scrollTop += event.deltaY * 0.05;
+        scrollableDialog.scrollTop += event.deltaY * 0.7;
       }
     };
 
     window.addEventListener("wheel", handleGlobalWheel, { passive: false, capture: true });
-    
+
     // Блокируем скролл body
     const originalStyle = window.getComputedStyle(document.body).overflow;
     document.body.style.overflow = "hidden";
