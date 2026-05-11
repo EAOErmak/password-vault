@@ -32,6 +32,7 @@ export function DialogBackdrop({
   return (
     <div className="dialog-backdrop" onMouseDown={handleMouseDown} role="presentation">
       {children}
+      <div style={{ height: "24px", flexShrink: 0 }} />
     </div>
   );
 }

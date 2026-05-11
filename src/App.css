@@ -1845,9 +1845,10 @@ textarea {
 .dialog-backdrop {
   position: fixed;
   inset: 0;
-  padding: 24px 16px;
-  display: grid;
-  place-items: center;
+  padding: 64px 16px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow-y: auto;
   overflow-x: hidden;
   background: var(--surface-overlay);
