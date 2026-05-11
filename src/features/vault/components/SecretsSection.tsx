@@ -20,6 +20,7 @@ type SecretsSectionProps = {
   onAddSecret: (accountId: string, request: AddSecretRequest) => Promise<void>;
   onDeleteSecret: (secretId: string) => Promise<void>;
   onUpdateSecret: (secretId: string, request: UpdateSecretRequest) => Promise<void>;
+  isPrimaryByDefault: boolean;
 };
 
 export function SecretsSection({
@@ -27,6 +28,7 @@ export function SecretsSection({
   onAddSecret,
   onDeleteSecret,
   onUpdateSecret,
+  isPrimaryByDefault,
 }: SecretsSectionProps) {
   const historyRequestRef = useRef(0);
 
@@ -240,6 +242,7 @@ export function SecretsSection({
         isSubmitting={isSubmitting}
         onClose={handleCloseAdd}
         onSubmit={handleAdd}
+        defaultIsPrimary={isPrimaryByDefault && (!account.secrets || account.secrets.length === 0)}
       />
 
       <SecretHistoryDialog

@@ -36,6 +36,7 @@ type AccountDetailsDialogProps = {
   onUpdateSecret: (secretId: string, request: UpdateSecretRequest) => Promise<void>;
   onUpdateValue: (valueId: string, request: UpdateAccountValueRequest) => Promise<void>;
   platforms: PlatformDto[];
+  isPrimaryByDefault: boolean;
 };
 
 export function AccountDetailsDialog({
@@ -53,6 +54,7 @@ export function AccountDetailsDialog({
   onUpdateSecret,
   onUpdateValue,
   platforms,
+  isPrimaryByDefault,
 }: AccountDetailsDialogProps) {
   const [deleteError, setDeleteError] = useState<string | null>(null);
   const [editError, setEditError] = useState<string | null>(null);
@@ -191,6 +193,7 @@ export function AccountDetailsDialog({
               onAddValue={onAddValue}
               onDeleteValue={onDeleteValue}
               onUpdateValue={onUpdateValue}
+              isPrimaryByDefault={isPrimaryByDefault}
             />
 
             <SecretsSection
@@ -198,6 +201,7 @@ export function AccountDetailsDialog({
               onAddSecret={onAddSecret}
               onDeleteSecret={onDeleteSecret}
               onUpdateSecret={onUpdateSecret}
+              isPrimaryByDefault={isPrimaryByDefault}
             />
 
             <section className="details-section details-section--danger">

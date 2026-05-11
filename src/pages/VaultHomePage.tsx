@@ -634,6 +634,7 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
         onUpdateSecret={handleUpdateSecret}
         onUpdateValue={handleUpdateAccountValue}
         platforms={platforms}
+        isPrimaryByDefault={isPrimaryByDefault}
       />
     </>
   );

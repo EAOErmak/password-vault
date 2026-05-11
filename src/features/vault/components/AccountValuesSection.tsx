@@ -19,6 +19,7 @@ type AccountValuesSectionProps = {
   onAddValue: (accountId: string, request: AddAccountValueRequest) => Promise<void>;
   onDeleteValue: (valueId: string) => Promise<void>;
   onUpdateValue: (valueId: string, request: UpdateAccountValueRequest) => Promise<void>;
+  isPrimaryByDefault: boolean;
 };
 
 export function AccountValuesSection({
@@ -26,6 +27,7 @@ export function AccountValuesSection({
   onAddValue,
   onDeleteValue,
   onUpdateValue,
+  isPrimaryByDefault,
 }: AccountValuesSectionProps) {
   const historyRequestRef = useRef(0);
   const [dialogError, setDialogError] = useState<string | null>(null);
@@ -226,6 +228,7 @@ export function AccountValuesSection({
         isSubmitting={isSubmitting}
         onClose={handleCloseAdd}
         onSubmit={handleAdd}
+        defaultIsPrimary={isPrimaryByDefault && (!account.values || account.values.length === 0)}
       />
 
       <ValueHistoryDialog
