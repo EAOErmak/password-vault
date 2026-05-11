@@ -10,6 +10,7 @@ type AddAccountValueDialogProps = {
   isSubmitting: boolean;
   onClose: () => void;
   onSubmit: (request: AddAccountValueRequest) => Promise<void>;
+  defaultIsPrimary?: boolean;
 };
 
 export function AddAccountValueDialog({
@@ -18,10 +19,11 @@ export function AddAccountValueDialog({
   isSubmitting,
   onClose,
   onSubmit,
+  defaultIsPrimary = false,
 }: AddAccountValueDialogProps) {
   const [valueType, setValueType] = useState<AccountValueType>("EMAIL");
   const [value, setValue] = useState("");
-  const [isPrimary, setIsPrimary] = useState(false);
+  const [isPrimary, setIsPrimary] = useState(defaultIsPrimary);
 
   useEffect(() => {
     if (!isOpen) {
@@ -30,8 +32,8 @@ export function AddAccountValueDialog({
 
     setValueType("EMAIL");
     setValue("");
-    setIsPrimary(false);
-  }, [isOpen]);
+    setIsPrimary(defaultIsPrimary);
+  }, [isOpen, defaultIsPrimary]);
 
   if (!isOpen) {
     return null;

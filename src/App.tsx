@@ -49,6 +49,7 @@ function App() {
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNameColumnEnabled, setIsNameColumnEnabled] = useState(false);
+  const [isPrimaryByDefault, setIsPrimaryByDefault] = useState(true);
 
   useEffect(() => {
     void syncVaultStatus();
@@ -391,6 +392,9 @@ function App() {
                   <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setIsNameColumnEnabled(!isNameColumnEnabled); }}>
                     {isNameColumnEnabled ? "Disable Name" : "Enable Name"}
                   </button>
+                  <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setIsPrimaryByDefault(!isPrimaryByDefault); }}>
+                    {isPrimaryByDefault ? "Disable Primary By Default" : "Enable Primary By Default"}
+                  </button>
                 </>
               )}
               <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setTheme(theme === "dark" ? "light" : "dark"); }}>
@@ -435,6 +439,7 @@ function App() {
           vaultPath={currentVaultPath}
           themeToggle={themeToggle}
           isNameColumnEnabled={isNameColumnEnabled}
+          isPrimaryByDefault={isPrimaryByDefault}
         />
       ) : (
         <>

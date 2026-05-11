@@ -14,6 +14,7 @@ type AddSecretDialogProps = {
   isSubmitting: boolean;
   onClose: () => void;
   onSubmit: (request: AddSecretRequest) => Promise<void>;
+  defaultIsPrimary?: boolean;
 };
 
 export function AddSecretDialog({
@@ -22,22 +23,23 @@ export function AddSecretDialog({
   isSubmitting,
   onClose,
   onSubmit,
+  defaultIsPrimary = false,
 }: AddSecretDialogProps) {
   const [secretType, setSecretType] = useState<SecretType>("PASSWORD");
   const [secretValue, setSecretValue] = useState("");
-  const [isPrimary, setIsPrimary] = useState(false);
+  const [isPrimary, setIsPrimary] = useState(defaultIsPrimary);
 
   useEffect(() => {
     if (isOpen) {
       setSecretType("PASSWORD");
       setSecretValue("");
-      setIsPrimary(false);
+      setIsPrimary(defaultIsPrimary);
       return;
     }
 
     setSecretValue("");
-    setIsPrimary(false);
-  }, [isOpen]);
+    setIsPrimary(defaultIsPrimary);
+  }, [isOpen, defaultIsPrimary]);
 
   if (!isOpen) {
     return null;

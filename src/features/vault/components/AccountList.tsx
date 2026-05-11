@@ -46,6 +46,7 @@ type AccountListProps = {
   selectedPlatformName: string | null;
   platforms: PlatformDto[];
   isNameColumnEnabled: boolean;
+  isPrimaryByDefault: boolean;
 };
 
 type AccountTableDisplayRow = AccountTableRow & {
@@ -154,6 +155,7 @@ export function AccountList({
   selectedPlatformName,
   platforms,
   isNameColumnEnabled,
+  isPrimaryByDefault,
 }: AccountListProps) {
   const clipboardClearAfterSeconds = 30;
   const [actionError, setActionError] = useState<string | null>(null);
@@ -703,6 +705,7 @@ export function AccountList({
           setAddingValueAccount(null);
         }}
         onSubmit={handleSubmitAddValue}
+        defaultIsPrimary={isPrimaryByDefault && (addingValueAccount?.values.length === 0)}
       />
 
       <AddSecretDialog
@@ -714,6 +717,7 @@ export function AccountList({
           setAddingSecretAccount(null);
         }}
         onSubmit={handleSubmitAddSecret}
+        defaultIsPrimary={isPrimaryByDefault && (addingSecretAccount?.secrets.length === 0)}
       />
 
       <EditAccountValueDialog
