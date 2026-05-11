@@ -46,6 +46,7 @@ type VaultHomePageProps = {
   sessionResetToken: number;
   vaultPath: string | null;
   themeToggle: React.ReactElement;
+  isNameColumnEnabled: boolean;
 };
 
 type LoadSnapshotOptions = {
@@ -66,6 +67,7 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
     onRestoreInterrupted,
     sessionResetToken,
     vaultPath,
+    isNameColumnEnabled,
   } = props;
   const snapshotRequestRef = useRef(0);
   const detailsRequestRef = useRef(0);
@@ -564,6 +566,7 @@ export const VaultHomePage = React.forwardRef<VaultHomePageRef, VaultHomePagePro
             selectedPlatformId={selectedPlatformId}
             selectedPlatformName={selectedPlatformName}
             platforms={platforms}
+            isNameColumnEnabled={isNameColumnEnabled}
           />
         }
       />

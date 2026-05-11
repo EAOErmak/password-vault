@@ -48,6 +48,7 @@ function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNameColumnEnabled, setIsNameColumnEnabled] = useState(false);
 
   useEffect(() => {
     void syncVaultStatus();
@@ -387,6 +388,9 @@ function App() {
                   <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); vaultHomeRef.current?.openEditPlatform(); }}>
                     Edit Platforms
                   </button>
+                  <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setIsNameColumnEnabled(!isNameColumnEnabled); }}>
+                    {isNameColumnEnabled ? "Disable Name" : "Enable Name"}
+                  </button>
                 </>
               )}
               <button className="custom-titlebar__dropdown-item" type="button" onClick={() => { setIsMenuOpen(false); setTheme(theme === "dark" ? "light" : "dark"); }}>
@@ -430,6 +434,7 @@ function App() {
           sessionResetToken={sessionResetToken}
           vaultPath={currentVaultPath}
           themeToggle={themeToggle}
+          isNameColumnEnabled={isNameColumnEnabled}
         />
       ) : (
         <>

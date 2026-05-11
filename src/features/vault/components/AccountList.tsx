@@ -45,6 +45,7 @@ type AccountListProps = {
   selectedPlatformId: string | null;
   selectedPlatformName: string | null;
   platforms: PlatformDto[];
+  isNameColumnEnabled: boolean;
 };
 
 type AccountTableDisplayRow = AccountTableRow & {
@@ -152,6 +153,7 @@ export function AccountList({
   selectedPlatformId,
   selectedPlatformName,
   platforms,
+  isNameColumnEnabled,
 }: AccountListProps) {
   const clipboardClearAfterSeconds = 30;
   const [actionError, setActionError] = useState<string | null>(null);
@@ -549,15 +551,17 @@ export function AccountList({
             <table className="account-table">
               <thead>
                 <tr>
-                  <th scope="col">
-                    <span 
-                      className="account-table__heading-chip" 
-                      onClick={(event) => handleSort(event, "name")} 
-                      style={{ cursor: "pointer" }}
-                    >
-                      Name {sortColumn === "name" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
-                    </span>
-                  </th>
+                  {isNameColumnEnabled && (
+                    <th scope="col">
+                      <span 
+                        className="account-table__heading-chip" 
+                        onClick={(event) => handleSort(event, "name")} 
+                        style={{ cursor: "pointer" }}
+                      >
+                        Name {sortColumn === "name" ? (sortDirection === "asc" ? " ↑" : " ↓") : ""}
+                      </span>
+                    </th>
+                  )}
                   <th scope="col">
                     <span 
                       className="account-table__heading-chip" 
@@ -605,7 +609,7 @@ export function AccountList({
                     }}
                     style={{ cursor: "pointer" }}
                   >
-                    <td>{renderAccountName(row.accountName)}</td>
+                    {isNameColumnEnabled && <td>{renderAccountName(row.accountName)}</td>}
                     <td>{renderStaticField(row.platformName)}</td>
                     <td>
                       <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
