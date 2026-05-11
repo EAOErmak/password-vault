@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactNode } from "react";
+import { useEffect, type MouseEvent, ReactNode } from "react";
 
 type DialogBackdropProps = {
   children: ReactNode;
@@ -11,6 +11,14 @@ export function DialogBackdrop({
   disabled = false,
   onClose,
 }: DialogBackdropProps) {
+  useEffect(() => {
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    document.body.style.overflow = "hidden";
+    
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
   const handleMouseDown = (event: MouseEvent<HTMLDivElement>) => {
     if (disabled) {
       return;

@@ -187,7 +187,7 @@ textarea {
   transition: background-color 0.2s ease;
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1100;
 }
 
 .custom-titlebar::after {
@@ -1852,21 +1852,29 @@ textarea {
   overflow-x: hidden;
   background: var(--surface-overlay);
   z-index: 1000;
+  scrollbar-width: none;
+}
+
+.dialog-backdrop::-webkit-scrollbar {
+  display: none;
 }
 
 .dialog-card {
   width: min(100%, 520px);
   overflow-x: auto;
+  margin: auto;
 }
 
 .add-value-dialog,
-.edit-value-dialog {
+.edit-value-dialog,
+.create-account-dialog {
   scrollbar-width: none;
   overflow: visible;
 }
 
 .add-value-dialog::-webkit-scrollbar,
-.edit-value-dialog::-webkit-scrollbar {
+.edit-value-dialog::-webkit-scrollbar,
+.create-account-dialog::-webkit-scrollbar {
   display: none;
 }
 
@@ -1881,6 +1889,11 @@ textarea {
 .dialog-card--scrollable {
   max-height: calc(100vh - 48px);
   overflow-y: auto;
+}
+
+.account-details-dialog {
+  max-height: none !important;
+  overflow-y: visible !important;
 }
 
 .account-table-wrapper {
@@ -2366,7 +2379,7 @@ textarea {
   top: 0;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 1100;
   padding: 0;
   user-select: none;
 }
